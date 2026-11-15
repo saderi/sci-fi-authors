@@ -1,0 +1,3808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Science fiction authors: where they were born and where they lived</title>
+<style>
+:root{
+  --bg:#f6f5f1; --surface:#fcfcfb; --ink:#1d1d1b; --ink2:#55544f; --muted:#8a8982;
+  --line:#e2e0d9; --land:#e9e7e0; --accent:#256abf; --chip:#efeee9;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#121211; --surface:#1a1a19; --ink:#f1f0ec; --ink2:#b9b8b1; --muted:#85847d;
+    --line:#30302d; --land:#2a2a28; --accent:#6da7ec; --chip:#262624; }
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:1180px;margin:0 auto;padding:28px 20px 48px}
+h1{font-size:26px;line-height:1.2;margin:0 0 6px;letter-spacing:-.01em}
+.sub{color:var(--ink2);margin:0 0 18px;max-width:70ch}
+.controls{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;margin-bottom:12px}
+.seg{display:inline-flex;background:var(--chip);border-radius:9px;padding:3px}
+.seg button{border:0;background:transparent;color:var(--ink2);font:inherit;padding:6px 13px;border-radius:7px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 0 0 1px var(--line);font-weight:600}
+.seg button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.lbl{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-right:6px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px}
+#mapwrap{position:relative;padding:6px 6px 0}
+#map{width:100%;height:min(58vw,560px);min-height:300px}
+#mapmsg{display:none;padding:40px 24px;color:var(--ink2);text-align:center}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;padding:8px 16px 14px;font-size:13px;color:var(--ink2)}
+.legend i{display:inline-block;width:18px;height:12px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+@media (max-width:800px){.grid{grid-template-columns:1fr}}
+.card h2{font-size:15px;margin:0;padding:14px 16px 8px}
+.card .hint{color:var(--muted);font-size:13px;padding:0 16px 8px}
+#rank{max-height:420px;overflow:auto;padding:0 8px 10px}
+.row{display:grid;grid-template-columns:150px 1fr 38px;gap:10px;align-items:center;width:100%;border:0;background:transparent;color:inherit;font:inherit;text-align:left;padding:5px 8px;border-radius:7px;cursor:pointer}
+.row:hover,.row[aria-current="true"]{background:var(--chip)}
+.row:focus-visible{outline:2px solid var(--accent)}
+.row .nm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .bar{height:10px;border-radius:0 4px 4px 0;background:var(--accent);min-width:2px}
+.row .n{text-align:right;font-variant-numeric:tabular-nums;color:var(--ink2)}
+#detail{padding:0 16px 14px;max-height:420px;overflow:auto}
+.stats{display:flex;gap:22px;margin:2px 0 10px}
+.stats b{display:block;font-size:22px;font-variant-numeric:tabular-nums}
+.stats span{font-size:12px;color:var(--muted)}
+#names{columns:2;column-gap:20px;margin:0;padding:0;list-style:none;font-size:14px}
+#names li{break-inside:avoid;padding:2px 0}
+#names .more{font:inherit;padding:4px 10px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--ink);cursor:pointer}
+#names small{color:var(--muted)}
+#names a{color:var(--ink);text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:3px}
+#names a:hover{color:var(--accent);text-decoration-color:var(--accent)}
+.credit{color:var(--muted);font-size:12.5px;margin-top:14px;padding-top:12px;border-top:1px solid var(--line);max-width:85ch}
+.credit a{color:inherit}
+.note{color:var(--ink2);font-size:13px;margin-top:18px;max-width:85ch}
+</style>
+</head>
+<body>
+<main>
+  <h1>Science fiction authors: where they were born and where they lived</h1>
+  <p class="sub"><span id="total"></span> novelists and short-story writers born from 1800 onward, counted by country. Switch between birthplace and country of residence, or narrow by birth year.</p>
+
+  <div class="controls">
+    <div><span class="lbl">Show</span>
+      <span class="seg" id="modeSeg">
+        <button data-mode="born" aria-pressed="true">Born in</button>
+        <button data-mode="lived" aria-pressed="false">Lived in</button>
+      </span>
+    </div>
+    <div><span class="lbl">Born</span>
+      <span class="seg" id="eraSeg">
+        <button data-era="all" aria-pressed="true">All</button>
+        <button data-era="1800" aria-pressed="false">1800–1849</button>
+        <button data-era="1850" aria-pressed="false">1850–1899</button>
+        <button data-era="1900" aria-pressed="false">1900–1949</button>
+        <button data-era="1950" aria-pressed="false">1950 on</button>
+      </span>
+    </div>
+  </div>
+
+  <div class="card" id="mapwrap">
+    <div id="map" role="img" aria-label="World map shaded by number of science fiction authors per country"></div>
+    <div id="mapmsg">The map outline could not be loaded in this viewer. The ranking below shows the same counts for every country.</div>
+    <div class="legend" id="legend"></div>
+  </div>
+
+  <div class="grid">
+    <section class="card">
+      <h2 id="rankTitle">Countries</h2>
+      <div class="hint">Select a country to list its authors. Each name opens its Wikipedia entry.</div>
+      <div id="rank"></div>
+    </section>
+    <section class="card">
+      <h2 id="detTitle"></h2>
+      <div id="detail">
+        <div class="stats"><div><b id="sBorn"></b><span>born there</span></div><div><b id="sLived"></b><span>lived there</span></div></div>
+        <ul id="names"></ul>
+      </div>
+    </section>
+  </div>
+
+  <p class="note">About the data: authors come from Wikidata (people tagged as science fiction writers, or writers with the science fiction genre) who have an English Wikipedia article or an official website. This is not a complete census, so English-language writers are over-represented, and Wikidata tags can be missing or wrong. Birthplaces use the present-day country. "Lived in" uses the recorded country of residence, falling back to citizenship, and is a single country per author. Very small countries and territories may be too small to see on the map and appear only in the ranking.</p>
+  <footer class="credit">This page was built with AI (Claude, by Anthropic). Data from <a href="https://www.wikidata.org/" target="_blank" rel="noopener">Wikidata</a>; map by Plotly. AI-assisted work can contain errors, so check details against the linked sources.</footer>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/plotly.js@2.35.2/dist/plotly-geo-assets.js"></script>
+<script src="https://unpkg.com/plotly.js@2.35.2/dist/plotly-geo-assets.js"></script>
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+<script>
+const WP = 'https://en.wikipedia.org/wiki/';
+const RAW = `A. A. Attanasio;1951;USA;USA;A._A._Attanasio
+A. Bertram Chandler;1912;GBR;AUS;A._Bertram_Chandler
+A. C. Crispin;1950;USA;USA;Ann_C._Crispin
+A. E. van Vogt;1912;CAN;CAN;A._E._van_Vogt
+A. Lee Martinez;1973;USA;USA;A._Lee_Martinez
+A. M. Dellamonica;1968;CAN;CAN;A._M._Dellamonica
+Aarne Haapakoski;1904;FIN;FIN;Aarne_Haapakoski
+Aaron Allston;1960;USA;USA;Aaron_Allston
+Aaron Johnston;1950;USA;USA;Aaron_Johnston_(writer)
+Aaron S. Rosenberg;1969;USA;USA;Aaron_S._Rosenberg
+Abdón Ubidia;1944;ECU;ECU;Abd%C3%B3n_Ubidia
+Abra Staffin-Wiebe;2000;USA;USA;https://aswiebe.com/
+Abraham Grace Merritt;1884;USA;USA;A._Merritt
+Achille Mauzan;1883;FRA;FRA;Achille_Mauzan
+Ad Visser;1947;NLD;NLD;Ad_Visser
+Ada Palmer;1981;USA;USA;Ada_Palmer
+Adam Browne;1963;AUS;AUS;Adam_Browne
+Adam Christopher;1978;NZL;NZL;Adam_Christopher
+Adam Fawer;1970;USA;USA;Adam_Fawer
+Adam Gidwitz;1982;USA;USA;Adam_Gidwitz
+Adam Hamdy;1974;GBR;GBR;Adam_Hamdy
+Adam Hollanek;1922;UKR;POL;Adam_Hollanek
+Adam Roberts;1965;GBR;GBR;Adam_Roberts_(British_writer)
+Adam Wiśniewski-Snerg;1937;POL;POL;Adam_Wi%C5%9Bniewski-Snerg
+Adam-Troy Castro;1960;USA;USA;Adam-Troy_Castro
+Adeline Neetesonne;1980;FRA;FRA;http://www.adeline-neetesonne.fr.gd
+Adrian Dawson;1971;GBR;GBR;http://www.adriandawson.co.uk/
+Adrian J Walker;1950;AUS;AUS;https://adrianjwalker.com/
+Adrian Tchaikovsky;1972;GBR;GBR;Adrian_Tchaikovsky
+Aelfrida Tillyard;1883;GBR;GBR;Aelfrida_Tillyard
+Aeron Clement;1936;USA;USA;Aeron_Clement
+Agop Melkonyan;1949;BGR;BGR;Agop_Melkonyan
+Ai Jiang;1997;CHN;CHN;Ai_Jiang
+Aiki Mira;2000;DEU;DEU;Aiki_Mira
+Aimée Beekman;1933;EST;EST;Aim%C3%A9e_Beekman
+Akimitsu Takagi;1920;JPN;JPN;Akimitsu_Takagi
+Akira Hori;1944;JPN;JPN;Akira_Hori
+Al Sarrantonio;1952;USA;USA;Al_Sarrantonio
+Alain Bergeron;1950;FRA;CAN;Alain_Bergeron
+Alain Damasio;1969;FRA;FRA;Alain_Damasio
+Alain Dorémieux;1933;FRA;FRA;Alain_Dor%C3%A9mieux
+Alain Grousset;1956;FRA;FRA;http://alain.grousset.monsite.orange.fr
+Alain Le Bussy;1947;BEL;BEL;Alain_Le_Bussy
+Alain Pelosato;1946;FRA;FRA;https://www.alainpelosato.com/
+Alan Arkin;1934;USA;USA;Alan_Arkin
+Alan Baxter;1970;GBR;AUS;Alan_Baxter_(author)
+Alan Brennert;1954;USA;USA;Alan_Brennert
+Alan Burridge;1951;GBR;GBR;http://www.alanburridge.freeuk.com
+Alan Dean Foster;1946;USA;USA;Alan_Dean_Foster
+Alan E. Nourse;1928;USA;USA;Alan_E._Nourse
+Alan Glynn;1960;IRL;IRL;Alan_Glynn
+Alan Lightman;1948;USA;USA;Alan_Lightman
+Alan Moore;1953;GBR;GBR;Alan_Moore
+Alan Rodgers;1959;USA;USA;Alan_Rodgers
+Alan W. Lear;1953;GBR;GBR;Alan_W._Lear
+Alasdair Gray;1934;GBR;GBR;Alasdair_Gray
+Alastair Reynolds;1966;GBR;GBR;Alastair_Reynolds
+Alaya Dawn Johnson;1982;USA;USA;Alaya_Dawn_Johnson
+Albert Dorrington;1871;GBR;GBR;Albert_Dorrington
+Albert Robida;1848;FRA;FRA;Albert_Robida
+Aldo Palazzeschi;1885;ITA;ITA;Aldo_Palazzeschi
+Aldous Huxley;1894;GBR;GBR;Aldous_Huxley
+Alec Nevala-Lee;1980;USA;USA;Alec_Nevala-Lee
+Alejandro Barrero Santiago;1993;ESP;ESP;Alejandro_Barrero_Santiago
+Alejandro Jodorowsky;1929;CHL;FRA;Alejandro_Jodorowsky
+Aleksandar Žiljak;1963;HRV;HRV;Aleksandar_%C5%BDiljak
+Aleksandr Bushkov;1956;RUS;RUS;Aleksandr_Bushkov
+Aleksandr Mazin;1959;UKR;UKR;Alexander_Mazin
+Aleksei Gastev;1882;RUS;RUS;Aleksei_Gastev
+Aleksey Tolstoy;1883;RUS;FRA;Aleksey_Nikolayevich_Tolstoy
+Alex Hernandez;1978;USA;USA;Alex_Hernandez_(writer)
+Alex Irvine;1969;USA;USA;Alex_Irvine
+Alex Mir;1975;BRA;BRA;https://www.alexmir.com.br
+Alex Orlov;1964;RUS;RUS;http://www.alex-orlov.ru/
+Alex Scarrow;1966;GBR;GBR;Alex_Scarrow
+Alex Shvartsman;1975;UKR;UKR;Alex_Shvartsman
+Alex White;1981;USA;USA;Alex_White_(author)
+Alexander Abasheli;1884;GEO;GEO;Alexander_Abasheli
+Alexander Belyayev;1884;RUS;RUS;Alexander_Belyaev
+Alexander Besher;1951;USA;USA;Alexander_Besher
+Alexander Bogdanov;1873;POL;POL;Alexander_Bogdanov
+Alexander Dewdney;1941;CAN;CAN;A._K._Dewdney
+Alexander Gromov;1959;RUS;RUS;Alexander_Gromov
+Alexander Jablokov;1956;USA;USA;Alexander_Jablokov
+Alexander Kazantsev;1906;KAZ;RUS;Alexander_Kazantsev
+Alexander Key;1904;ARG;USA;Alexander_Key
+Alexander M. Phillips;1907;USA;USA;Alexander_M._Phillips
+Alexander Moszkowski;1851;POL;POL;Alexander_Moszkowski
+Alexander S. Potupa;1945;UKR;BLR;Aleksandr_Potupa
+Alexander Veltman;1800;RUS;RUS;Alexander_Veltman
+Alexandra Bracken;1987;USA;USA;Alexandra_Bracken
+Alexandre Arnoux;1884;FRA;FRA;Alexandre_Arnoux
+Alexandru Macedonski;1854;ROU;ROU;Alexandru_Macedonski
+Alexandru Mironov;1942;MDA;ROU;Alexandru_Mironov
+Alexei Ivanov;1969;RUS;RUS;Alexei_Ivanov_(writer)
+Alexei Panshin;1940;USA;USA;Alexei_Panshin
+Alexej Pludek;1923;CZE;CZE;Alexej_Pludek
+Alexis A. Gilliland;1931;USA;USA;Alexis_A._Gilliland
+Alfred Bester;1913;USA;USA;Alfred_Bester
+Alfred Coppel;1921;USA;USA;Alfred_Coppel
+Alfred Döblin;1878;POL;POL;Alfred_D%C3%B6blin
+Alfred Noyes;1880;GBR;GBR;Alfred_Noyes
+Alfred Walter Stewart;1880;GBR;GBR;Alfred_Walter_Stewart
+Alfredo Cardona Peña;1917;CRI;CRI;Alfredo_Cardona_Pe%C3%B1a
+Algis Budrys;1931;USA;USA;Algis_Budrys
+Alice Bradley Sheldon;1915;USA;USA;James_Tiptree_Jr.
+Alice Eleanor Jones;1916;USA;USA;Alice_Eleanor_Jones
+Alice Glaser;1928;USA;USA;Alice_Glaser
+Alice Lightner Hopf;1904;USA;USA;Alice_Lightner_Hopf
+Aline Valek;1986;BRA;BRA;Aline_Valek
+Alison Goodman;1966;AUS;AUS;Alison_Goodman
+Alison Hume;1965;GBR;GBR;Alison_Hume
+Alistair Gentry;1973;GBR;GBR;Alistair_Gentry
+Allan Baillie;1943;AUS;AUS;Allan_Baillie
+Allan Cole;1943;USA;USA;Allan_Cole
+Allen Adler;1916;USA;USA;Allen_Adler
+Allen Appel;1945;USA;USA;Allen_Appel
+Allen Drury;1918;USA;USA;Allen_Drury
+Allen Steele;1958;USA;USA;Allen_Steele
+Allen Stroud;1976;GBR;GBR;Allen_Stroud
+Ally Condie;1978;USA;USA;Ally_Condie
+Alpheus Hyatt Verrill;1871;USA;USA;Alpheus_Hyatt_Verrill
+Alta Vášová;1939;UKR;SVK;Alta_V%C3%A1%C5%A1ov%C3%A1
+Amal El-Mohtar;1984;CAN;CAN;Amal_El-Mohtar
+Amando Lacueva;1960;ESP;ESP;https://amandolacueva.vercel.app/
+Ambelin Kwaymullina;1975;AUS;AUS;Ambelin_Kwaymullina
+Ambrose Bierce;1842;USA;USA;Ambrose_Bierce
+Amelia Reynolds Long;1904;USA;USA;Amelia_Reynolds_Long
+Amie Kaufman;1980;AUS;AUS;Amie_Kaufman
+Amin Maalouf;1949;LBN;FRA;Amin_Maalouf
+Amy Sterling Casil;1962;USA;USA;Amy_Sterling_Casil
+Amy Thomson;1958;USA;USA;Amy_Thomson
+Anatole France;1844;FRA;FRA;Anatole_France
+Anatoli Dimarov;1922;UKR;UKR;Anatoliy_Dimarov
+Anatoly Dneprov;1919;UKR;UKR;Anatoly_Dneprov_(writer)
+Anders Blixt;1959;SWE;SWE;Anders_Blixt
+Anders Bodelsen;1937;DNK;DNK;Anders_Bodelsen
+Andre Norton;1912;USA;USA;Andre_Norton
+Andrea Cremer;1978;USA;USA;https://www.andrearobertsonbooks.com/
+Andrea Hairston;1952;USA;USA;Andrea_Hairston
+Andrea Stewart;1901;USA;USA;Andrea_Stewart_(author)
+Andreas Brandhorst;1956;DEU;DEU;Andreas_Brandhorst
+Andreas Eschbach;1959;DEU;DEU;Andreas_Eschbach
+Andreas Findig;1961;AUT;AUT;Andreas_Findig
+Andrei Bely;1880;RUS;RUS;Andrei_Bely
+Andrei Belyanin;1967;RUS;RUS;Andrei_Belyanin
+Andrei Platonov;1899;RUS;RUS;Andrei_Platonov
+Andrei Sinyavsky;1925;RUS;FRA;Andrei_Sinyavsky
+Andrew Cartmel;1958;GBR;GBR;Andrew_Cartmel
+Andrew Davidson;1969;CAN;CAN;Andrew_Davidson_(author)
+Andrew Fraknoi;1948;USA;USA;Andrew_Fraknoi
+Andrew Harman;1964;GBR;GBR;Andrew_Harman
+Andrew I. Porter;1946;USA;USA;Andrew_I._Porter
+Andrew Joron;1955;USA;USA;Andrew_Joron
+Andrew McCulloch;1945;GBR;GBR;Andrew_McCulloch_(writer)
+Andrew McGahan;1966;AUS;AUS;Andrew_McGahan
+Andrew Robinson;1942;USA;USA;Andrew_Robinson_(actor)
+Andrew Weiner;1949;GBR;CAN;Andrew_Weiner_(writer)
+Andrey Cruz;1965;RUS;ESP;http://cruzworlds.ru/fans/
+Andrey Lazarchuk;1958;RUS;RUS;https://urus-hay.livejournal.com/
+Andrey Valentinov;1958;UKR;UKR;Andriy_Valentynov
+Andrzej Mazurkiewicz;1963;POL;POL;Andrzej_Mazurkiewicz_(politician)
+Andrzej Pilipiuk;1974;POL;POL;Andrzej_Pilipiuk
+Andrzej Trepka;1923;POL;POL;Andrzej_Trepka
+Andrzej Ziemiański;1960;POL;POL;Andrzej_Ziemia%C5%84ski
+Andrzej Zimniak;1946;POL;POL;Andrzej_Zimniak
+André Caroff;1924;FRA;FRA;Andr%C3%A9_Caroff
+André Maurois;1885;FRA;FRA;Andr%C3%A9_Maurois
+André Ruellan;1922;FRA;FRA;Andr%C3%A9_Ruellan
+André Vianco;1976;BRA;BRA;Andr%C3%A9_Vianco
+Andy Chambers;1966;GBR;GBR;Andy_Chambers
+Andy Duncan;1964;USA;USA;Andy_Duncan_(writer)
+Andy Helfer;1958;USA;USA;Andy_Helfer
+Andy Lane;1963;GBR;GBR;Andy_Lane
+Andy Mangels;1966;USA;USA;Andy_Mangels
+Andy Remic;1971;GBR;GBR;Andy_Remic
+Andy Weir;1972;USA;USA;Andy_Weir
+Angela Carter;1940;GBR;GBR;Angela_Carter
+Angela Slatter;1967;AUS;AUS;Angela_Slatter
+Angela Steinmüller;1941;DEU;DEU;Angela_Steinm%C3%BCller
+Angus MacVicar;1908;GBR;GBR;Angus_MacVicar
+Angus Watson;1972;GBR;GBR;Angus_Watson
+Angélica Gorodischer;1928;ARG;ARG;Ang%C3%A9lica_Gorodischer
+Anil Menon;1964;IND;IND;Anil_Menon_(writer)
+Anita Mason;1942;GBR;GBR;Anita_Mason
+Anja Buchmann;1985;DEU;DEU;http://www.anjabuchmann.de/
+Ann Aguirre;1970;USA;USA;Ann_Aguirre
+Ann Cotten;1982;USA;USA;Ann_Cotten
+Ann Druyan;1949;USA;USA;Ann_Druyan
+Ann Leckie;1966;USA;USA;Ann_Leckie
+Ann Maxwell;1944;USA;USA;Ann_Maxwell
+Anna Kańtoch;1976;POL;POL;Anna_Ka%C5%84toch
+Anna Starobinets;1978;RUS;RUS;Anna_Starobinets
+Anne Brown;1962;USA;USA;Anne_Brown_(game_designer)
+Anne Charnock;1954;GBR;GBR;Anne_Charnock
+Anne Duguël;1945;BEL;BEL;Anne_Dugu%C3%ABl
+Anne Gray McCready;1960;USA;USA;Anne_Gray_McCready
+Anne Harris;1964;USA;USA;Anne_Harris_(author)
+Anne Leinonen;1973;FIN;FIN;Anne_Leinonen
+Anne McCaffrey;1926;USA;IRL;Anne_McCaffrey
+Annette Curtis Klause;1953;GBR;USA;Annette_Curtis_Klause
+Annette Juretzki;1984;POL;DEU;https://annette-juretzki.de/
+Annika Scheffel;1983;DEU;DEU;https://www.annikascheffel.net/
+Anthony Boucher;1911;USA;USA;Anthony_Boucher
+Anthony Burgess;1917;GBR;GBR;Anthony_Burgess
+Anthony Coburn;1927;AUS;AUS;Anthony_Coburn
+Anthony Joseph;1966;TTO;GBR;Anthony_Joseph
+Anthony M. Rud;1893;USA;USA;Anthony_M._Rud
+Anthony Ryan;1970;GBR;GBR;Anthony_Ryan_(writer)
+Antoine Volodine;1950;FRA;FRA;Antoine_Volodine
+Anton Antonov;1970;RUS;RUS;http://anton2ov.spb.ru
+Anton Pervushin;1970;RUS;RUS;http://apervushin.ucoz.com
+Anton Quintana;1937;NLD;NLD;Anton_Quintana
+Antoni Lange;1862;POL;POL;Antoni_Lange
+Antoni Słonimski;1895;POL;POL;Antoni_S%C5%82onimski
+Antonina Liedtke;1950;POL;POL;Antonina_Liedtke
+Antonio Canale;1915;ITA;ITA;Antonio_Canale
+Antonio Ghislanzoni;1824;ITA;ITA;Antonio_Ghislanzoni
+Antonio Porta;1935;ITA;ITA;Antonio_Porta_(author)
+Antti Eronen;1989;FIN;FIN;http://anttieronen.blogspot.com/
+Anu Holopainen;1968;FIN;FIN;http://whitecortex.net/~anu/
+Archibald Low;1888;GBR;GBR;Archibald_Low
+Archie Roy;1924;GBR;GBR;Archie_Roy
+Ardath Mayhar;1930;USA;USA;Ardath_Mayhar
+Arinn Dembo;1970;USA;USA;Arinn_Dembo
+Arkady Gaidar;1904;RUS;RUS;Arkady_Gaidar
+Arkady Martine;1985;USA;USA;Arkady_Martine
+Arkady Strugatsky;1925;GEO;GEO;Arkady_Strugatsky
+Armand Cabasson;1970;FRA;FRA;https://www.armand-cabasson.com/
+Armando Boix;1966;ESP;ESP;http://armandoboix.hol.es
+Armin Joseph Deutsch;1918;USA;USA;Armin_Joseph_Deutsch
+Armin Kõomägi;1969;MDA;EST;Armin_K%C3%B5om%C3%A4gi
+Arne Thodok Eriksen;1946;NOR;NOR;https://www.thodok.no/
+Arnold Federbush;1935;USA;USA;Arnold_Federbush
+Arnould Galopin;1863;FRA;FRA;Arnould_Galopin
+Arsen Darnay;1936;USA;USA;Arsen_Darnay
+Arthur Byron Cover;1950;USA;USA;Arthur_Byron_Cover
+Arthur C. Clarke;1917;GBR;LKA;Arthur_C._Clarke
+Arthur Cheney Train;1875;USA;USA;Arthur_Cheney_Train
+Arthur Conan Doyle;1859;GBR;GBR;Arthur_Conan_Doyle
+Arthur Herzog;1927;USA;USA;Arthur_Herzog
+Arthur K. Barnes;1909;USA;USA;Arthur_K._Barnes
+Arthur Leo Zagat;1896;USA;USA;Arthur_Leo_Zagat
+Arthur O. Friel;1885;USA;USA;Arthur_O._Friel
+Arthur Porges;1915;USA;USA;Arthur_Porges
+Arthur Sellings;1921;GBR;GBR;Arthur_Sellings
+Arthur Thomson;1927;GBR;GBR;Arthur_Thomson_(fanzines)
+Arthur Tofte;1902;USA;USA;Arthur_Tofte
+Arthur W. Saha;1923;USA;USA;Arthur_W._Saha
+Arwen Elys Dayton;1974;USA;USA;Arwen_Elys_Dayton
+Audrey Niffenegger;1963;USA;USA;Audrey_Niffenegger
+Audrey Pleynet;1984;FRA;FRA;https://audreypleynet.wordpress.com
+August Derleth;1909;USA;USA;August_Derleth
+Auguste Groner;1850;AUT;AUT;Auguste_Groner
+Auguste Villiers de l'Isle-Adam;1838;FRA;FRA;Auguste_Villiers_de_l%27Isle-Adam
+Auke Hulst;1975;NLD;NLD;Auke_Hulst
+Aurora Bertrana;1892;ESP;ESP;Aurora_Bertrana
+Austin Hall;1885;USA;USA;Austin_Hall_(writer)
+Auston Habershaw;1979;USA;USA;https://aahabershaw.com/
+Avram Davidson;1923;USA;USA;Avram_Davidson
+Axel Jensen;1932;NOR;NOR;Axel_Jensen
+Ayerdhal;1959;FRA;FRA;Ayerdhal
+Ayi Tendulkar;1904;IND;IND;Ayi_Tendulkar
+Ayize Jama-Everett;1974;USA;USA;Ayize_Jama-Everett
+Ayn Rand;1905;RUS;USA;Ayn_Rand
+Azusa Noa;1954;JPN;JPN;Azusa_Noa
+B.R. Bruss;1895;FRA;FRA;B._R._Bruss
+Babette Rosmond;1921;USA;USA;Babette_Rosmond
+Bae Myung-hoon;1978;KOR;KOR;Bae_Myung-hoon
+Baird Searles;1934;USA;USA;Baird_Searles
+Baku Yumemakura;1951;JPN;JPN;Baku_Yumemakura
+Bal Phondke;1939;IND;IND;Bal_Phondke
+Baoshu;1980;CHN;CHN;Baoshu
+Barb Galler-Smith;1948;CAN;CAN;Barb_Galler-Smith
+Barbara Delaplace;1952;CAN;CAN;Barbara_Delaplace
+Barbara Hambly;1951;USA;USA;Barbara_Hambly
+Barbara Owens;1934;USA;USA;Barbara_Owens
+Barbara Paul;1931;USA;USA;Barbara_Paul
+Bari Wood;1936;USA;USA;Bari_Wood
+Barrington J. Bayley;1937;GBR;GBR;Barrington_J._Bayley
+Barry B. Longyear;1942;USA;USA;Barry_B._Longyear
+Barry Hutchison;1978;GBR;GBR;Barry_Hutchison
+Barry N. Malzberg;1939;USA;USA;Barry_N._Malzberg
+Barton Paul Levenson;1960;USA;USA;Barton_Paul_Levenson
+Basil Davenport;1905;USA;USA;Basil_Davenport
+Basil Wells;1912;USA;USA;Basil_Wells
+Bastien Lecouffe-Deharme;1982;FRA;FRA;Bastien_Lecouffe-Deharme
+Becky Chambers;1985;USA;USA;Becky_Chambers
+Ben Aaronovitch;1964;GBR;GBR;Ben_Aaronovitch
+Ben Barzman;1910;CAN;CAN;Ben_Barzman
+Ben Bova;1932;USA;USA;Ben_Bova
+Ben H. Winters;1976;USA;USA;Ben_H._Winters
+Ben Jeapes;1965;GBR;GBR;Ben_Jeapes
+Ben Peek;1976;AUS;AUS;Ben_Peek
+Ben Richards;1964;GBR;GBR;Ben_Richards_(writer)
+Benjamin Rosenbaum;1969;USA;USA;Benjamin_Rosenbaum
+Bentley Little;1960;USA;USA;Bentley_Little
+Bernard Cronin;1884;GBR;GBR;Bernard_Cronin
+Bernard Werber;1961;FRA;FRA;Bernard_Werber
+Bernard Wolfe;1915;USA;USA;Bernard_Wolfe
+Bernhard Kegel;1953;DEU;DEU;http://www.bernhardkegel.de/
+Bernhard Kellermann;1879;DEU;FRA;Bernhard_Kellermann
+Bertha von Suttner;1843;CZE;CZE;Bertha_von_Suttner
+Bertil Mårtensson;1945;SWE;SWE;Bertil_M%C3%A5rtensson
+Bertrand Russell;1872;GBR;GBR;Bertrand_Russell
+Beth Bernobich;1959;USA;USA;Beth_Bernobich
+Beth Fantaskey;1965;USA;USA;Beth_Fantaskey
+Beth Goobie;1959;CAN;CAN;Beth_Goobie
+Beth Revis;1981;USA;USA;Beth_Revis
+Betsy Curtis;1917;USA;USA;Betsy_Curtis
+Bianca Pitzorno;1942;ITA;ITA;Bianca_Pitzorno
+Bill Albert;1942;USA;USA;https://www.billalbert.me.uk/
+Bill Baldwin;1935;USA;USA;Bill_Baldwin
+Bill Coffin;1970;USA;USA;Bill_Coffin
+Bill DeSmedt;1943;USA;USA;Bill_DeSmedt
+Bill Fawcett;1947;USA;USA;Bill_Fawcett_(writer)
+Bill Johnson;1956;USA;USA;Bill_Johnson_(author)
+Bill McCay;1951;USA;USA;Bill_McCay
+Bill Pronzini;1943;USA;USA;Bill_Pronzini
+Bill Ransom;1945;USA;USA;Bill_Ransom
+Bill S. Ballinger;1912;USA;USA;Bill_S._Ballinger
+Bill Strutton;1918;AUS;AUS;Bill_Strutton
+Birgit Rabisch;1953;DEU;DEU;https://www.birgitrabisch.de/
+Blaine Pardoe;1962;USA;USA;Blaine_Pardoe
+Blake Crouch;1978;USA;USA;Blake_Crouch
+Bob Leman;1922;USA;USA;Bob_Leman
+Bob Mayer;1959;USA;USA;Bob_Mayer_(author)
+Bob Olsen;1884;USA;USA;Bob_Olsen
+Bob Ottum;1925;USA;USA;Robert_K._Ottum
+Bob Shaw;1931;GBR;IRL;Bob_Shaw
+Bob Van Laerhoven;1953;BEL;BEL;https://www.bobvanlaerhoven.be/
+Boban Knežević;1959;SRB;SRB;Boban_Kne%C5%BEevi%C4%87
+Bogdan Suceavă;1969;ROU;USA;Bogdan_Suceav%C4%83
+Bohumil Říha;1907;CZE;CZE;Bohumil_%C5%98%C3%ADha
+Bok Geo-il;1946;KOR;KOR;Bok_Geo-il
+Bonnie Bryant;1946;USA;USA;Bonnie_Bryant
+Boris Akunin;1956;GEO;GBR;Boris_Akunin
+Boris Kabur;1917;EST;EST;Boris_Kabur
+Boris Shtern;1947;UKR;UKR;http://www.fiction.kiev.ua/shtern.htm
+Boris Strugatsky;1933;RUS;RUS;Boris_Strugatsky
+Borislav Pekić;1930;MNE;GBR;Borislav_Peki%C4%87
+Brad Ferguson;1953;USA;USA;Brad_Ferguson
+Brad Linaweaver;1952;USA;USA;Brad_Linaweaver
+Brad R. Torgersen;1974;USA;USA;Brad_R._Torgersen
+Brad Strickland;1947;USA;USA;Brad_Strickland
+Bradley Denton;1958;USA;USA;Bradley_Denton
+Bradley Thompson;1953;USA;USA;Bradley_Thompson
+Brandon Sanderson;1975;USA;USA;Brandon_Sanderson
+Brenda Clough;1955;USA;USA;Brenda_Clough
+Brenda Cooper;1960;USA;USA;Brenda_Cooper
+Brian Aldiss;1925;GBR;GBR;Brian_Aldiss
+Brian Attebery;1951;USA;USA;Brian_Attebery
+Brian Clement;1977;CAN;CAN;Brian_Clement
+Brian Daley;1947;USA;USA;Brian_Daley
+Brian Earnshaw;1929;GBR;GBR;Brian_Earnshaw
+Brian Evenson;1966;USA;USA;Brian_Evenson
+Brian Falkner;1962;NZL;NZL;Brian_Falkner
+Brian Francis Slattery;1975;USA;USA;Brian_Francis_Slattery
+Brian Hayles;1930;GBR;GBR;Brian_Hayles
+Brian Herbert;1947;USA;USA;Brian_Herbert
+Brian Lumley;1937;GBR;GBR;Brian_Lumley
+Brian Neville Ball;1932;GBR;GBR;Brian_N._Ball
+Brian Plante;1956;USA;USA;Brian_Plante
+Brian Stableford;1948;GBR;GBR;Brian_Stableford
+Brian Thomsen;1959;USA;USA;Brian_Thomsen
+Bruce Bethke;1955;USA;USA;Bruce_Bethke
+Bruce Boston;1943;USA;USA;Bruce_Boston
+Bruce Boxleitner;1950;USA;USA;Bruce_Boxleitner
+Bruce Branit;1967;USA;USA;Bruce_Branit
+Bruce Cordell;1968;USA;USA;Bruce_Cordell
+Bruce Coville;1950;USA;USA;Bruce_Coville
+Bruce Elliott;1914;USA;USA;Bruce_Elliott_(writer)
+Bruce Golden;1952;USA;USA;Bruce_Golden
+Bruce Holland Rogers;1958;USA;USA;Bruce_Holland_Rogers
+Bruce Sterling;1954;USA;USA;Bruce_Sterling
+Bruno della Chiesa;1962;FRA;FRA;Bruno_della_Chiesa
+Bruno H. Bürgel;1875;DEU;DEU;Bruno_H._B%C3%BCrgel
+Bruno Jasieński;1901;POL;POL;Bruno_Jasie%C5%84ski
+Bruno Winawer;1883;POL;POL;Bruno_Winawer
+Bryce Walton;1918;USA;USA;Bryce_Walton
+Bryce Zabel;1954;USA;USA;Bryce_Zabel
+Bud Sparhawk;1937;USA;USA;Bud_Sparhawk
+Bud Webster;1952;USA;USA;Bud_Webster
+Buzz Aldrin;1930;USA;USA;Buzz_Aldrin
+C. C. MacApp;1913;USA;USA;C._C._MacApp
+C. E. Bechhofer Roberts;1894;GBR;GBR;C._E._Bechhofer_Roberts
+C. I. Defontenay;1819;FRA;FRA;C._I._Defontenay
+C. J. Cherryh;1942;USA;USA;C._J._Cherryh
+C. M. Taylor;1972;GBR;GBR;C._M._Taylor
+C. Robert Cargill;1975;USA;USA;C._Robert_Cargill
+C. S. Lewis;1898;GBR;GBR;C._S._Lewis
+Cadwell Turnbull;1987;USA;USA;Cadwell_Turnbull
+Caiseal Mór;1961;AUS;AUS;Ca%C3%ADseal_M%C3%B3r
+Caitlín R. Kiernan;1964;IRL;IRL;Caitl%C3%ADn_R._Kiernan
+Camarin Grae;1941;USA;USA;Camarin_Grae
+Camil Baciu;1926;ROU;FRA;Camil_Baciu
+Camille Flammarion;1842;FRA;FRA;Camille_Flammarion
+Candas Jane Dorsey;1952;CAN;CAN;Candas_Jane_Dorsey
+Caren Gussoff;1973;USA;USA;Caren_Gussoff
+Carey McWilliams;1973;USA;USA;Carey_McWilliams_(marksman)
+Carina Rozenfeld;1972;FRA;FRA;Carina_Rozenfeld
+Carl Binder;1960;CAN;CAN;Carl_Binder
+Carl Djerassi;1923;AUT;AUT;Carl_Djerassi
+Carl Frederick;1901;USA;USA;Carl_Frederick
+Carl Grunert;1865;DEU;DEU;Carl_Grunert
+Carl H. Claudy;1879;USA;USA;Carl_H._Claudy
+Carl Henry Leverage;1885;GBR;GBR;Henry_Leverage
+Carl Richard Jacobi;1908;USA;USA;Carl_Richard_Jacobi
+Carl Sagan;1934;USA;USA;Carl_Sagan
+Carl-Johan Vallgren;1964;SWE;SWE;Carl-Johan_Vallgren
+Carlo Dossi;1849;ITA;ITA;Carlo_Dossi
+Carlo Fruttero;1926;ITA;ITA;Carlo_Fruttero
+Carlos Gardini;1948;ARG;ARG;Carlos_Gardini
+Carlos Hernandez;1971;USA;USA;Carlos_Hernandez_(writer)
+Carlos Patati;1960;BRA;BRA;http://enquantoisso-patati.blogspot.com/
+Carlos Rasch;1932;BRA;DEU;Carlos_Rasch
+Carlton Mellick III;1977;USA;USA;Carlton_Mellick_III
+Carly Wray;2000;USA;USA;Carly_Wray
+Carmen Capiti;1988;CHE;CHE;https://carmencapiti.ch/
+Carmen Carter;1954;USA;USA;Carmen_Carter
+Carmen Maria Machado;1986;USA;USA;Carmen_Maria_Machado
+Carol Emshwiller;1921;USA;USA;Carol_Emshwiller
+Carol Severance;1944;USA;USA;Carol_Severance
+Carola Dibbell;1945;USA;USA;Carola_Dibbell
+Caroline B. Cooney;1947;USA;USA;Caroline_B._Cooney
+Caroline Spector;1958;USA;USA;Caroline_Spector
+Carrie Richerson;1952;USA;USA;Carrie_Richerson
+Carrie Vaughn;1973;USA;USA;Carrie_Vaughn
+Carter Scholz;1953;USA;USA;Carter_Scholz
+Cassandra Khaw;1984;MYS;MYS;Cassandra_Khaw
+Cassern S. Goto;1970;USA;USA;Cassern_S._Goto
+Cat Rambo;1963;USA;USA;Cat_Rambo
+Cathal Ó Sándair;1922;GBR;IRL;Cathal_%C3%93_S%C3%A1ndair
+Catherine Asaro;1955;USA;USA;Catherine_Asaro
+Catherine Crook de Camp;1907;USA;USA;Catherine_Crook_de_Camp
+Catherine Dufour;1966;FRA;FRA;Catherine_Dufour
+Catherine Jinks;1963;AUS;AUS;Catherine_Jinks
+Catherine Lucile Moore;1911;USA;USA;C._L._Moore
+Catherine Tregenna;1966;GBR;GBR;Catherine_Tregenna
+Catherine Webb;1986;GBR;GBR;Catherine_Webb
+Catherynne M. Valente;1979;USA;USA;Catherynne_M._Valente
+Catriona Sparks;1965;AUS;USA;Catriona_Sparks
+Cavan Scott;1973;GBR;GBR;Cavan_Scott
+Cecilia Tan;1967;USA;USA;Cecilia_Tan
+Celia S. Friedman;1957;USA;USA;Celia_S._Friedman
+Celu Amberstone;1947;CAN;CAN;Celu_Amberstone
+Chad Oliver;1928;USA;USA;Chad_Oliver
+Chad Taylor;1964;NZL;NZL;Chad_Taylor_(writer)
+Chan Koonchung;1952;CHN;CHN;Chan_Koonchung
+Chandler Davis;1926;USA;CAN;Chandler_Davis
+Charles A. Spano, Jr.;1948;USA;USA;Charles_A._Spano_Jr.
+Charles Beaumont;1929;USA;USA;Charles_Beaumont
+Charles Chilton;1917;GBR;GBR;Charles_Chilton
+Charles Coleman Finlay;1964;USA;USA;Charles_Coleman_Finlay
+Charles Dickinson;1951;USA;USA;Charles_Dickinson_(author)
+Charles Dobzynski;1929;POL;FRA;Charles_Dobzynski
+Charles Duits;1925;FRA;FRA;Charles_Duits
+Charles E. Fritch;1927;USA;USA;Charles_E._Fritch
+Charles E. Gannon;1960;USA;USA;Charles_E._Gannon
+Charles Eric Maine;1921;GBR;GBR;Charles_Eric_Maine
+Charles Fort;1874;USA;USA;Charles_Fort
+Charles Gilson;1878;GBR;GBR;Charles_Gilson
+Charles Gramlich;1958;USA;USA;Charles_Gramlich
+Charles Heber Clark;1841;USA;USA;Charles_Heber_Clark
+Charles Hornig;1916;USA;USA;Charles_Hornig
+Charles Howard Hinton;1853;GBR;GBR;Charles_Howard_Hinton
+Charles James Hankinson;1866;GBR;GBR;Charles_James_Hankinson
+Charles L. Fontenay;1917;BRA;USA;Charles_L._Fontenay
+Charles L. Grant;1942;USA;USA;Charles_L._Grant
+Charles L. Harness;1915;USA;USA;Charles_L._Harness
+Charles Logan;1930;GBR;GBR;Charles_Logan_(author)
+Charles Michael Platt;1945;GBR;USA;Charles_Platt_(author)
+Charles R. Pellegrino;1953;USA;USA;Charles_R._Pellegrino
+Charles R. Tanner;1896;USA;USA;Charles_R._Tanner
+Charles S. Strong;1906;USA;USA;Charles_S._Strong
+Charles Sheffield;1935;GBR;USA;Charles_Sheffield
+Charles Stross;1964;GBR;GBR;Charles_Stross
+Charlie Jane Anders;1969;USA;USA;Charlie_Jane_Anders
+Charlotte Fullerton;1949;USA;USA;Charlotte_Fullerton
+Charlotte Haldane;1894;GBR;GBR;Charlotte_Haldane
+Charlotte Kerner;1950;DEU;DEU;Charlotte_Kerner
+Chelsea Quinn Yarbro;1942;USA;USA;Chelsea_Quinn_Yarbro
+Chely Lima;1957;CUB;USA;Chely_Lima
+Chen Qiufan;1981;CHN;CHN;Chen_Qiufan
+Cheng Jingbo;1983;CHN;CHN;Cheng_Jingbo
+Cheon Seonran;1993;KOR;KOR;https://m.blog.naver.com/seonrann?tab=1
+Cherie Dimaline;1975;CAN;CAN;Cherie_Dimaline
+Cherie Priest;1975;USA;USA;Cherie_Priest
+Cherry Wilder;1930;NZL;NZL;Cherry_Wilder
+Chester Anderson;1932;USA;USA;Chester_Anderson
+Chet Williamson;1948;USA;USA;Chet_Williamson
+Chiaki Kawamata;1948;JPN;JPN;Chiaki_Kawamata
+China Miéville;1972;GBR;GBR;China_Mi%C3%A9ville
+Chingiz Aĭtmatov;1928;KGZ;KGZ;Chinghiz_Aitmatov
+Chris Beckett;1955;GBR;GBR;Chris_Beckett
+Chris Boyce;1943;GBR;GBR;Chris_Boyce
+Chris Bunch;1943;USA;USA;Chris_Bunch
+Chris Claremont;1950;GBR;USA;Chris_Claremont
+Chris Eliasen;1971;USA;USA;http://www.echristophereric.com
+Chris Hadfield;1959;CAN;CAN;Chris_Hadfield
+Chris Lynch;1962;USA;USA;Chris_Lynch
+Chris Metzen;1973;USA;USA;Chris_Metzen
+Chris Moriarty;1968;USA;USA;Chris_Moriarty
+Chris Morris;1946;USA;USA;Chris_Morris_(author)
+Chris Roberson;1970;USA;USA;Chris_Roberson_(author)
+Chris Van Allsburg;1949;USA;USA;Chris_Van_Allsburg
+Chris Wooding;1977;GBR;GBR;Chris_Wooding
+Christa Wolf;1929;POL;DEU;Christa_Wolf
+Christian Grenier;1945;FRA;FRA;https://www.noosfere.org/grenier/
+Christian Kracht;1966;CHE;CHE;Christian_Kracht
+Christian Mähr;1952;AUT;AUT;Christian_M%C3%A4hr
+Christian Vogt;1979;DEU;DEU;https://www.jcvogt.de/
+Christian von Aster;1973;DEU;DEU;http://www.vonaster.de/
+Christie Golden;1963;USA;USA;Christie_Golden
+Christine Barsi;1960;FRA;FRA;https://christinebarsi.com
+Christine Love;1989;CAN;CAN;Christine_Love_(writer)
+Christine M. Rose;1969;USA;USA;http://www.christineandethanrose.com
+Christine Renard;1929;FRA;FRA;Christine_Renard
+Christoph Ransmayr;1954;AUT;AUT;Christoph_Ransmayr
+Christopher Anvil;1925;USA;USA;Christopher_Anvil
+Christopher Barzak;1975;USA;USA;Christopher_Barzak
+Christopher Bulis;1956;GBR;GBR;Christopher_Bulis
+Christopher Evans;1951;GBR;GBR;Christopher_Evans_(author)
+Christopher Golden;1967;USA;USA;Christopher_Golden
+Christopher Hinz;1951;USA;USA;Christopher_Hinz
+Christopher Hodder-Williams;1926;GBR;GBR;Christopher_Hodder-Williams
+Christopher Kubasik;1963;USA;USA;Christopher_Kubasik
+Christopher L. Bennett;1901;USA;USA;Christopher_L._Bennett
+Christopher Lee Yost;1973;USA;USA;Christopher_Yost
+Christopher McKitterick;1967;USA;USA;Christopher_McKitterick
+Christopher Moore;1957;USA;USA;Christopher_Moore_(author)
+Christopher Paolini;1983;USA;USA;Christopher_Paolini
+Christopher Penfold;1941;AUS;AUS;Christopher_Penfold
+Christopher Priest;1943;GBR;GBR;Christopher_Priest_(novelist)
+Christopher Ride;1965;AUS;AUS;Christopher_Ride
+Christopher Riley;1967;GBR;GBR;Christopher_Riley
+Christopher Rowe;1969;USA;USA;Christopher_Rowe_(author)
+Christopher Rowley;1948;USA;USA;Christopher_Rowley
+Christopher Ruocchio;1985;USA;USA;Christopher_Ruocchio
+Christopher Stasheff;1944;USA;USA;Christopher_Stasheff
+Chuck Hogan;1967;USA;USA;Chuck_Hogan
+Chuck Palahniuk;1962;USA;USA;Chuck_Palahniuk
+Chuck Tingle;1901;USA;USA;Chuck_Tingle
+Chuck Wendig;1976;USA;USA;Chuck_Wendig
+Chung Serang;1984;KOR;KOR;Chung_Serang
+Chōhei Kambayashi;1953;JPN;JPN;Ch%C5%8Dhei_Kambayashi
+Clare Bell;1952;GBR;USA;Clare_Bell
+Clare Winger Harris;1891;USA;USA;Clare_Winger_Harris
+Clark Ashton Smith;1893;USA;USA;Clark_Ashton_Smith
+Claude Ecken;1954;FRA;FRA;Claude_Ecken
+Claude Houghton;1889;GBR;GBR;Claude_Houghton
+Claude Le Bouthillier;1946;CAN;CAN;https://acadie.ca
+Clayton Emery;1953;USA;USA;Clayton_Emery
+Clemence Dane;1888;GBR;GBR;Clemence_Dane
+Cleve Cartmill;1908;USA;USA;Cleve_Cartmill
+Clifford A. Pickover;1957;USA;USA;Clifford_A._Pickover
+Clifford D. Simak;1904;USA;USA;Clifford_D._Simak
+Clive Barker;1952;GBR;GBR;Clive_Barker
+Clive Cussler;1931;USA;USA;Clive_Cussler
+Colin Greenland;1954;GBR;GBR;Colin_Greenland
+Colin Harvey;1960;GBR;GBR;Colin_Harvey_(writer)
+Colin Kapp;1928;GBR;GBR;Colin_Kapp
+Colin Thompson;1942;GBR;GBR;Colin_Thompson_(writer)
+Colin Wilson;1931;GBR;GBR;Colin_Wilson
+Colleen Gleason;1960;USA;USA;Colleen_Gleason
+Colleen McCullough;1937;AUS;AUS;Colleen_McCullough
+Compton Mackenzie;1883;GBR;GBR;Compton_Mackenzie
+Connie Willis;1945;USA;USA;Connie_Willis
+Cora Lenore Williams;1865;USA;USA;Cora_Lenore_Williams
+Cordwainer Smith;1913;USA;USA;Cordwainer_Smith
+Corrado Alvaro;1895;ITA;ITA;Corrado_Alvaro
+Cory Doctorow;1971;CAN;CAN;Cory_Doctorow
+Cory Panshin;1947;USA;USA;Cory_Panshin
+Craig Dirgo;1959;USA;USA;Craig_Dirgo
+Craig Harrison;1942;GBR;NZL;Craig_Harrison_(writer)
+Craig Strete;1950;USA;USA;Craig_Strete
+Craig Thomas;1942;GBR;GBR;Craig_Thomas_(author)
+Cristina Jurado;1972;ESP;ESP;Cristina_Jurado
+Curme Gray;1910;USA;USA;Curme_Gray
+Curt Siodmak;1902;DEU;USA;Curt_Siodmak
+Cynthia DeFelice;1951;USA;USA;Cynthia_DeFelice
+Cynthia Felice;1942;USA;USA;Cynthia_Felice
+Cyril M. Kornbluth;1923;USA;USA;Cyril_M._Kornbluth
+Cécile Duquenne;1988;FRA;FRA;https://cecileduquenne.com
+Cédric Ferrand;1976;FRA;CAN;http://hu-mu.blogspot.com/
+D. C. Fontana;1939;USA;USA;D._C._Fontana
+D. Harlan Wilson;1971;USA;USA;D._Harlan_Wilson
+D. J. MacHale;1955;USA;USA;D._J._MacHale
+D. M. Thomas;1935;GBR;GBR;D._M._Thomas
+D. P. Singh;1956;IND;IND;D._P._Singh_(writer)
+D. Scott Apel;1901;USA;USA;Scott_Apel
+Dafydd ab Hugh;1960;USA;USA;Dafydd_ab_Hugh
+Daisuke Satō;1964;JPN;JPN;Daisuke_Sat%C5%8D
+Dale Smith;1976;GBR;GBR;Dale_Smith_(writer)
+Damien Broderick;1944;AUS;AUS;Damien_Broderick
+Damir Bajs;1964;HRV;HRV;Damir_Bajs
+Damon Knight;1922;USA;USA;Damon_Knight
+Dan Abnett;1965;GBR;GBR;Dan_Abnett
+Dan Alderson;1941;USA;USA;Dan_Alderson
+Dan Cragg;1939;USA;USA;Dan_Cragg
+Dan DeBono;1964;USA;USA;Dan_DeBono
+Dan Morgan;1925;GBR;GBR;Dan_Morgan_(writer)
+Dan O'Bannon;1946;USA;USA;Dan_O%27Bannon
+Dan Simmons;1948;USA;USA;Dan_Simmons
+Dan Tsalka;1936;POL;ISR;Dan_Tsalka
+Dan Wells;1977;USA;USA;Dan_Wells_(author)
+Dana Stabenow;1952;USA;USA;Dana_Stabenow
+Daniel Abraham;1969;USA;USA;Daniel_Abraham_(author)
+Daniel F. Galouye;1920;USA;USA;Daniel_F._Galouye
+Daniel H. Wilson;1978;USA;USA;Daniel_H._Wilson
+Daniel Höra;1965;DEU;DEU;http://daniel-hoera.de/leben/
+Daniel José Older;1980;USA;USA;Daniel_Jos%C3%A9_Older
+Daniel Keyes;1927;USA;USA;Daniel_Keyes
+Daniel Keys Moran;1962;USA;USA;Daniel_Keys_Moran
+Daniel Kluger;1951;UKR;ISR;Daniel_Kluger
+Daniel O'Mahony;1973;IRL;IRL;Daniel_O%27Mahony
+Daniel O'Malley;1950;AUS;AUS;Daniel_O%27Malley
+Daniel Sernine;1955;CAN;CAN;Daniel_Sernine
+Daniel Suarez;1964;USA;USA;Daniel_Suarez_(author)
+Daniela Knor;1972;DEU;DEU;https://danielaknor.wordpress.com/
+Danielle Martinigol;1949;FRA;FRA;http://www.martinigol.fr
+Danielle Trussoni;1973;USA;USA;Danielle_Trussoni
+Daniil Kharms;1905;RUS;RUS;Daniil_Kharms
+Daphne du Maurier;1907;GBR;GBR;Daphne_du_Maurier
+Darcie Little Badger;1987;USA;USA;Darcie_Little_Badger
+Dario Tonani;1959;ITA;ITA;http://www.dariotonani.it
+Dario Voltolini;1959;ITA;ITA;Dario_Voltolini
+Darius James;1954;USA;USA;Darius_James
+Dariusz Muszer;1959;POL;POL;http://dariusz-muszer.de/pl/
+Darko Macan;1966;HRV;HRV;Darko_Macan
+Darko Suvin;1930;HRV;CAN;Darko_Suvin
+Darrell Schweitzer;1952;USA;USA;Darrell_Schweitzer
+Darrell Till;1975;GBR;GBR;http://www.menfromearth.co.uk/
+Daryl F. Mallett;1969;USA;USA;Daryl_F._Mallett
+Daryl Gregory;1965;USA;USA;Daryl_Gregory
+Dave Duncan;1933;GBR;CAN;Dave_Duncan_(writer)
+Dave Eggers;1970;USA;USA;Dave_Eggers
+Dave Freer;1959;ZAF;AUS;Dave_Freer
+Dave Hutchinson;1960;GBR;GBR;Dave_Hutchinson
+Dave Luckett;1951;AUS;AUS;Dave_Luckett
+Dave Martin;1935;GBR;GBR;Dave_Martin_(screenwriter)
+Dave Rudden;1988;IRL;IRL;Dave_Rudden
+Dave Smeds;1955;USA;USA;Dave_Smeds
+Dave Walsh;2000;USA;USA;https://dvewlsh.com/
+Dave Wolverton;1957;USA;USA;Dave_Wolverton
+David A. Kyle;1919;USA;USA;David_Kyle
+David Alan Mack;1969;USA;USA;David_Alan_Mack
+David Anthony Durham;1969;USA;USA;David_Anthony_Durham
+David Barr Kirtley;1977;USA;USA;David_Barr_Kirtley
+David Bischoff;1951;USA;USA;David_Bischoff
+David Bishop;1966;NZL;NZL;David_Bishop_(writer)
+David Brin;1950;USA;USA;David_Brin
+David Conway;1963;IRL;GBR;David_Conway_(author)
+David Conyers;1971;AUS;AUS;David_Conyers
+David D. Levine;1961;USA;USA;David_D._Levine
+David Drake;1945;USA;USA;David_Drake
+David Duncan;1913;USA;USA;David_Duncan_(writer)
+David Farr;1969;GBR;GBR;David_Farr_(theatre_director)
+David Feintuch;1944;USA;USA;David_Feintuch
+David Fisher;1929;GBR;GBR;David_Fisher_(writer)
+David G. Compton;1930;GBR;GBR;D._G._Compton
+David G. Hartwell;1941;USA;USA;David_G._Hartwell
+David Gerrold;1944;USA;USA;David_Gerrold
+David H. Keller;1880;USA;USA;David_H._Keller
+David Houle;1948;USA;USA;David_Houle_(futurist)
+David I. Masson;1917;GBR;GBR;David_I._Masson
+David Ireland;1927;AUS;AUS;David_Ireland_(author)
+David J. Schwartz;1970;USA;USA;David_J._Schwartz_(science_fiction_writer)
+David J. Skal;1952;USA;USA;David_J._Skal
+David J. Williams;1971;GBR;USA;David_J._Williams
+David Jay Brown;1961;USA;USA;David_Jay_Brown
+David Lake;1929;IND;AUS;David_Lake_(writer)
+David Langford;1953;GBR;GBR;David_Langford
+David Lasser;1902;USA;USA;David_Lasser
+David Lindsay;1876;GBR;GBR;David_Lindsay_(novelist)
+David Llewellyn;1978;GBR;GBR;David_Llewellyn_(author)
+David Louis Edelman;1971;USA;USA;David_Louis_Edelman
+David M. Alexander;1945;USA;USA;David_M._Alexander
+David Marusek;1951;USA;USA;David_Marusek
+David McDaniel;1939;USA;USA;David_McDaniel
+David Meltzer;1937;USA;USA;David_Meltzer_(poet)
+David Mitchell;1969;GBR;GBR;David_Mitchell_(author)
+David Moitet;1977;FRA;FRA;http://david-moitet.fr/
+David Niall Wilson;1959;USA;USA;David_Niall_Wilson
+David Onley;1950;CAN;CAN;David_Onley
+David Peoples;1940;USA;USA;David_Peoples
+David Prieto Ruiz;1977;ESP;ESP;http://www.drashur.blogspot.com
+David Pringle;1950;GBR;GBR;David_Pringle
+David R. Bunch;1925;USA;USA;David_R._Bunch
+David R. Palmer;1941;USA;USA;David_R._Palmer
+David S. Garnett;1947;GBR;GBR;David_S._Garnett
+David Sherman;1944;USA;USA;David_Sherman_(novelist)
+David Sosnowski;1959;USA;USA;David_Sosnowski
+David Vern Reed;1914;USA;USA;David_Vern_Reed
+David W. Brown;1901;USA;USA;David_W._Brown
+David Walker;1911;GBR;GBR;David_Walker_(author)
+David Walton;1975;USA;USA;David_Walton_(science_fiction_writer)
+David Weber;1952;USA;USA;David_Weber
+David Weddle;1953;USA;USA;David_Weddle
+David Whitaker;1928;GBR;GBR;David_Whitaker_(screenwriter)
+David Wingrove;1954;GBR;GBR;David_Wingrove
+David Wright O'Brien;1918;USA;USA;David_Wright_O%27Brien
+David Zindell;1952;USA;USA;David_Zindell
+Davis Grubb;1919;USA;USA;Davis_Grubb
+Dawn Atkins;1962;USA;USA;Dawn_Atkins_(anthropologist)
+Day Keene;1904;USA;USA;Day_Keene
+Dayton Ward;1967;USA;USA;Dayton_Ward
+Daína Chaviano;1957;CUB;ESP;Da%C3%ADna_Chaviano
+Dean Ing;1931;USA;USA;Dean_Ing
+Dean Koontz;1945;USA;USA;Dean_Koontz
+Dean McLaughlin;1931;USA;USA;Dean_McLaughlin_(writer)
+Dean Wesley Smith;1950;USA;USA;Dean_Wesley_Smith
+Debbie Moon;1901;GBR;GBR;Debbie_Moon
+Deborah Biancotti;1971;AUS;AUS;Deborah_Biancotti
+Deborah Chester;1957;USA;USA;Deborah_Chester
+Deborah J. Ross;1947;USA;USA;Deborah_J._Ross
+Debra Doyle;1952;USA;USA;Debra_Doyle
+Delilah S. Dawson;1977;USA;USA;Delilah_S._Dawson
+Delos W. Lovelace;1894;USA;USA;Delos_W._Lovelace
+Denis Johnson;1949;DEU;USA;Denis_Johnson
+Denise Okuda;2000;USA;USA;Denise_Okuda
+Dennis Danvers;1947;USA;USA;Dennis_Danvers
+Dennis E. Taylor;2000;CAN;CAN;Dennis_E._Taylor
+Dennis Feltham Jones;1918;GBR;GBR;D._F._Jones
+Dennis Jürgensen;1961;DNK;DNK;Dennis_J%C3%BCrgensen
+Dennis L. McKiernan;1932;USA;USA;Dennis_L._McKiernan
+Dennis O'Neil;1939;USA;USA;Dennis_O%27Neil
+Dennis Schmidt;1939;USA;USA;Dennis_Schmidt_(author)
+Dennis Spooner;1932;GBR;GBR;Dennis_Spooner
+Dennis Wheatley;1897;GBR;GBR;Dennis_Wheatley
+Deon Meyer;1958;ZAF;ZAF;Deon_Meyer
+Diana Gabaldon;1952;USA;USA;Diana_Gabaldon
+Diana Palmer;1946;USA;USA;Diana_Palmer_(author)
+Diana Wynne Jones;1934;GBR;GBR;Diana_Wynne_Jones
+Diane Carey;1954;USA;USA;Diane_Carey
+Diane Detzer;1930;USA;USA;Diane_Detzer
+Diane Duane;1952;USA;USA;Diane_Duane
+Dietmar Dath;1970;DEU;DEU;Dietmar_Dath
+Dimitri Semenikhin;1996;RUS;RUS;Dimitri_Semenikhin
+Dino Buzzati;1906;ITA;ITA;Dino_Buzzati
+Dionys Burger;1892;NLD;NLD;Dionys_Burger
+Dirk C. Fleck;1943;DEU;DEU;https://www.dirk-c-fleck.de/
+Dirk van den Boom;1966;DEU;DEU;https://sf-boom.de/
+Dirk Wylie;1920;USA;USA;Dirk_Wylie
+Django Mathijsen;1966;NLD;NLD;http://djangomathijsen.nl/
+DJUNA;1971;KOR;KOR;Djuna
+Dmitri Bilenkin;1933;RUS;RUS;Dmitri_Bilenkin
+Dmitry Bykov;1967;RUS;RUS;Dmitry_Bykov
+Dmitry Glukhovsky;1979;RUS;RUS;Dmitry_Glukhovsky
+Dmitry Gordevsky;1973;UKR;UKR;http://www.zorich.ru/
+Dmitry Volodikhin;1969;RUS;RUS;http://volodih-bastion.ru/
+Dobrica Ćosić;1921;SRB;SRB;Dobrica_%C4%86osi%C4%87
+Domingo Santos;1941;ESP;ESP;Domingo_Santos
+Domingos Pellegrini;1949;BRA;BRA;Domingos_Pellegrini
+Dominic Green;1967;USA;USA;Dominic_Green_(science_fiction_writer)
+Dominic Mitchell;1979;GBR;GBR;Dominic_Mitchell
+Dominique Douay;1944;FRA;FRA;Dominique_Douay
+Don Bendell;1947;USA;USA;Don_Bendell
+Don D'Ammassa;1946;USA;USA;Don_D%27Ammassa
+Don DeBrandt;1963;CAN;CAN;Don_DeBrandt
+Don Houghton;1930;FRA;GBR;Don_Houghton
+Don Ingalls;1918;USA;USA;Don_Ingalls
+Don Pendleton;1927;USA;USA;Don_Pendleton
+Don Quine;1938;USA;USA;Don_Quine
+Don Sakers;1958;JPN;USA;Don_Sakers
+Don Shaw;1934;GBR;GBR;Don_Shaw_(screenwriter)
+Don Webb;1960;USA;USA;Don_Webb_(writer)
+Donald A. Wollheim;1914;USA;USA;Donald_A._Wollheim
+Donald Barr;1921;USA;USA;Donald_Barr
+Donald Cotton;1928;GBR;GBR;Donald_Cotton
+Donald E. Westlake;1933;USA;USA;Donald_E._Westlake
+Donald F. Glut;1944;USA;USA;Donald_F._Glut
+Donald G. Payne;1924;GBR;GBR;Donald_G._Payne
+Donald H. Tuck;1922;AUS;AUS;Donald_H._Tuck
+Donald Keyhoe;1897;USA;USA;Donald_Keyhoe
+Donald Kingsbury;1929;USA;CAN;Donald_Kingsbury
+Donald Malcolm;1930;GBR;GBR;Donald_Malcolm
+Donald Moffitt;1931;USA;USA;Donald_Moffitt
+Donald R. Bensen;1927;USA;USA;Don_Bensen
+Donald Tosh;1935;GBR;GBR;Donald_Tosh
+Donald Wandrei;1908;USA;USA;Donald_Wandrei
+Doranna Durgin;1960;USA;USA;Doranna_Durgin
+Doris Egan;1955;USA;USA;Doris_Egan
+Doris Lessing;1919;IRN;GBR;Doris_Lessing
+Doris P. Buck;1898;USA;USA;Doris_P._Buck
+Doris Piserchia;1928;USA;USA;Doris_Piserchia
+Dorothy B. Hughes;1904;USA;USA;Dorothy_B._Hughes
+Dorothy J. Heydt;1942;USA;USA;Dorothy_J._Heydt
+Dorothée Blanck;1934;DEU;FRA;http://mapage.noos.fr/dorotheeblanck/index.html
+Doru Davidovici;1945;ROU;ROU;Doru_Davidovici
+Doug Beason;1953;USA;USA;Doug_Beason
+Doug Naylor;1955;GBR;GBR;Doug_Naylor
+Dougal Dixon;1947;GBR;GBR;Dougal_Dixon
+Douglas Coupland;1961;DEU;CAN;Douglas_Coupland
+Douglas E. Richards;1962;USA;USA;Douglas_E._Richards
+Douglas Hill;1935;CAN;CAN;Douglas_Hill
+Douglas Hurd;1930;GBR;GBR;Douglas_Hurd
+Douglas Lain;1970;USA;USA;Douglas_Lain
+Douglas Niles;1954;USA;USA;Douglas_Niles
+Douglas Preston;1956;USA;USA;Douglas_Preston
+Drew Karpyshyn;1971;CAN;CAN;Drew_Karpyshyn
+Duane Ackerson;1942;USA;USA;Duane_Ackerson
+Duane W. Rimel;1915;USA;USA;Duane_W._Rimel
+Duncan Lunan;1945;GBR;GBR;Duncan_Lunan
+Dwight V. Swain;1915;USA;USA;Dwight_V._Swain
+Dénis Lindbohm;1927;SWE;SWE;D%C3%A9nis_Lindbohm
+E. C. Myers;1978;USA;USA;E._C._Myers
+E. C. Vivian;1882;GBR;GBR;E._C._Vivian
+E. E. Knight;1965;USA;USA;E._E._Knight
+E. Everett Evans;1893;USA;USA;E._Everett_Evans
+E. Hoffmann Price;1898;USA;USA;E._Hoffmann_Price
+E. M. Forster;1879;GBR;GBR;E._M._Forster
+Ed Earl Repp;1901;USA;USA;Ed_Earl_Repp
+Ed Greenwood;1959;CAN;CAN;Ed_Greenwood
+Ed Naha;1950;USA;USA;Ed_Naha
+Ed Nather;1926;USA;USA;Ed_Nather
+Eddie Robson;1978;GBR;GBR;Eddie_Robson
+Eddy C. Bertin;1944;DEU;BEL;Eddy_C._Bertin
+Eden Phillpotts;1862;IND;GBR;Eden_Phillpotts
+Edgar Pangborn;1909;USA;USA;Edgar_Pangborn
+Edgar Rice Burroughs;1875;USA;USA;Edgar_Rice_Burroughs
+Edgar Wallace;1875;GBR;GBR;Edgar_Wallace
+Edison Marshall;1894;USA;USA;Edison_Marshall
+Edmond François Valentin About;1828;FRA;FRA;Edmond_Fran%C3%A7ois_Valentin_About
+Edmond Hamilton;1904;USA;USA;Edmond_Hamilton
+Edmund Cooper;1926;GBR;GBR;Edmund_Cooper
+Edmund Niziurski;1925;POL;POL;Edmund_Niziurski
+Edmund Wnuk-Lipiński;1944;POL;POL;Edmund_Wnuk-Lipi%C5%84ski
+Edna Mayne Hull;1905;CAN;CAN;Edna_Mayne_Hull
+Edogawa Ranpo;1894;JPN;JPN;Edogawa_Ranpo
+Eduard Bass;1888;CZE;CZE;Eduard_Bass
+Eduardo Spohr;1976;BRA;BRA;Eduardo_Spohr
+Eduardo Vaquerizo;1967;ESP;ESP;Eduardo_Vaquerizo
+Edward Bellamy;1850;USA;USA;Edward_Bellamy
+Edward Bryant;1945;USA;USA;Edward_Bryant
+Edward Bulwer-Lytton;1803;GBR;GBR;Edward_Bulwer-Lytton
+Edward D. Hoch;1930;USA;USA;Edward_D._Hoch
+Edward Douglas Fawcett;1866;GBR;GBR;Edward_Douglas_Fawcett
+Edward E. Kramer;1961;USA;USA;Edward_E._Kramer
+Edward Elmer Smith;1890;USA;USA;E._E._Smith
+Edward Everett Hale;1822;USA;USA;Edward_Everett_Hale
+Edward Frederic Benson;1867;GBR;GBR;E._F._Benson
+Edward Hyams;1910;GBR;GBR;Edward_Hyams
+Edward John Carnell;1912;GBR;GBR;John_Carnell
+Edward Lazellari;1965;USA;USA;http://www.edwardlazellari.com/
+Edward Llewellyn-Thomas;1918;GBR;GBR;Edward_Llewellyn-Thomas
+Edward M. Lerner;1949;USA;USA;Edward_M._Lerner
+Edward Page Mitchell;1852;USA;USA;Edward_Page_Mitchell
+Edward Plunkett, 18th Baron of Dunsany;1878;GBR;IRL;Lord_Dunsany
+Edward Shanks;1892;GBR;GBR;Edward_Shanks
+Edward Topol;1938;AZE;USA;Edward_Topol
+Edward Whittemore;1933;USA;USA;Edward_Whittemore
+Edwin Abbott Abbott;1838;GBR;GBR;Edwin_Abbott_Abbott
+Edwin Balmer;1883;USA;USA;Edwin_Balmer
+Edwin Charles Tubb;1919;GBR;GBR;Edwin_Charles_Tubb
+Edwin Fitch Northrup;1866;USA;USA;Edwin_Fitch_Northrup
+Edwin Lester Arnold;1857;GBR;GBR;Edwin_Lester_Arnold
+Edwin Morgan;1920;GBR;GBR;Edwin_Morgan_(poet)
+Edwy Searles Brooks;1889;GBR;GBR;Edwy_Searles_Brooks
+Effie Seiberg;2000;USA;USA;Effie_Seiberg
+Egon Bondy;1930;CZE;CZE;Egon_Bondy
+Eija Lappalainen;1975;FIN;FIN;http://www.kaksikertojaa.com/
+Eiji Tsuburaya;1901;JPN;JPN;Eiji_Tsuburaya
+Eileen Gunn;1945;USA;USA;Eileen_Gunn
+Eileen Wilks;1952;USA;USA;Eileen_Wilks
+Eileen-Marie Duell Buchanan;1922;GBR;GBR;Eileen-Marie_Duell_Buchanan
+Ejler Jakobsson;1911;FIN;USA;Ejler_Jakobsson
+Ekaterina Sedia;1970;RUS;USA;Ekaterina_Sedia
+Elaine Cunningham;1957;USA;USA;Elaine_Cunningham
+Elan Mastai;1974;CAN;CAN;Elan_Mastai
+Eleanor Arnason;1942;USA;USA;Eleanor_Arnason
+Eleanor Cameron;1912;CAN;CAN;Eleanor_Cameron
+Eleanor Lerman;1952;USA;USA;Eleanor_Lerman
+Elena Aldunate;1925;CHL;CHL;Elena_Aldunate
+Elfric Wells Chalmers Kearney;1881;AUS;AUS;Elfric_Wells_Chalmers_Kearney
+Elia Barceló;1957;ESP;ESP;Elia_Barcel%C3%B3
+Elin Brodin;1963;NOR;NOR;Elin_Brodin
+Elina Hiltunen;1971;FIN;FIN;http://www.whatsnext.fi/
+Eliot Fintushel;1947;USA;USA;Eliot_Fintushel
+Elisabeth Mace;1933;GBR;GBR;Elisabeth_Mace
+Elise Matthesen;1960;USA;USA;Elise_Matthesen
+Elizabeth A. Lynn;1946;USA;USA;Elizabeth_A._Lynn
+Elizabeth Ann Scarborough;1947;USA;USA;Elizabeth_Ann_Scarborough
+Elizabeth Bear;1971;USA;USA;Elizabeth_Bear
+Elizabeth Burgoyne Corbett;1846;GBR;GBR;Elizabeth_Burgoyne_Corbett
+Elizabeth Chater;1910;CAN;CAN;Elizabeth_Chater
+Elizabeth Donald;1975;USA;USA;Elizabeth_Donald
+Elizabeth Hand;1957;USA;USA;Elizabeth_Hand
+Elizabeth Haydon;1965;USA;USA;Elizabeth_Haydon
+Elizabeth Humphreys Penrose;1960;USA;USA;Elizabeth_Humphreys_Penrose
+Elizabeth Moon;1945;USA;USA;Elizabeth_Moon
+Elizabeth Tudor;1978;AZE;AZE;Elizabeth_Tudor_(writer)
+Ellen Klages;1954;USA;USA;Ellen_Klages
+Ellen MacGregor;1906;USA;USA;Ellen_MacGregor
+Elliott O'Donnell;1872;GBR;GBR;Elliott_O%27Donnell
+Emil Petaja;1915;USA;USA;Emil_Petaja
+Emilio Bueso;1974;ESP;ESP;http://www.nochecerrada.com/
+Emilio Salgari;1862;ITA;ITA;Emilio_Salgari
+Emily Barr;1971;GBR;GBR;Emily_Barr
+Emily Devenport;1958;USA;USA;Emily_Devenport
+Emily St. John Mandel;1979;CAN;CAN;Emily_St._John_Mandel
+Emma Bull;1954;USA;USA;Emma_Bull
+Emma Newman;1976;GBR;GBR;Emma_Newman
+Emmanuel Jouanne;1960;FRA;FRA;Emmanuel_Jouanne
+Emmi Itäranta;1976;FIN;FIN;Emmi_It%C3%A4ranta
+Emília Freitas;1855;BRA;BRA;Em%C3%ADlia_Freitas
+Enn Vetemaa;1936;EST;EST;Enn_Vetemaa
+Ennio Flaiano;1910;ITA;ITA;Ennio_Flaiano
+Enric Herce Escarrà;1972;ESP;ESP;https://www.enricherce.com/
+Enrica Zunic';1953;ITA;ITA;Enrica_Zunic%27
+Enrico Brizzi;1974;ITA;ITA;Enrico_Brizzi
+Enrique Gaspar;1842;ESP;ESP;Enrique_Gaspar
+Enzo Fileno Carabba;1966;ITA;ITA;Enzo_Fileno_Carabba
+Eoin Colfer;1965;IRL;IRL;Eoin_Colfer
+Era Natarasan;1964;IND;IND;Era_Natarasan
+Erazm Majewski;1858;POL;POL;Erazm_Majewski
+Ercole Luigi Morselli;1882;ITA;ITA;Ercole_Luigi_Morselli
+Eric Ambler;1909;GBR;GBR;Eric_Ambler
+Eric Brown;1960;GBR;GBR;Eric_Brown_(writer)
+Eric C. Williams;1918;GBR;GBR;Eric_C._Williams
+Eric Frank Russell;1905;GBR;GBR;Eric_Frank_Russell
+Eric G. Swedin;1965;USA;USA;Eric_G._Swedin
+Eric James Stone;1967;USA;USA;Eric_James_Stone
+Eric L. Harry;1958;USA;USA;Eric_L._Harry
+Eric Malpass;1910;GBR;GBR;Eric_Malpass
+Eric Nylund;1964;USA;USA;Eric_Nylund
+Eric Saward;1944;GBR;GBR;Eric_Saward
+Eric Temple Bell;1883;GBR;USA;Eric_Temple_Bell
+Eric Walters;1957;CAN;CAN;Eric_Walters
+Erich von Däniken;1935;CHE;CHE;Erich_von_D%C3%A4niken
+Erih Koš;1913;BIH;SRB;Erih_Ko%C5%A1
+Erik Simon;1950;DEU;DEU;Erik_Simon
+Erin Bow;1972;USA;CAN;Erin_Bow
+Erkki Ahonen;1932;FIN;FIN;http://users.abo.fi/eahonen/
+Erle Cox;1873;AUS;AUS;Erle_Cox
+Erle Stanley Gardner;1889;USA;USA;Erle_Stanley_Gardner
+Ermanno Cavazzoni;1947;ITA;ITA;Ermanno_Cavazzoni
+Ernest Bramah;1868;GBR;GBR;Ernest_Bramah
+Ernest Callenbach;1929;USA;USA;Ernest_Callenbach
+Ernest Cline;1972;USA;USA;Ernest_Cline
+Ernest George Henham;1870;GBR;GBR;Ernest_George_Henham
+Ernest Hill;1915;GBR;GBR;Ernest_Hill_(author)
+Ernest Pérochon;1885;FRA;FRA;Ernest_P%C3%A9rochon
+Ernesto Gastaldi;1934;ITA;ITA;Ernesto_Gastaldi
+Ernst Jünger;1895;DEU;DEU;Ernst_J%C3%BCnger
+Erroll Collins;1906;GBR;GBR;Erroll_Collins
+Esther Friesner;1951;USA;USA;Esther_Friesner
+Esther Rochon;1948;CAN;CAN;Esther_Rochon
+Eugen Semitjov;1923;SWE;SWE;Eugen_Semitjov
+Eugene Byrne;1959;IRL;IRL;Eugene_Byrne
+Eugene George Key;1907;USA;USA;Eugene_George_Key
+Eugeniusz Dębski;1952;UKR;POL;Eugeniusz_D%C4%99bski
+Eugie Foster;1971;USA;USA;Eugie_Foster
+Eugène Mouton;1823;FRA;FRA;Eug%C3%A8ne_Mouton
+Eva Hauserová;1954;CZE;CZE;Eva_Hauserov%C3%A1
+Eva Maria Mudrich;1927;DEU;DEU;Eva_Maria_Mudrich
+Evan Currie;1976;CAN;CAN;Evan_Currie
+Evan Hunter;1926;USA;USA;Evan_Hunter
+Evelyn C. Leeper;1950;USA;USA;Evelyn_C._Leeper
+Evelyn E. Smith;1922;USA;USA;Evelyn_E._Smith
+Evelyn Ugalde;1975;CRI;CRI;Evelyn_Ugalde
+Evelyn Waugh;1903;GBR;GBR;Evelyn_Waugh
+Everett B. Cole;1910;USA;USA;Everett_B._Cole
+Ezekiel Stone Wiggins;1839;CAN;CAN;Ezekiel_Stone_Wiggins
+F. Gwynplaine MacIntyre;1948;USA;USA;F._Gwynplaine_MacIntyre
+F. M. Busby;1921;USA;USA;F._M._Busby
+F. Orlin Tremaine;1899;USA;USA;F._Orlin_Tremaine
+F. Paul Wilson;1946;USA;USA;F._Paul_Wilson
+Fabrice Colin;1972;FRA;FRA;Fabrice_Colin
+Fausto Fawcett;1957;BRA;BRA;Fausto_Fawcett
+Fausto Maria Martini;1886;ITA;ITA;Fausto_Maria_Martini
+Feldrik Rivat;1978;FRA;FRA;https://kerns.fr
+Felicidad Martínez;1976;ESP;ESP;http://lamiradaextrana.com/
+Felicity Shoulders;2000;USA;USA;https://www.felicityshoulders.com/
+Felix Aderca;1891;ROU;ROU;Felix_Aderca
+Felix C. Gotschalk;1929;USA;USA;Felix_C._Gotschalk
+Felix Gilman;1974;GBR;GBR;Felix_Gilman
+Felix J. Palma;1968;ESP;ESP;F%C3%A9lix_J._Palma
+Felix Thijssen;1933;NLD;NLD;Felix_Thijssen
+Femi Fadugba;1987;TGO;TGO;Femi_Fadugba
+Ferenc Karinthy;1921;HUN;HUN;Ferenc_Karinthy
+Fernando Bonsembiante;1966;ARG;ARG;Fernando_Bonsembiante
+Filippo Tommaso Marinetti;1876;EGY;EGY;Filippo_Tommaso_Marinetti
+Fillìa;1904;ITA;ITA;Fill%C3%ACa
+Fiona Avery;1974;USA;USA;Fiona_Avery
+Fiona Kelleghan;1965;USA;USA;Fiona_Kelleghan
+Fitz James O'Brien;1828;IRL;IRL;Fitz-James_O%27Brien
+Fletcher Pratt;1897;USA;USA;Fletcher_Pratt
+Flora Eldershaw;1897;AUS;AUS;Flora_Eldershaw
+Florence Carpenter Dieudonné;1850;USA;USA;Florence_Carpenter_Dieudonn%C3%A9
+Florence Dixie;1855;GBR;GBR;Lady_Florence_Dixie
+Florence McLandburgh;1850;USA;USA;Florence_McLandburgh
+Forrest J Ackerman;1916;USA;USA;Forrest_J_Ackerman
+Fran Galović;1887;HRV;HUN;Fran_Galovi%C4%87
+Fran Wilde;1972;USA;USA;Fran_Wilde_(author)
+Francesco Verso;1973;ITA;ITA;Francesco_Verso
+Franci Cerar;1945;SVN;SVN;Franci_Cerar
+Francine Allard;1949;CAN;CAN;Francine_Allard
+Francine Pelletier;1959;CAN;CAN;Francine_Pelletier_(writer)
+Francis Berthelot;1946;FRA;FRA;Francis_Berthelot
+Francis G. Rayer;1921;GBR;GBR;Francis_G._Rayer
+Francis Leslie Ashton;1904;GBR;GBR;Francis_Leslie_Ashton
+Francis Worcester Doughty;1850;USA;USA;Francis_W._Doughty
+Francisco Domene;1960;ESP;ESP;Francisco_Domene
+Franco Enna;1921;ITA;ITA;Franco_Enna
+Franco Forte;1962;ITA;ITA;https://www.franco-forte.it/
+Franco Lucentini;1920;ITA;ITA;Franco_Lucentini
+Frank Belknap Long;1901;USA;USA;Frank_Belknap_Long
+Frank Gasperik;1942;USA;USA;Frank_Gasperik
+Frank Herbert;1920;USA;USA;Frank_Herbert
+Frank M. Robinson;1926;USA;USA;Frank_M._Robinson
+Frank R. Paul;1884;AUT;USA;Frank_R._Paul
+Frank R. Stockton;1834;USA;USA;Frank_R._Stockton
+Frank Riley;1915;USA;USA;Frank_Riley_(author)
+Frank Schätzing;1957;DEU;DEU;Frank_Sch%C3%A4tzing
+František Běhounek;1898;CZE;SWE;Franti%C5%A1ek_B%C4%9Bhounek
+František Flos;1864;CZE;CZE;Franti%C5%A1ek_Flos
+František Josef Studnička;1836;CZE;CZE;Franti%C5%A1ek_Josef_Studni%C4%8Dka
+František Langer;1888;CZE;CZE;Franti%C5%A1ek_Langer
+Franz Werfel;1890;CZE;USA;Franz_Werfel
+François Baranger;1970;FRA;FRA;http://www.francois-baranger.com
+François Blais;1973;CAN;CAN;Fran%C3%A7ois_Blais_(writer)
+François Bordes;1919;FRA;FRA;Fran%C3%A7ois_Bordes
+Françoise d'Eaubonne;1920;FRA;FRA;Fran%C3%A7oise_d%27Eaubonne
+Fred Chappell;1936;USA;USA;Fred_Chappell
+Fred D'Ignazio;1949;USA;USA;Fred_D%27Ignazio
+Fred Freiberger;1915;USA;USA;Fred_Freiberger
+Fred Hoyle;1915;GBR;GBR;Fred_Hoyle
+Fred Saberhagen;1930;USA;USA;Fred_Saberhagen
+Fred T. Jane;1865;GBR;GBR;Fred_T._Jane
+Fred Whishaw;1854;RUS;GBR;Fred_Whishaw
+Frederic Pujulà i Vallès;1877;ESP;ESP;Frederic_Pujul%C3%A0_i_Vall%C3%A8s
+Frederick Merrick White;1859;GBR;GBR;Fred_M._White
+Frederik Pohl;1919;USA;USA;Frederik_Pohl
+Fredric Brown;1906;USA;USA;Fredric_Brown
+Friedrich Hecht;1903;AUT;AUT;Friedrich_Hecht
+Frigyes Karinthy;1887;HUN;HUN;Frigyes_Karinthy
+Fritz Leiber;1910;USA;USA;Fritz_Leiber
+Frona Eunice Wait;1859;USA;USA;Frona_Eunice_Wait
+Fuboku Kosakai;1890;JPN;JPN;Kosakai_Fuboku
+Fujio Ishihara;1933;JPN;JPN;Fujio_Ishihara
+Fyodor Berezin;1960;UKR;RUS;Fyodor_Berezin
+Fábio Kabral;1980;BRA;BRA;https://fabiokabral.wordpress.com/
+G. C. Edmondson;1922;USA;USA;G._C._Edmondson
+G. D. Falksen;1982;USA;USA;G._D._Falksen
+G. David Nordley;1947;USA;USA;G._David_Nordley
+G. Harry Stine;1928;USA;USA;G._Harry_Stine
+G. Willow Wilson;1982;USA;USA;G._Willow_Wilson
+Gabriel Bermúdez Castillo;1934;ESP;ESP;Gabriel_Berm%C3%BAdez_Castillo
+Gabriela Bustelo;1962;ESP;ESP;Gabriela_Bustelo
+Gail Carriger;1976;USA;USA;Gail_Carriger
+Gakuto Mikumo;1970;JPN;JPN;Gakuto_Mikumo
+Gardner Dozois;1947;USA;USA;Gardner_Dozois
+Gareth L. Powell;1970;GBR;GBR;Gareth_L._Powell
+Gareth Roberts;1968;GBR;GBR;Gareth_Roberts_(writer)
+Garfield Reeves-Stevens;1953;CAN;CAN;Garfield_Reeves-Stevens
+Garrett Putnam Serviss;1851;USA;USA;Garrett_P._Serviss
+Garry Kilworth;1941;GBR;GBR;Garry_Kilworth
+Garth Nix;1963;AUS;AUS;Garth_Nix
+Gary A. Braunbeck;1960;USA;USA;Gary_A._Braunbeck
+Gary Crew;1947;AUS;AUS;Gary_Crew
+Gary Gibson;1965;GBR;GBR;Gary_Gibson_(author)
+Gary Gygax;1938;USA;USA;Gary_Gygax
+Gary Jennings;1928;USA;USA;Gary_Jennings_(author)
+Gary K. Wolf;1941;USA;USA;Gary_K._Wolf
+Gary K. Wolfe;1946;USA;USA;Gary_K._Wolfe
+Gary L. Bennett;1940;USA;USA;Gary_L._Bennett
+Gary Russell;1963;GBR;GBR;Gary_Russell
+Gaston de Pawlowski;1874;FRA;FRA;Gaston_de_Pawlowski
+Gautam Bhatia;1988;GBR;GBR;Gautam_Bhatia_(lawyer)
+Gavin Thorpe;1974;GBR;GBR;Gavin_Thorpe
+Geary Gravel;1951;USA;USA;Geary_Gravel
+Ged Maybury;1953;NZL;NZL;Ged_Maybury
+Gene Brewer;1937;USA;USA;Gene_Brewer
+Gene DeWeese;1934;USA;USA;Gene_DeWeese
+Gene Roddenberry;1921;USA;USA;Gene_Roddenberry
+Gene Wolfe;1931;USA;USA;Gene_Wolfe
+Genese Davis;1984;USA;USA;Genese_Davis
+Gennady Gor;1907;RUS;RUS;Gennady_Gor
+Gennady Prashkevich;1941;RUS;RUS;Gennadiy_Prashkevich
+Genrich Altshuller;1926;UZB;RUS;Genrikh_Altshuller
+Gentry Lee;1942;USA;USA;Gentry_Lee
+Geoff Nelder;1947;DEU;GBR;Geoff_Nelder
+Geoff Ryman;1951;CAN;CAN;Geoff_Ryman
+Geoffrey A. Landis;1955;USA;USA;Geoffrey_A._Landis
+Geoffrey Household;1900;GBR;GBR;Geoffrey_Household
+Geoffrey Hoyle;1941;GBR;GBR;Geoffrey_Hoyle
+Geoffrey Maloney;1956;AUS;AUS;Geoffrey_Maloney
+Geoffrey Orme;1904;GBR;GBR;Geoffrey_Orme
+Geoffrey Simmons;1943;USA;USA;Geoffrey_Simmons
+Geoffrey Thorne;1970;USA;USA;Geoffrey_Thorne
+George Adamski;1891;POL;USA;George_Adamski
+George Alec Effinger;1947;USA;USA;George_Alec_Effinger
+George Allan England;1877;USA;USA;George_Allan_England
+George Anania;1941;ROU;ROU;George_Anania
+George Clayton Johnson;1929;USA;USA;George_Clayton_Johnson
+George Edward Pendray;1901;USA;USA;George_Edward_Pendray
+George Fielding Eliot;1894;USA;USA;George_Fielding_Eliot
+George Goodchild;1888;GBR;GBR;George_Goodchild
+George Griffith;1857;GBR;GBR;George_Griffith
+George H. Scithers;1929;USA;USA;George_H._Scithers
+George H. Smith;1922;USA;USA;George_H._Smith_(fiction_author)
+George Henry Weiss;1898;CAN;USA;George_Henry_Weiss
+George Hunt Williamson;1926;USA;USA;George_Hunt_Williamson
+George Johansson;1946;SWE;SWE;http://www.georgejohansson.se
+George Langelaan;1908;FRA;FRA;George_Langelaan
+George Lowther;1913;USA;USA;George_Lowther_(writer)
+George Lucas;1944;USA;USA;George_Lucas
+George Mann;1978;GBR;GBR;George_Mann_(writer)
+George Maximov;1979;RUS;RUS;http://yurijmaximov.wix.com/pravoslavie
+George McIver;1859;GBR;GBR;George_McIver
+George McLeod Winsor;1856;GBR;GBR;George_McLeod_Winsor
+George Nader;1921;USA;USA;George_Nader
+George O. Smith;1911;USA;USA;George_O._Smith
+George Papp;1916;USA;USA;George_Papp
+George R. R. Martin;1948;USA;USA;George_R._R._Martin
+George R. Stewart;1895;USA;USA;George_R._Stewart
+George Schuyler;1895;USA;USA;George_Schuyler
+George Tomkyns Chesney;1830;USA;USA;George_Chesney
+George Turner;1916;AUS;AUS;George_Turner_(writer)
+George Wyatt Proctor;1946;USA;USA;George_Wyatt_Proctor
+George Yury Right;1972;RUS;USA;George_Yury_Right
+George Zebrowski;1945;AUT;USA;George_Zebrowski
+Georges Foveau;1964;FRA;FRA;http://plumesdefoveau.free.fr
+Georges-Jean Arnaud;1928;FRA;FRA;Georges-Jean_Arnaud
+Gerald Glaskin;1923;AUS;AUS;Gerald_Glaskin
+Gerald Heard;1889;GBR;GBR;Gerald_Heard
+Gerald Kersh;1911;GBR;GBR;Gerald_Kersh
+Gerald Messadié;1931;EGY;FRA;Gerald_Messadi%C3%A9
+Geraldine McCaughrean;1951;GBR;GBR;Geraldine_McCaughrean
+Gerardo Horacio Porcayo;1966;MEX;MEX;Gerardo_Horacio_Porcayo
+Gerben Graddesz Hellinga;1938;NLD;NLD;Gerben_Hellinga_Jr
+Gerhard Branstner;1927;DEU;DEU;Gerhard_Branstner
+Gerry Conway;1952;USA;USA;Gerry_Conway
+Gerry Davis;1930;GBR;GBR;Gerry_Davis_(screenwriter)
+Gerry Turner;1921;USA;USA;Gerry_Turner
+Gerson Lodi-Ribeiro;1960;BRA;BRA;http://alternative-highwayman.blogspot.com/
+Gert Prokop;1932;DEU;DEU;Gert_Prokop
+Gertrude Barrows Bennett;1884;USA;USA;Gertrude_Barrows_Bennett
+Gertrude Friedberg;1908;USA;USA;Gertrude_Friedberg
+Giampietro Stocco;1961;ITA;ITA;Giampietro_Stocco
+Gian Danton;1971;BRA;BRA;http://baugrafipar.blogspot.com/
+Gianfranco De Turris;1944;ITA;ITA;Gianfranco_de_Turris
+Gianluigi Zuddas;1943;ITA;ITA;Gianluigi_Zuddas
+Gib Mihăescu;1894;ROU;ROU;Gib_Mih%C4%83escu
+Gilbert Gallerne;1954;FRA;FRA;http://www.gilbert-gallerne.com/
+Gilbert Hottois;1946;BEL;BEL;Gilbert_Hottois
+Gilberto Camargo;1963;BRA;BRA;http://jadhyguerreira.blogspot.com/
+Gilles Servat;1945;FRA;FRA;Gilles_Servat
+Gillian Bradshaw;1956;USA;USA;Gillian_Bradshaw
+Gillian Polack;1961;AUS;AUS;Gillian_Polack
+Ginjer Buchanan;1944;USA;USA;Ginjer_Buchanan
+Ginn Hale;1968;USA;USA;Ginn_Hale
+Giorgio De Maria;1924;ITA;ITA;Giorgio_De_Maria
+Giorgio Scerbanenco;1911;UKR;ITA;Giorgio_Scerbanenco
+Giorgos Balanos;1944;GRC;GRC;Georgios_Balanos
+Giovanni Papini;1881;ITA;ITA;Giovanni_Papini
+Gisbert Haefs;1950;DEU;DEU;Gisbert_Haefs
+Giuseppe O. Longo;1941;ITA;ITA;http://www2.units.it/giuseppelongo/
+Giustino Ferri;1856;ITA;ITA;Giustino_Ferri
+Glen A. Larson;1937;USA;USA;Glen_A._Larson
+Glen Cook;1944;USA;USA;Glen_Cook
+Glenda Goertzen;1967;CAN;CAN;Glenda_Goertzen
+Glenn Hauman;1969;USA;USA;Glenn_Hauman
+Gokulananda Mahapatra;1922;IND;IND;Gokulananda_Mahapatra
+Goldeen Ogawa;1987;USA;USA;https://www.goldeenogawa.com/about/
+Gordon Dahlquist;1961;USA;USA;Gordon_Dahlquist
+Gordon Eklund;1945;USA;USA;Gordon_Eklund
+Gordon Korman;1963;CAN;USA;Gordon_Korman
+Gordon R. Dickson;1923;CAN;USA;Gordon_R._Dickson
+Gordon Williams;1934;GBR;GBR;Gordon_Williams_(writer)
+Gore Vidal;1925;USA;USA;Gore_Vidal
+Gorō Masaki;1957;JPN;JPN;Gor%C5%8D_Masaki
+Graal Arelsky;1888;RUS;RUS;Graal_Arelsky
+Graeme Shimmin;1967;GBR;GBR;Graeme_Shimmin
+Graham Diamond;1949;GBR;USA;Graham_Diamond
+Graham Joyce;1954;GBR;GBR;Graham_Joyce
+Graham McNeill;1971;GBR;GBR;Graham_McNeill
+Grania Davis;1943;USA;USA;Grania_Davis
+Grant Allen;1848;CAN;USA;Grant_Allen
+Grant Callin;1941;USA;USA;Grant_Callin
+Grant Morrison;1960;GBR;GBR;Grant_Morrison
+Greg Bear;1951;USA;USA;Greg_Bear
+Greg Beatty;1901;USA;USA;Greg_Beatty
+Greg Bennett;1950;USA;USA;Greg_Bennett_(writer)
+Greg Costikyan;1959;USA;USA;Greg_Costikyan
+Greg Cox;1959;USA;USA;Greg_Cox_(writer)
+Greg Egan;1961;AUS;AUS;Greg_Egan
+Greg Farshtey;1965;USA;USA;Greg_Farshtey
+Greg van Eekhout;1967;USA;USA;Greg_van_Eekhout
+Gregory Benford;1941;USA;USA;Gregory_Benford
+Gregory Frost;1951;USA;USA;Gregory_Frost
+Gregory Keyes;1963;USA;USA;Gregory_Keyes
+Gregory Norman Bossert;1962;USA;USA;Gregory_Norman_Bossert
+Grigol Abashidze;1914;GEO;GEO;Grigol_Abashidze
+Grigorii Grebnev;1902;UKR;UKR;Grigorii_Grebnev
+Grigoriy Demidovtsev;1960;RUS;RUS;Grigoriy_Demidovtsev
+Grigory Adamov;1886;UKR;UKR;Grigory_Adamov
+Groff Conklin;1904;USA;USA;Groff_Conklin
+Gudrun Pausewang;1928;CZE;DEU;Gudrun_Pausewang
+Guido Gozzano;1883;ITA;ITA;Guido_Gozzano
+Guido Morselli;1912;ITA;ITA;Guido_Morselli
+Guillaume Suzanne;1981;FRA;FRA;http://guillaumesuzanne.blogspot.fr/
+Guram Panjikidze;1933;GEO;GEO;Guram_Panjikidze
+Gustav Meyrink;1868;AUT;AUT;Gustav_Meyrink
+Gustave Le Rouge;1867;FRA;FRA;Gustave_Le_Rouge
+Gustavo Reisoli;1887;ITA;ITA;Gustavo_Reisoli
+Guy Adams;1976;GBR;GBR;Guy_Adams
+Guy Anthony De Marco;1963;USA;USA;Guy_Anthony_De_Marco
+Guy Boothby;1867;AUS;AUS;Guy_Boothby
+Guy de Téramond;1869;FRA;FRA;Guy_de_T%C3%A9ramond
+Guy Endore;1900;USA;USA;Guy_Endore
+Guy Hasson;1973;ISR;ISR;Guy_Hasson
+Gwyneth Jones;1952;GBR;GBR;Gwyneth_Jones_(novelist)
+György Dragomán;1973;ROU;HUN;Gy%C3%B6rgy_Dragom%C3%A1n
+György Kulin;1905;ROU;HUN;Gy%C3%B6rgy_Kulin
+Gábor Képes;1980;HUN;HUN;http://konyvtartudomany.elte.hu/kepes/
+Gérard Klein;1937;FRA;FRA;G%C3%A9rard_Klein
+Günther Krupkat;1905;DEU;DEU;G%C3%BCnther_Krupkat
+H. A. Hargreaves;1928;CAN;CAN;H._A._Hargreaves
+H. B. Marriott Watson;1863;AUS;AUS;H._B._Marriott_Watson
+H. Beam Piper;1904;USA;USA;H._Beam_Piper
+H. Bedford-Jones;1887;CAN;CAN;Henry_Bedford-Jones
+H. Chandler Elliott;1906;CAN;USA;H._Chandler_Elliott
+H. G. Francis;1936;DEU;DEU;H._G._Francis
+H. G. Wells;1866;GBR;GBR;H._G._Wells
+H. H. Hollis;1921;USA;USA;H._H._Hollis
+H. L. Gold;1914;CAN;CAN;H._L._Gold
+H. M. Hoover;1935;USA;USA;H._M._Hoover
+H. P. Lovecraft;1890;USA;USA;H._P._Lovecraft
+H. Percy Blanchard;1862;CAN;CAN;H._Percy_Blanchard
+H. Rider Haggard;1856;GBR;GBR;H._Rider_Haggard
+Haden Blackman;1973;USA;USA;Haden_Blackman
+Hal Clement;1922;USA;USA;Hal_Clement
+Hal Colebatch;1945;AUS;AUS;Hal_Colebatch_(author)
+Hal Duncan;1971;GBR;GBR;Hal_Duncan
+Hallvard Sandnes;1893;NOR;NOR;Hallvard_Sandnes
+Halyna Pahutiak;1958;UKR;UKR;Halyna_Pahutiak
+Han Song;1965;CHN;CHN;Han_Song_(writer)
+Haneko Takayama;1975;JPN;JPN;Haneko_Takayama
+Hanna Bervoets;1984;NLD;NLD;https://hannabervoets.com/
+Hannah Louise Shearer;1945;USA;USA;Hannah_Louise_Shearer
+Hannelore Valencak;1929;AUT;AUT;Hannelore_Valencak
+Hannes Alfvén;1908;SWE;SWE;Hannes_Alfv%C3%A9n
+Hannes Bok;1914;USA;USA;Hannes_Bok
+Hannu Rajaniemi;1978;FIN;FIN;Hannu_Rajaniemi
+Hans Dominik;1872;DEU;DEU;Hans_Dominik_(writer)
+Hans Joachim Alpers;1943;DEU;DEU;Hans_Joachim_Alpers
+Hans Kneifel;1936;POL;DEU;Hanns_Kneifel
+Hans Stefan Santesson;1914;FRA;SWE;Hans_Stefan_Santesson
+Hao Jingfang;1984;CHN;CHN;Hao_Jingfang
+Harald Alfsen;1873;NOR;NOR;Harald_Alfsen
+Harl Vincent;1893;USA;USA;Harl_Vincent
+Harlan Ellison;1934;USA;USA;Harlan_Ellison
+Harold L. Goodwin;1914;USA;USA;Harold_L._Goodwin
+Harry Bates;1900;USA;USA;Harry_Bates_(writer)
+Harry Gore Bishop;1874;USA;USA;Harry_Gore_Bishop
+Harry Harrison;1924;USA;USA;Harry_Harrison_(writer)
+Harry Martinson;1904;SWE;SWE;Harry_Martinson
+Harry Turtledove;1949;USA;USA;Harry_Turtledove
+Haruka Takachiho;1951;JPN;JPN;Haruka_Takachiho
+Haruki Murakami;1949;JPN;JPN;Haruki_Murakami
+Hayden Howard;1925;USA;USA;Hayden_Howard
+Hayford Peirce;1942;USA;USA;Hayford_Peirce
+He Xi;1971;CHN;CHN;He_Xi
+Heather Spears;1934;CAN;CAN;Heather_Spears
+Heidrun Jänchen;1965;DEU;DEU;Heidrun_J%C3%A4nchen
+Heike Hohlbein;1954;DEU;DEU;Heike_Hohlbein
+Heikki Oja;1945;FIN;FIN;Heikki_Oja
+Helen Lowe;1961;NZL;NZL;Helen_Lowe
+Helen Raynor;1972;GBR;GBR;Helen_Raynor
+Henri René Guieu;1926;FRA;FRA;Henri_Ren%C3%A9_Guieu
+Henri Stahl;1877;ROU;ROU;Henri_Stahl
+Henri Vernes;1918;BEL;BEL;Henri_Vernes
+Henrietta Rose-Innes;1971;ZAF;ZAF;Henrietta_Rose-Innes
+Henry Darger;1892;USA;USA;Henry_Darger
+Henry Gee;1962;GBR;GBR;Henry_Gee
+Henry Hasse;1913;USA;USA;Henry_Hasse
+Henry J. Leir;1900;POL;USA;Henry_J._Leir
+Henry Kuttner;1915;USA;USA;Henry_Kuttner
+Henry Lincoln;1930;GBR;GBR;Henry_Lincoln
+Henry Olerich;1851;USA;USA;Henry_Olerich
+Henry Slesar;1927;USA;USA;Henry_Slesar
+Herbert Lieberman;1933;USA;USA;Herbert_Lieberman
+Herbert W. Franke;1927;AUT;AUT;Herbert_W._Franke
+Herbert Wright;1947;USA;USA;Herbert_Wright_(producer)
+Herman George Scheffauer;1878;USA;USA;Herman_George_Scheffauer
+Herman Wouk;1915;USA;USA;Herman_Wouk
+Hermann Kasack;1896;DEU;DEU;Hermann_Kasack
+Hermína Franková;1928;CZE;CZE;https://herminafrankova.com/
+Herta Laipaik;1921;EST;EST;Herta_Laipaik
+Hideaki Sena;1968;JPN;JPN;Hideaki_Sena
+Hideyuki Kikuchi;1949;JPN;JPN;Hideyuki_Kikuchi
+Hilari Bell;1958;USA;USA;Hilari_Bell
+Hilary Bailey;1936;GBR;GBR;Hilary_Bailey
+Hilbert Schenck;1926;USA;USA;Hilbert_Schenck
+Hiroe Suga;1963;JPN;JPN;Hiroe_Suga
+Hiromi Goto;1966;JPN;CAN;Hiromi_Goto
+Hiromi Kawakami;1958;JPN;JPN;Hiromi_Kawakami
+Hiroshi Sakurazaka;1970;JPN;JPN;Hiroshi_Sakurazaka
+Hirotaka Tobi;1960;JPN;JPN;Hirotaka_Tobi
+Hiroyuki Morioka;1962;JPN;JPN;Hiroyuki_Morioka
+Hiroyuki Namba;1953;JPN;JPN;Hiroyuki_Namba
+Hisashi Inoue;1934;JPN;JPN;Hisashi_Inoue
+Holly Lisle;1960;USA;USA;Holly_Lisle
+Holly Phillips;1969;CAN;CAN;Holly_Phillips
+Homer Eon Flint;1888;USA;USA;Homer_Eon_Flint
+Homer Hickam;1943;USA;USA;Homer_Hickam
+Homer Nearing;1915;USA;USA;Homer_Nearing
+Howard Browne;1908;USA;USA;Howard_Browne
+Howard Fast;1914;USA;USA;Howard_Fast
+Howard L. Myers;1930;USA;USA;Howard_L._Myers
+Howard Overman;1972;GBR;GBR;Howard_Overman
+Howard Tayler;1968;USA;USA;Howard_Tayler
+Howard V. Hendrix;1959;USA;USA;Howard_V._Hendrix
+Howard Waldrop;1946;USA;USA;Howard_Waldrop
+Howard Wandrei;1909;USA;USA;Howard_Wandrei
+Huang Yi;1952;CHN;CHN;Wong_Yik
+Hugh B. Cave;1910;GBR;GBR;Hugh_B._Cave
+Hugh Howey;1975;USA;USA;Hugh_Howey
+Hugh Kingsmill;1889;GBR;GBR;Hugh_Kingsmill
+Hugh MacColl;1837;GBR;GBR;Hugh_MacColl
+Hugo Correa;1926;CHL;CHL;Hugo_Correa
+Hugo Gernsback;1884;LUX;USA;Hugo_Gernsback
+Humayun Ahmed;1948;BGD;PAK;Humayun_Ahmed
+Hōsuke Nojiri;1961;JPN;JPN;H%C5%8Dsuke_Nojiri
+Iain Banks;1954;GBR;GBR;Iain_Banks
+Ian Briggs;1958;GBR;GBR;Ian_Briggs
+Ian Doescher;1977;USA;USA;Ian_Doescher
+Ian Irvine;1950;AUS;AUS;Ian_Irvine
+Ian Marter;1944;GBR;GBR;Ian_Marter
+Ian McDonald;1960;GBR;GBR;Ian_McDonald_(British_author)
+Ian McHugh;1901;AUS;AUS;Ian_McHugh
+Ian R. MacLeod;1956;GBR;GBR;Ian_R._MacLeod
+Ian Stewart;1945;GBR;GBR;Ian_Stewart_(mathematician)
+Ian Stuart Black;1915;GBR;GBR;Ian_Stuart_Black
+Ian Tregillis;1973;USA;USA;Ian_Tregillis
+Ian Wallace;1912;USA;USA;Ian_Wallace_(author)
+Ian Watson;1943;GBR;ESP;Ian_Watson_(author)
+Ido Gendel;1977;ISR;ISR;https://www.idogendel.com/
+Ieronim Yasinsky;1850;UKR;UKR;Ieronim_Yasinsky
+Iginio Ugo Tarchetti;1839;ITA;ITA;Iginio_Ugo_Tarchetti
+Ignacio de Loyola Brandao;1936;BRA;BRA;Ignacio_de_Loyola_Brand%C3%A3o
+Ignacio Padilla;1968;MEX;MEX;Ignacio_Padilla
+Ignatius Loyola Donnelly;1831;USA;USA;Ignatius_L._Donnelly
+Ignát Herrmann;1854;CZE;CZE;Ign%C3%A1t_Herrmann
+Igor Rossokhovatsky;1929;UKR;UKR;Igor_Rosokhovatski
+Ilona Hegedűs;2000;USA;USA;Ilona_Heged%C5%B1s
+Ilsa J. Bick;1957;USA;USA;Ilsa_J._Bick
+Ilya Ilf;1897;UKR;RUS;Ilya_Ilf
+Indrek Hargla;1970;EST;EST;Indrek_Hargla
+Inez Haynes Irwin;1873;BRA;USA;Inez_Haynes_Irwin
+Ingar Knudtsen;1944;NOR;NOR;Ingar_Knudtsen
+Inge Eriksen;1935;DNK;DNK;Inge_Eriksen
+Ion Hobana;1931;ROU;ROU;Ion_Hobana
+Ionuț Caragea;1975;ROU;ROU;Ionu%C8%9B_Caragea
+Ippolito Nievo;1831;ITA;ITA;Ippolito_Nievo
+Ira Levin;1929;USA;USA;Ira_Levin
+Irmgard Keun;1905;DEU;DEU;Irmgard_Keun
+Irvine Welsh;1958;GBR;GBR;Irvine_Welsh
+Irving Wallace;1916;USA;USA;Irving_Wallace
+Isaac Asimov;1920;RUS;USA;Isaac_Asimov
+Isabel Yap;1990;PHL;PHL;Isabel_Yap
+Ishmael Reed;1938;USA;USA;Ishmael_Reed
+Isidore Haiblum;1935;USA;USA;Isidore_Haiblum
+Islwyn Ffowc Elis;1924;GBR;GBR;Islwyn_Ffowc_Elis
+Issui Ogawa;1975;JPN;JPN;Issui_Ogawa
+István Nemere;1944;HUN;HUN;Istv%C3%A1n_Nemere
+Iva Hercíková;1935;CZE;CZE;Iva_Herc%C3%ADkov%C3%A1
+Ivan Vyskočil;1929;CZE;CZE;http://www.ivanvyskocil.cz
+Ivan Yefremov;1908;RUS;RUS;Ivan_Yefremov
+Izuki Kogyoku;1984;JPN;JPN;Izuki_Kogyoku
+J. A. Konrath;1970;USA;USA;J._A._Konrath
+J. A. Lawrence;1934;USA;USA;J._A._Lawrence
+J. A. Pitts;1965;USA;USA;https://www.japitts.net/
+J. Allan Dunn;1872;GBR;GBR;J._Allan_Dunn
+J. Andrew Keith;1958;USA;USA;J._Andrew_Keith
+J. B. Priestley;1894;GBR;GBR;J._B._Priestley
+J. C. Hall;1964;CAN;CAN;J._C._Hall_(author)
+J. Francis McComas;1910;USA;USA;J._Francis_McComas
+J. G. Ballard;1930;CHN;GBR;J._G._Ballard
+J. Grant Thiessen;1947;CAN;CAN;J._Grant_Thiessen
+J. Hunter Holly;1932;USA;USA;J._Hunter_Holly
+J. J. Abrams;1966;USA;USA;J._J._Abrams
+J. M. Beraldo;1979;BRA;BRA;http://jmberaldo.com/
+J. Michael Straczynski;1954;USA;USA;J._Michael_Straczynski
+J. Neil Schulman;1953;USA;USA;J._Neil_Schulman
+J. Pekka Mäkelä;1962;FIN;FIN;http://www.yrttimaa.net/
+J. Q. Louison;1952;FRA;FRA;J._Q._Louison
+J. Rodolfo Wilcock;1919;ARG;ITA;J._Rodolfo_Wilcock
+J. Steven York;1957;USA;USA;J._Steven_York
+J. T. Edson;1928;GBR;GBR;J._T._Edson
+J. T. McIntosh;1925;GBR;GBR;J._T._McIntosh
+J.-H. Rosny jeune;1859;BEL;BEL;J.-H._Rosny_jeune
+J.M. Frey;1982;CAN;CAN;J.M._Frey
+Jaan Kaplinski;1941;EST;EST;Jaan_Kaplinski
+Jaap Boekestein;1968;NLD;NLD;http://www.jaapboekestein.com/
+Jacek Dukaj;1974;POL;POL;Jacek_Dukaj
+Jacek Inglot;1962;POL;POL;Jacek_Inglot
+Jacek Sawaszkiewicz;1947;POL;POL;Jacek_Sawaszkiewicz
+Jack Bechdolt;1884;USA;USA;Jack_Bechdolt
+Jack C. Haldeman II;1941;USA;USA;Jack_C._Haldeman_II
+Jack Cady;1932;USA;USA;Jack_Cady
+Jack Coggins;1911;GBR;USA;Jack_Coggins
+Jack Cohen;1933;GBR;GBR;Jack_Cohen_(biologist)
+Jack Dann;1945;USA;USA;Jack_Dann
+Jack Finney;1911;USA;USA;Jack_Finney
+Jack Heath;1986;AUS;AUS;Jack_Heath
+Jack L. Chalker;1944;USA;USA;Jack_L._Chalker
+Jack London;1876;USA;USA;Jack_London
+Jack McDevitt;1935;USA;USA;Jack_McDevitt
+Jack Sharkey;1931;USA;USA;Jack_Sharkey_(writer)
+Jack Skillingstead;1955;USA;USA;Jack_Skillingstead
+Jack Vance;1916;USA;USA;Jack_Vance
+Jack Williamson;1908;USA;USA;Jack_Williamson
+Jack Wodhams;1931;GBR;AUS;Jack_Wodhams
+Jack Womack;1956;USA;USA;Jack_Womack
+Jacqueline Lichtenberg;1942;USA;USA;Jacqueline_Lichtenberg
+Jacqueline Mayerhofer;1992;AUT;AUT;http://www.jacquelinemayerhofer.at/
+Jacqueline Montemurri;1969;DEU;DEU;https://jacquelinemontemurri.blogspot.com/
+Jacqueline Rayner;2000;GBR;GBR;Jacqueline_Rayner
+Jacques Barbéri;1954;FRA;FRA;http://www.lewub.com/barberi
+Jacques Bergier;1912;UKR;POL;Jacques_Bergier
+Jacques Goimard;1934;FRA;FRA;Jacques_Goimard
+Jacques Sadoul;1934;FRA;FRA;Jacques_Sadoul_(writer)
+Jacques Spitz;1896;DZA;FRA;Jacques_Spitz
+Jacques Sternberg;1923;BEL;BEL;Jacques_Sternberg
+Jacques Vallée;1939;FRA;USA;Jacques_Vall%C3%A9e
+Jacques Van Herp;1923;BEL;BEL;Jacques_Van_Herp
+Jadwiga Łuszczewska;1834;POL;POL;Jadwiga_%C5%81uszczewska
+Jakob Arjouni;1964;DEU;DEU;Jakob_Arjouni
+Jakub Arbes;1840;CZE;CZE;Jakub_Arbes
+James A. Moore;1965;USA;USA;James_A._Moore
+James Alan Gardner;1955;CAN;CAN;James_Alan_Gardner
+James B. Johnson;1944;USA;USA;James_B._Johnson
+James Blaylock;1950;USA;USA;James_Blaylock
+James Blish;1921;USA;USA;James_Blish
+James Branch Cabell;1879;USA;USA;James_Branch_Cabell
+James Cambias;1966;USA;USA;James_Cambias
+James Cooke Brown;1921;PHL;USA;James_Cooke_Brown
+James Cooray Smith;1978;GBR;GBR;James_Cooray_Smith
+James Creed Meredith;1875;IRL;IRL;James_Creed_Meredith
+James D. Long;1948;USA;USA;James_D._Long
+James D. Macdonald;1954;USA;USA;James_D._Macdonald
+James Dashner;1972;USA;USA;James_Dashner
+James De Mille;1833;CAN;CAN;James_De_Mille
+James Doohan;1920;CAN;CAN;James_Doohan
+James Erwin;1974;USA;USA;James_Erwin_(author)
+James Follett;1939;GBR;GBR;James_Follett
+James Frey;1969;USA;USA;James_Frey
+James Goss;1974;GBR;GBR;James_Goss_(producer)
+James Gunn;1923;USA;USA;James_E._Gunn
+James H. Schmitz;1911;DEU;USA;James_H._Schmitz
+James Herbert;1943;GBR;GBR;James_Herbert
+James Hilton;1900;GBR;GBR;James_Hilton_(novelist)
+James Howard Kunstler;1948;USA;USA;James_Howard_Kunstler
+James Kahn;1947;USA;USA;James_Kahn
+James Kunetka;1944;USA;USA;James_Kunetka
+James L. Halperin;1952;USA;USA;James_L._Halperin
+James Lovegrove;1965;GBR;GBR;James_Lovegrove
+James Lovelock;1919;GBR;GBR;James_Lovelock
+James Luceno;1947;GBR;USA;James_Luceno
+James Maxey;1978;USA;USA;James_Maxey
+James Miller;1976;GBR;GBR;James_Miller_(novelist)
+James Moran;1972;USA;GBR;James_Moran_(writer)
+James Morgan Walsh;1897;AUS;AUS;James_Morgan_Walsh
+James Morrow;1947;USA;USA;James_K._Morrow
+James P. Hogan;1941;GBR;GBR;James_P._Hogan_(writer)
+James Patrick Kelly;1951;USA;USA;James_Patrick_Kelly
+James Richardson-Brown;1982;GBR;GBR;James_Richardson-Brown
+James Rollins;1961;USA;USA;James_Rollins
+James Sullivan;1974;USA;USA;https://www.jamessullivan.de/
+James Swallow;1970;GBR;GBR;James_Swallow
+James Van Pelt;1954;USA;USA;James_Van_Pelt
+James White;1928;GBR;GBR;James_White_(author)
+Jamie Anderson;1985;GBR;GBR;Jamie_Anderson_(producer)
+Jamie Lackey;1984;USA;USA;http://www.jamielackey.com/
+Jamie Mathieson;1970;GBR;GBR;Jamie_Mathieson
+Jamil Nasir;1955;USA;USA;Jamil_Nasir
+Jan Burian;1952;CZE;CZE;Jan_Burian
+Jan Howard Finder;1939;USA;USA;Jan_Howard_Finder
+Jan Kotouč;1987;CZE;CZE;Jan_Kotou%C4%8D
+Jan Kuipers;1953;NLD;NLD;http://people.zeelandnet.nl/jjbkuipers/
+Jan Křesadlo;1926;CZE;CZE;Jan_K%C5%99esadlo
+Jan Matzal;1881;CZE;CZE;Jan_Matzal_Troska
+Jan Rejsa;1886;CZE;CZE;Jan_Rejsa
+Jan Trefulka;1929;CZE;CZE;Jan_Trefulka
+Jan Weiss;1892;CZE;CZE;Jan_Weiss
+Jana Moravcová;1937;CZE;CZE;Jana_Moravcov%C3%A1
+Jana Plauchová;1987;SVK;SVK;Jana_Plauchov%C3%A1
+Jane Fancher;1952;USA;USA;Jane_Fancher
+Jane Gaskell;1941;GBR;GBR;Jane_Gaskell
+Jane Jensen;1963;USA;USA;Jane_Jensen_(video_game_designer)
+Jane Lindskold;1962;USA;USA;Jane_Lindskold
+Jane Rice;1913;USA;USA;Jane_Rice
+Jane Roberts;1929;USA;USA;Jane_Roberts
+Jane Wells Webb Loudon;1807;GBR;GBR;Jane_Loudon
+Jane Yolen;1939;USA;USA;Jane_Yolen
+Janeen Webb;1951;AUS;AUS;Janeen_Webb
+Janet Asimov;1926;USA;USA;Janet_Asimov
+Janet Hetherington;1955;CAN;CAN;Janet_Hetherington
+Janet Kagan;1946;USA;USA;Janet_Kagan
+Janet Morris;1946;USA;USA;Janet_Morris
+Janette Rallison;1966;USA;USA;Janette_Rallison
+Janis Ian;1951;USA;USA;Janis_Ian
+Janny Wurts;1953;USA;USA;Janny_Wurts
+Janrae Frank;1954;USA;USA;Janrae_Frank
+Jaroslav Havlíček;1896;CZE;CZE;Jaroslav_Havl%C3%AD%C4%8Dek
+Jaroslav Malina;1945;CZE;CZE;Jaroslav_Malina_(anthropologist)
+Jaroslav Mostecký;1963;CZE;CZE;Jaroslav_Mosteck%C3%BD
+Jaroslav Veis;1946;CZE;CZE;Jaroslav_Veis
+Jaroslav Velinský;1932;CZE;CZE;Jaroslav_Velinsk%C3%BD
+Jarosław Grzędowicz;1965;POL;POL;Jaros%C5%82aw_Grz%C4%99dowicz
+Jason Fry;1969;USA;USA;Jason_Fry
+Jason Henderson;1971;USA;USA;Jason_Henderson
+Jason Sanford;1901;USA;USA;Jason_Sanford
+Jason V Brock;1970;USA;USA;Jason_V._Brock
+Jasper Fforde;1961;GBR;GBR;Jasper_Fforde
+Jasper Nicolaisen;1979;DEU;DEU;http://lazermeduza.de/
+Javier Negrete;1964;ESP;ESP;https://javiernegrete.com/
+Jay A. Parry;1950;USA;USA;Jay_A._Parry
+Jay Kristoff;1973;AUS;AUS;Jay_Kristoff
+Jay Lake;1964;TWN;USA;Jay_Lake
+Jay Russell;1961;USA;USA;Jay_Russell_(writer)
+Jay Williams;1914;USA;USA;Jay_Williams_(author)
+Jayant Narlikar;1938;IND;IND;Jayant_Narlikar
+Jayge Carr;1940;USA;USA;Jayge_Carr
+Jayme Lynn Blaschke;1969;USA;USA;Jayme_Lynn_Blaschke
+Jean Amila;1910;FRA;FRA;Jean_Amila
+Jean Christophe Gapdy;1957;FRA;FRA;https://jc.gapdy.fr/
+Jean de La Hire;1878;FRA;FRA;Jean_de_La_Hire
+Jean E. Karl;1927;USA;USA;Jean_E._Karl
+Jean Hougron;1923;FRA;FRA;Jean_Hougron
+Jean Lorrah;1938;USA;USA;Jean_Lorrah
+Jean Marie Stine;1945;USA;USA;Jean_Marie_Stine
+Jean Sutton;1917;USA;USA;Jean_Sutton
+Jean-Baptiste Baronian;1942;BEL;BEL;Jean-Baptiste_Baronian
+Jean-Claude Albert-Weil;1933;FRA;FRA;http://albert-weil.blogspot.fr/
+Jean-Claude Dunyach;1957;FRA;FRA;Jean-Claude_Dunyach
+Jean-Louis Trudel;1967;CAN;CAN;Jean-Louis_Trudel
+Jean-Marc Ligny;1956;FRA;FRA;Jean-Marc_Ligny
+Jean-Marc Lofficier;1954;FRA;FRA;Jean-Marc_Lofficier
+Jean-Pierre Andrevon;1937;FRA;FRA;Jean-Pierre_Andrevon
+Jean-Pierre Garen;1932;FRA;FRA;Jean-Pierre_Garen
+Jean-Pierre Guillet;1953;CAN;CAN;Jean-Pierre_Guillet
+Jean-Pierre Hubert;1941;FRA;FRA;Jean-Pierre_Hubert
+Jean-Pierre Ohl;1959;FRA;FRA;Jean-Pierre_Ohl
+Jeanette Winterson;1959;GBR;GBR;Jeanette_Winterson
+Jeanne Cavelos;1960;USA;USA;Jeanne_Cavelos
+Jeanne DuPrau;1944;USA;USA;Jeanne_DuPrau
+Jeanne Kalogridis;1954;USA;USA;Jeanne_Kalogridis
+Jeanne Robinson;1948;USA;CAN;Jeanne_Robinson
+Jeff Burk;1984;USA;USA;Jeff_Burk
+Jeff Grubb;1957;USA;USA;Jeff_Grubb
+Jeff Long;1951;USA;USA;Jeff_Long_(writer)
+Jeff Noon;1957;GBR;GBR;Jeff_Noon
+Jeff Sampson;1982;DEU;USA;Jeff_Sampson
+Jeff Somers;1971;USA;USA;Jeff_Somers
+Jeff Sutton;1913;USA;USA;Jeff_Sutton
+Jeff VanderMeer;1968;USA;USA;Jeff_VanderMeer
+Jeffrey Carver;1949;USA;USA;Jeffrey_Carver
+Jeffrey Ford;1955;USA;USA;Jeffrey_Ford
+Jeffrey Overstreet;1971;USA;USA;Jeffrey_Overstreet
+Jeffrey Thomas;1957;USA;USA;Jeffrey_Thomas_(writer)
+Jennifer Armentrout;1980;USA;USA;Jennifer_L._Armentrout
+Jennifer Benkau;1980;DEU;DEU;http://www.jbenkau.bplaced.de/vita.html
+Jennifer Brozek;1970;USA;USA;Jennifer_Brozek
+Jennifer Pelland;2000;USA;USA;Jennifer_Pelland
+Jennifer Roberson;1953;USA;USA;Jennifer_Roberson
+Jenny Colgan;1972;GBR;GBR;Jenny_Colgan
+Jenő Rejtő;1905;HUN;HUN;Jen%C5%91_Rejt%C5%91
+Jeremy Leven;1941;USA;USA;Jeremy_Leven
+Jeremy Robinson;1974;USA;USA;Jeremy_Robinson
+Jeri Taylor;1938;USA;USA;Jeri_Taylor
+Jerome B. Holgate;1812;USA;USA;Jerome_B._Holgate
+Jerome Bixby;1923;USA;USA;Jerome_Bixby
+Jerry Ahern;1946;USA;USA;Jerry_Ahern
+Jerry Oltion;1957;USA;USA;Jerry_Oltion
+Jerry Pournelle;1933;USA;USA;Jerry_Pournelle
+Jerry Robinson;1922;USA;USA;Jerry_Robinson
+Jerry Sohl;1913;USA;USA;Jerry_Sohl
+Jerry Yulsman;1924;USA;USA;Jerry_Yulsman
+Jerzy Broszkiewicz;1922;UKR;POL;Jerzy_Broszkiewicz
+Jerzy Żuławski;1874;POL;POL;Jerzy_%C5%BBu%C5%82awski
+Jesco von Puttkamer;1933;DEU;USA;Jesco_von_Puttkamer
+Jessica McHugh;1982;USA;USA;Jessica_McHugh
+Jessie Douglas Kerruish;1884;GBR;GBR;Jessie_Douglas_Kerruish
+Jesús de Aragón;1893;ESP;ESP;Jes%C3%BAs_de_Arag%C3%B3n
+JG Faherty;1961;USA;USA;JG_Faherty
+Jim Aikin;1948;USA;USA;Jim_Aikin
+Jim Baen;1943;USA;USA;Jim_Baen
+Jim Butcher;1971;USA;USA;Jim_Butcher
+Jim Grimsley;1955;USA;USA;Jim_Grimsley
+Jim Harmon;1933;USA;USA;Jim_Harmon
+Jim Munroe;1972;CAN;CAN;Jim_Munroe
+Jin Yong;1924;CHN;CHN;Jin_Yong
+Jiří Baum;1900;CZE;CZE;Ji%C5%99%C3%AD_Baum
+Jiří Dědeček;1953;CZE;CZE;Ji%C5%99%C3%AD_D%C4%9Bde%C4%8Dek
+Jiří Haussmann;1898;CZE;CZE;Ji%C5%99%C3%AD_Haussmann
+Jiří Kulhánek;1967;CZE;CZE;Ji%C5%99%C3%AD_Kulh%C3%A1nek
+Jiří Marek;1914;CZE;CZE;Ji%C5%99%C3%AD_Marek
+Jiří Walker Procházka;1959;CZE;CZE;Ji%C5%99%C3%AD_Walker_Proch%C3%A1zka
+Jiří Čihař;1930;CZE;CZE;Ji%C5%99%C3%AD_%C4%8Ciha%C5%99
+Jo Spurrier;1980;AUS;AUS;Jo_Spurrier
+Jo Walton;1964;GBR;CAN;Jo_Walton
+Joan Aiken;1924;GBR;GBR;Joan_Aiken
+Joan D. Vinge;1948;USA;USA;Joan_D._Vinge
+Joan Slonczewski;1956;USA;USA;Joan_Slonczewski
+Joanna Russ;1937;USA;USA;Joanna_Russ
+Joanne Bertin;1953;USA;USA;Joanne_Bertin
+Joaquim Manuel de Macedo;1820;BRA;BRA;Joaquim_Manuel_de_Macedo
+Joaquin Miller;1837;USA;USA;Joaquin_Miller
+Jobie Hughes;1980;USA;USA;http://www.jobiehughes.com/
+Jody Lynn Nye;1957;USA;USA;Jody_Lynn_Nye
+Joe Abercrombie;1974;GBR;GBR;Joe_Abercrombie
+Joe Clifford Faust;1957;USA;USA;Joe_Clifford_Faust
+Joe Haldeman;1943;USA;USA;Joe_Haldeman
+Joe L. Hensley;1926;USA;USA;Joe_L._Hensley
+Joe R. Lansdale;1951;USA;USA;Joe_R._Lansdale
+Joe Schreiber;1969;USA;USA;Joe_Schreiber
+Joel Rosenberg;1954;CAN;CAN;Joel_Rosenberg_(science_fiction_author)
+Joel Shepherd;1974;AUS;AUS;Joel_Shepherd
+Joel Townsley Rogers;1896;USA;USA;Joel_Townsley_Rogers
+Johan Heliot;1970;FRA;FRA;Johan_Heliot
+Johan Vandevelde;1973;BEL;BEL;http://www.johanvandevelde.be/
+Johanna Braun;1929;DEU;DEU;Johanna_Braun
+Johanna Sinisalo;1958;FIN;FIN;Johanna_Sinisalo
+John Anthony West;1932;USA;USA;John_Anthony_West
+John Antoine Nau;1860;USA;FRA;John_Antoine_Nau
+John B. Michel;1917;USA;USA;John_B._Michel
+John Baltadonis;1921;USA;USA;John_Baltadonis
+John Barnes;1957;USA;USA;John_Barnes_(author)
+John Batchelor;1948;USA;USA;John_Batchelor
+John Birmingham;1964;GBR;GBR;John_Birmingham
+John Blackburn;1923;GBR;GBR;John_Blackburn_(author)
+John Boland;1913;GBR;GBR;John_Boland_(author)
+John Boyd;1919;USA;USA;John_Boyd_(author)
+John Brosnan;1947;AUS;GBR;John_Brosnan
+John Brown;1966;USA;USA;John_Brown_(American_author)
+John Brunner;1934;GBR;GBR;John_Brunner_(author)
+John Buchan;1875;GBR;GBR;John_Buchan
+John C. Wright;1961;USA;USA;John_C._Wright_(author)
+John Chu;2000;TWN;USA;John_Chu
+John Ciardi;1916;USA;USA;John_Ciardi
+John Clute;1940;CAN;CAN;John_Clute
+John Collier;1901;GBR;GBR;John_Collier_(fiction_writer)
+John Creasey;1908;GBR;GBR;John_Creasey
+John Crowley;1942;USA;USA;John_Crowley_(author)
+John D. Clark;1907;USA;USA;John_Drury_Clark
+John D. F. Black;1932;USA;USA;John_D._F._Black
+John D. MacDonald;1916;USA;USA;John_D._MacDonald
+John Dalmas;1926;USA;USA;John_Dalmas
+John Davys Beresford;1873;GBR;GBR;J._D._Beresford
+John DeChancie;1946;USA;USA;John_DeChancie
+John Dickson Carr;1906;USA;USA;John_Dickson_Carr
+John E. Stith;1947;USA;USA;John_E._Stith
+John Eric Holmes;1930;USA;USA;John_Eric_Holmes
+John F. Carr;1944;USA;USA;John_F._Carr
+John Fay;1950;GBR;GBR;John_Fay_(writer)
+John Franklin Carter;1897;USA;USA;John_Franklin_Carter
+John G. Cramer;1934;USA;USA;John_G._Cramer
+John Gloag;1896;USA;USA;John_Gloag
+John Grant;1949;GBR;GBR;John_Grant_(author)
+John Gregory Betancourt;1963;USA;USA;John_Gregory_Betancourt
+John Gribbin;1946;GBR;GBR;John_Gribbin
+John Hornor Jacobs;1971;USA;USA;John_Hornor_Jacobs
+John J. McGuire;1917;USA;USA;John_J._McGuire
+John J. Ordover;1962;USA;USA;John_J._Ordover
+John J. Pierce;1941;USA;USA;John_J._Pierce
+John Jackson Miller;1968;USA;USA;John_Jackson_Miller
+John Jacob Astor IV;1864;USA;USA;John_Jacob_Astor_IV
+John Jakes;1932;USA;USA;John_Jakes
+John Joseph Adams;1976;USA;USA;John_Joseph_Adams
+John Joseph Miller;1954;USA;USA;John_J._Miller_(author)
+John Kessel;1950;USA;USA;John_Kessel
+John Kippax;1915;GBR;GBR;John_Kippax
+John Lymington;1911;GBR;GBR;John_Lymington
+John M. Faucette;1943;USA;USA;John_M._Faucette
+John M. Ford;1957;USA;USA;John_M._Ford
+John M. Schealer;1920;USA;USA;John_M._Schealer
+John Maddox Roberts;1947;USA;USA;John_Maddox_Roberts
+John Marlyn;1912;SRB;CAN;John_Marlyn
+John Marsden;1950;AUS;AUS;John_Marsden_(writer)
+John Meaney;1957;GBR;GBR;John_Meaney
+John Metcalfe;1891;GBR;GBR;John_Metcalfe_(writer)
+John Middleton Murry, Jr.;1926;GBR;GBR;John_Middleton_Murry_Jr.
+John Moore;1959;USA;USA;John_Moore_(American_author)
+John Morressy;1930;USA;USA;John_Morressy
+John Norman;1931;USA;USA;John_Norman
+John Patrick Lowrie;1952;USA;USA;John_Patrick_Lowrie
+John Peel;1954;GBR;GBR;John_Peel_(writer)
+John Pelan;1957;USA;USA;John_Pelan
+John R. Pierce;1910;USA;USA;John_R._Pierce
+John Ridley;1964;USA;USA;John_Ridley
+John Ringo;1963;USA;USA;John_Ringo
+John Russell Fearn;1908;GBR;GBR;John_Russell_Fearn
+John Scalzi;1969;USA;USA;John_Scalzi
+John Shirley;1953;USA;USA;John_Shirley
+John Sladek;1937;USA;USA;John_Sladek
+John Steakley;1951;USA;USA;John_Steakley
+John Sunseri;1969;USA;USA;John_Sunseri
+John T. Phillifent;1916;GBR;GBR;John_T._Phillifent
+John Tomerlin;1930;USA;USA;John_Tomerlin
+John Twelve Hawks;2000;USA;USA;John_Twelve_Hawks
+John Ulrich Giesy;1877;USA;USA;John_Ulrich_Giesy
+John Updike;1932;USA;USA;John_Updike
+John Uri Lloyd;1849;USA;USA;John_Uri_Lloyd
+John Varley;1947;USA;USA;John_Varley_(author)
+John Vermeulen;1941;BEL;BEL;http://www.johnvermeulen.be/
+John Vornholt;1951;USA;USA;John_Vornholt
+John W. Campbell;1910;USA;USA;John_W._Campbell
+John Wall;1910;GBR;GBR;Sarban_(author)
+John Zakour;1957;USA;USA;John_Zakour
+Johnny Byrne;1935;IRL;IRL;Johnny_Byrne_(writer)
+Jon Bing;1944;NOR;NOR;Jon_Bing
+Jon Brændsgaard Toft;1986;DNK;DNK;http://www.jon-toft.dk/
+Jon Courtenay Grimwood;1953;MLT;GBR;Jon_Courtenay_Grimwood
+Jonathan Blum;1967;USA;USA;Jonathan_Blum_(writer,_born_1967)
+Jonathan Blum;1972;USA;USA;Jonathan_Blum_(writer,_born_1972)
+Jonathan Clements;1971;GBR;GBR;Jonathan_Clements
+Jonathan Fast;1948;USA;USA;Jonathan_Fast
+Jonathan Lethem;1964;USA;USA;Jonathan_Lethem
+Jonathan Littell;1967;USA;USA;Jonathan_Littell
+Jonathan Maberry;1958;USA;USA;Jonathan_Maberry
+Jonathan Morris;1973;GBR;GBR;Jonathan_Morris_(author)
+Jorge Baradit;1969;CHL;CHL;Jorge_Baradit
+Jorge Enrique Lage;1979;CUB;CUB;Jorge_Enrique_Lage
+Jorge Salgado-Reyes;1968;CHL;GBR;http://www.salgado-reyes.com/
+Josef Nesvadba;1926;CZE;CZE;Josef_Nesvadba
+Joseph Compton-Rickett;1847;GBR;GBR;Joseph_Compton-Rickett
+Joseph Conrad;1857;UKR;GBR;Joseph_Conrad
+Joseph Delaney;1945;GBR;GBR;Joseph_Delaney
+Joseph Delmont;1873;AUT;AUT;Joseph_Delmont
+Joseph E. Kelleam;1913;USA;USA;Joseph_E._Kelleam
+Joseph Greene;1914;USA;USA;Joseph_Greene_(writer)
+Joseph H. Delaney;1932;USA;USA;Joseph_H._Delaney
+Joseph L. Green;1931;USA;USA;Joseph_L._Green
+Joseph Matheny;1961;USA;USA;Joseph_Matheny
+Joseph McElroy;1930;USA;USA;Joseph_McElroy
+Joseph O'Neill;1878;IRL;IRL;Joseph_O%27Neill_(writer,_born_1886)
+Joseph Samachson;1906;USA;USA;Joseph_Samachson
+Joseph Schlossel;1902;USA;USA;Joseph_Schlossel
+Joseph Shallit;1915;USA;USA;Joseph_Shallit
+Joseph Staten;1972;USA;USA;Joseph_Staten
+Josepha Sherman;1946;USA;USA;Josepha_Sherman
+Josh Viola;1983;USA;USA;Josh_Viola
+Joshua Tree;1986;DEU;DEU;https://joshuatreeautor.com/
+Joss Whedon;1964;USA;USA;Joss_Whedon
+José Antonio Cotrina;1972;ESP;ESP;Jos%C3%A9_Antonio_Cotrina
+José Carlos Somoza;1959;CUB;ESP;Jos%C3%A9_Carlos_Somoza
+José Miguel Vilar-Bou;1979;ESP;ESP;Jos%C3%A9_Miguel_Vilar-Bou
+José-André Lacour;1919;BEL;BEL;Jos%C3%A9-Andr%C3%A9_Lacour
+Jovan Sterija Popović;1806;SRB;SRB;Jovan_Sterija_Popovi%C4%87
+Joyce Chng;1975;SGP;SGP;https://awolfstale.wordpress.com/
+João Barreiros;1952;PRT;PRT;Jo%C3%A3o_Barreiros
+João Ubaldo Ribeiro;1941;BRA;BRA;Jo%C3%A3o_Ubaldo_Ribeiro
+Joël Champetier;1957;CAN;CAN;Jo%C3%ABl_Champetier
+Joël Houssin;1953;FRA;FRA;Jo%C3%ABl_Houssin
+Joëlle Wintrebert;1949;FRA;FRA;Jo%C3%ABlle_Wintrebert
+Juan Carlos Herreros Lucas;1967;ESP;ESP;http://www.edsombra.com
+Juan Giné y Partagás;1836;ESP;ESP;Joan_Gin%C3%A9_i_Partag%C3%A0s
+Juan Jacinto Muñoz-Rengel;1974;ESP;ESP;Juan_Jacinto_Mu%C3%B1oz_Rengel
+Juan José Plans;1943;ESP;ESP;Juan_Jos%C3%A9_Plans
+Juan Miguel Aguilera;1960;ESP;ESP;Juan_Miguel_Aguilera
+Juanita Coulson;1933;USA;USA;Juanita_Coulson
+Jude Watson;1956;USA;USA;Jude_Watson
+Judith Berman;1958;USA;USA;Judith_Berman
+Judith C. Vogt;1981;DEU;DEU;Judith_C._Vogt
+Judith Merril;1923;USA;CAN;Judith_Merril
+Judith Moffett;1942;USA;USA;Judith_Moffett
+Judith Tarr;1955;USA;USA;Judith_Tarr
+Juha K. Tapio;1957;FIN;FIN;Juha_K._Tapio
+Juhan Habicht;1954;EST;EST;Juhan_Habicht
+Jules Lermina;1839;FRA;FRA;Jules_Lermina
+Jules Supervielle;1884;URY;URY;Jules_Supervielle
+Jules Verne;1828;FRA;FRA;Jules_Verne
+Julia Ecklar;1964;USA;USA;Julia_Ecklar
+Julia Verlanger;1929;FRA;FRA;Gilles_Thomas_(writer)
+Julian Barnes;1946;GBR;GBR;Julian_Barnes
+Julian Jay Savarin;1950;DMA;GBR;Julian_Jay_Savarin
+Julian May;1931;USA;USA;Julian_May
+Julian Rathbone;1935;GBR;GBR;Julian_Rathbone
+Julie Bertagna;1962;GBR;GBR;Julie_Bertagna
+Julie E. Czerneda;1955;CAN;CAN;Julie_Czerneda
+Julie Nováková;1991;CZE;CZE;https://www.julienovakova.com/
+Julio Rojas;1965;CHL;CHL;https://juliorojaswriter.com/
+Julius Vogel;1835;GBR;NZL;Julius_Vogel
+Julius Zeyer;1841;CZE;CZE;Julius_Zeyer
+Junot Díaz;1968;DOM;USA;Junot_D%C3%ADaz
+Juntree Siriboonrod;1917;THA;THA;Juntree_Siriboonrod
+Justin Cronin;1962;USA;USA;Justin_Cronin
+Justin Leiber;1938;USA;USA;Justin_Leiber
+Justin Richards;1961;GBR;GBR;Justin_Richards
+Justina Ireland;1985;USA;USA;Justina_Ireland
+Justina Robson;1968;GBR;GBR;Justina_Robson
+Justine Larbalestier;1967;AUS;AUS;Justine_Larbalestier
+Jutta Heinrich;1940;DEU;DEU;Jutta_Heinrich
+Jérôme Camut;1968;FRA;FRA;https://jeromecamut.com
+Józef Sękowski;1800;POL;RUS;Osip_Senkovsky
+Júlia Díez;1968;ESP;ESP;https://www.juliadiez.com
+Júlia Goldman;1974;HUN;HUN;J%C3%BAlia_Goldman
+Jürgen Grasmück;1940;DEU;DEU;J%C3%BCrgen_Grasm%C3%BCck
+Jürgen Thorwald;1915;DEU;DEU;J%C3%BCrgen_Thorwald
+K. A. Bedford;1963;AUS;AUS;K._A._Bedford
+K. D. Wentworth;1951;USA;USA;K._D._Wentworth
+K. H. Scheer;1928;DEU;DEU;K._H._Scheer
+K. J. Bishop;1972;AUS;AUS;K._J._Bishop
+K. Tempest Bradford;1978;USA;USA;K._Tempest_Bradford
+K. V. Johansen;1968;CAN;CAN;K._V._Johansen
+K. W. Jeter;1950;USA;USA;K._W._Jeter
+Kage Baker;1952;USA;USA;Kage_Baker
+Kai Starr;1964;USA;USA;Kai_Starr
+Kalamu ya Salaam;1947;USA;USA;Kalamu_ya_Salaam
+Kameron Hurley;1980;USA;USA;Kameron_Hurley
+Kamil Bednář;1912;CZE;CZE;Kamil_Bedn%C3%A1%C5%99
+Kaoru Kurimoto;1953;JPN;JPN;Kaoru_Kurimoto
+Karel Pacner;1936;CZE;CZE;Karel_Pacner
+Karel Schulz;1899;CZE;CZE;Karel_Schulz
+Karel Čapek;1890;CZE;CZE;Karel_%C4%8Capek
+Karen Chance;2000;USA;USA;Karen_Chance
+Karen Duve;1961;DEU;DEU;Karen_Duve
+Karen Haber;1955;USA;USA;Karen_Haber
+Karen Joy Fowler;1950;USA;USA;Karen_Joy_Fowler
+Karen Marie Moning;1964;USA;USA;Karen_Marie_Moning
+Karen Miller;1961;CAN;CAN;Karen_Miller
+Karen Traviss;2000;GBR;GBR;Karen_Traviss
+Karin Boye;1900;SWE;SWE;Karin_Boye
+Karin Lowachee;1973;CAN;CAN;Karin_Lowachee
+Karin Tidbeck;1977;SWE;SWE;Karin_Tidbeck
+Karina Fabian;1967;USA;USA;Karina_Fabian
+Karl Alexander;1944;USA;USA;Karl_Alexander_(writer)
+Karl Bruckner;1906;AUT;AUT;Karl_Bruckner
+Karl Edward Wagner;1945;USA;USA;Karl_Edward_Wagner
+Karl Schroeder;1962;CAN;CAN;Karl_Schroeder
+Karl T. Pflock;1943;USA;USA;Karl_T._Pflock
+Karla Schmidt;1974;DEU;DEU;Karla_Schmidt
+Karlheinz Steinmüller;1950;DEU;DEU;Karlheinz_Steinm%C3%BCller
+Karsten Kruschel;1959;DEU;DEU;Karsten_Kruschel
+Kass Morgan;1984;USA;USA;Kass_Morgan
+Kat Falls;1964;USA;USA;Kat_Falls
+Kat Zhang;1991;USA;USA;Kat_Zhang
+Kate Elliott;1958;USA;USA;Kate_Elliott_(writer)
+Kate Heartfield;1977;CAN;CAN;Kate_Heartfield
+Kate Mascarenhas;1980;GBR;GBR;Kate_Mascarenhas
+Kate Orman;1968;AUS;AUS;Kate_Orman
+Kate Thompson;1956;GBR;GBR;Kate_Thompson_(author)
+Kate Wilhelm;1928;USA;USA;Kate_Wilhelm
+Katharine Burdekin;1896;GBR;GBR;Katharine_Burdekin
+Katharine Kerr;1944;USA;USA;Katharine_Kerr
+Katherine Lawrence;1954;USA;USA;Katherine_Lawrence
+Katherine MacLean;1925;USA;USA;Katherine_MacLean
+Kathleen Ann Goonan;1952;USA;USA;Kathleen_Ann_Goonan
+Kathleen Sky;1943;USA;USA;Kathleen_Sky
+Kathrin Schmidt;1958;DEU;DEU;Kathrin_Schmidt
+Kathryn H. Kidd;1950;USA;USA;Kathryn_H._Kidd
+Kathryn M. Drennan;1953;USA;USA;Kathryn_M._Drennan
+Kathy Oltion;1958;USA;USA;Kathy_Oltion
+Kathy Reichs;1948;USA;USA;Kathy_Reichs
+Kathy Tyers;1952;USA;USA;Kathy_Tyers
+Katie Waitman;1956;USA;USA;Katie_Waitman
+Katsuhiko Takahashi;1947;JPN;JPN;Katsuhiko_Takahashi
+Kay Dick;1915;GBR;GBR;Kay_Dick
+Kay Kenyon;1956;USA;USA;Kay_Kenyon
+Kazuma Shinjō;2000;JPN;JPN;Kazuma_Shinj%C5%8D
+Kazuo Ishiguro;1954;JPN;JPN;Kazuo_Ishiguro
+Keffy Kehrli;2000;USA;USA;https://keffy.com/
+Keith Brooke;1966;GBR;GBR;Keith_Brooke
+Keith Ferrell;1953;USA;USA;Keith_Ferrell
+Keith Hartman;1966;USA;USA;Keith_Hartman
+Keith Laumer;1925;USA;USA;Keith_Laumer
+Keith Monroe;1915;USA;USA;Keith_Monroe
+Keith R. A. DeCandido;1969;USA;USA;Keith_DeCandido
+Keith Roberts;1935;GBR;GBR;Keith_Roberts
+Keith Taylor;1946;AUS;AUS;Keith_Taylor_(author)
+Keith Topping;1963;GBR;GBR;Keith_Topping
+Kelley Eskridge;1960;USA;USA;Kelley_Eskridge
+Kelly Barnhill;1973;USA;USA;Kelly_Barnhill_(author)
+Kelly Link;1969;USA;USA;Kelly_Link
+Kelly McCullough;1967;USA;USA;Kelly_McCullough
+Kelly Robson;1967;CAN;CAN;Kelly_Robson
+Ken Grimwood;1944;USA;USA;Ken_Grimwood
+Ken Kuronuma;1902;JPN;JPN;Ken_Kuronuma
+Ken Liu;1976;CHN;USA;Ken_Liu
+Ken MacLeod;1954;GBR;GBR;Ken_MacLeod
+Ken Poyner;1956;USA;USA;https://kpoyner.com/
+Ken Rolston;2000;USA;USA;Ken_Rolston
+Ken Scholes;1968;USA;USA;Ken_Scholes
+Ken Slater;1917;GBR;GBR;Ken_Slater_(science_fiction)
+Kendell Foster Crossen;1910;USA;USA;Kendell_Foster_Crossen
+Kenji Siratori;1975;JPN;JPN;http://www.kenjisiratori.com
+Kenneth Bulmer;1921;GBR;GBR;Kenneth_Bulmer
+Kenneth Bøgh Andersen;1976;DNK;DNK;Kenneth_B%C3%B8gh_Andersen
+Kenneth Johnson;1942;USA;USA;Kenneth_Johnson_(filmmaker)
+Kenneth Oppel;1967;CAN;CAN;Kenneth_Oppel
+Kenneth Tam;1984;CAN;CAN;Kenneth_Tam
+Kent Brewster;1961;GBR;USA;Kent_Brewster
+Kenzaburō Ōe;1935;JPN;JPN;Kenzabur%C5%8D_%C5%8Ce
+Keren Landsman;1977;ISR;ISR;Keren_Landsman
+Kerry Greenwood;1954;AUS;AUS;Kerry_Greenwood
+Ketty Steward;1976;FRA;FRA;https://ktsteward.net/
+Kevin Bokeili;1963;LBN;FRA;Kevin_Bokeili
+Kevin Brockmeier;1972;USA;USA;Kevin_Brockmeier
+Kevin D. Randle;1949;USA;USA;Kevin_D._Randle
+Kevin Dilmore;1964;USA;USA;Kevin_Dilmore
+Kevin Grevioux;1962;USA;USA;Kevin_Grevioux
+Kevin Hearne;1970;USA;USA;Kevin_Hearne
+Kevin J. Anderson;1962;USA;USA;Kevin_J._Anderson
+Kevin Lauderdale;2000;USA;USA;Kevin_Lauderdale
+Kevin O'Donnell, Jr.;1950;USA;USA;Kevin_O%27Donnell_Jr.
+Kevin Siembieda;1956;USA;USA;Kevin_Siembieda
+Khristo Poshtakov;1944;BGR;BGR;Khristo_Poshtakov
+Kiera Cass;1981;USA;USA;Kiera_Cass
+Kiini Ibura Salaam;1973;USA;USA;Kiini_Ibura_Salaam
+Kij Johnson;1960;USA;USA;Kij_Johnson
+Kim Bo-young;1975;KOR;KOR;Kim_Bo-young
+Kim Mohan;1949;USA;USA;Kim_Mohan
+Kim Newman;1959;GBR;GBR;Kim_Newman
+Kim Stanley Robinson;1952;USA;USA;Kim_Stanley_Robinson
+Kingsley Amis;1922;GBR;GBR;Kingsley_Amis
+Kir Bulychev;1934;RUS;RUS;Kir_Bulychev
+Kira Peikoff;1985;USA;USA;Kira_Peikoff
+Kirk Mitchell;1950;USA;USA;Kirk_Mitchell
+Kirsten Bakis;1967;USA;USA;Kirsten_Bakis
+Kirsten Beyer;2000;USA;USA;Kirsten_Beyer
+Kirsten Miller;1973;USA;USA;Kirsten_Miller
+Kit Berry;2000;GBR;GBR;Kit_Berry
+Kit Pedler;1927;GBR;GBR;Kit_Pedler
+Kit Reed;1932;USA;USA;Kit_Reed
+Klim Zhukov;1977;RUS;RUS;Klim_Zhukov
+Klára Fehér;1919;HUN;HUN;Kl%C3%A1ra_Feh%C3%A9r
+Knut Faldbakken;1941;NOR;NOR;Knut_Faldbakken
+Konrad Lehtimäki;1883;FIN;FIN;Konrad_Lehtim%C3%A4ki
+Konrad T. Lewandowski;1966;POL;POL;Konrad_T._Lewandowski
+Konstantin Tsiolkovsky;1857;RUS;RUS;Konstantin_Tsiolkovsky
+Kotaro Uchikoshi;1973;JPN;JPN;Kotaro_Uchikoshi
+Krešimir Mišak;1972;HRV;HRV;Kre%C5%A1imir_Mi%C5%A1ak
+Kris Ottman Neville;1925;USA;USA;Kris_Neville
+Kris Saknussemm;1961;USA;USA;Kris_Saknussemm
+Kristine Kathryn Rusch;1960;USA;USA;Kristine_Kathryn_Rusch
+Kristyn Dunnion;1969;CAN;CAN;Kristyn_Dunnion
+Krzysztof Boruń;1923;POL;POL;Krzysztof_Boru%C5%84
+Kumudini Mohapatra;1930;IND;IND;Kumudini_Mohapatra
+Kurd Lasswitz;1848;POL;POL;Kurd_Lasswitz
+Kurt Brand;1917;DEU;DEU;Kurt_Brand
+Kurt Mahr;1934;DEU;DEU;Kurt_Mahr
+Kurt R. A. Giambastiani;1958;USA;USA;Kurt_R._A._Giambastiani
+Kurt von Trojan;1937;AUS;AUS;Kurt_von_Trojan
+Kurt Vonnegut;1922;USA;USA;Kurt_Vonnegut
+Kwak Jaesik;1982;KOR;KOR;Kwak_Jaesik
+Kyriakos D. Papadopoulos;1945;CYP;CYP;http://www.kyripap.com/
+Kyril Bonfiglioli;1928;GBR;GBR;Kyril_Bonfiglioli
+Károly Aszlányi;1908;ROU;HUN;K%C3%A1roly_Aszl%C3%A1nyi
+Kōbō Abe;1924;JPN;JPN;K%C5%8Db%C5%8D_Abe
+Kōji Suzuki;1957;JPN;JPN;Koji_Suzuki
+Kōshū Tani;1951;JPN;JPN;K%C5%8Dsh%C5%AB_Tani
+L. E. Modesitt, Jr.;1943;USA;USA;L._E._Modesitt_Jr.
+L. Frank Baum;1856;USA;USA;L._Frank_Baum
+L. J. Smith;1958;USA;USA;L._J._Smith_(author)
+L. Neil Smith;1946;USA;USA;L._Neil_Smith
+L. P. Davies;1914;GBR;GBR;L._P._Davies
+L. Ron Hubbard;1911;USA;USA;L._Ron_Hubbard
+L. Sprague de Camp;1907;USA;USA;L._Sprague_de_Camp
+L. Taylor Hansen;1897;USA;USA;L._Taylor_Hansen
+L. Timmel Duchamp;1950;USA;USA;L._Timmel_Duchamp
+L.A. Weatherly;1967;USA;USA;L.A._Weatherly
+Ladislav Fuks;1923;CZE;CZE;Ladislav_Fuks
+Lady Sybylla;1980;BRA;BRA;https://www.momentumsaga.com/
+Lan Wright;1923;GBR;GBR;Lan_Wright
+Larissa Kelly;1980;USA;USA;Larissa_Kelly
+Larry Collins;1929;USA;FRA;Larry_Collins_(writer)
+Larry Correia;1977;USA;USA;Larry_Correia
+Larry Eisenberg;1919;USA;USA;Larry_Eisenberg
+Larry Niven;1938;USA;USA;Larry_Niven
+Larry Shaw;1924;USA;USA;Larry_Shaw_(editor)
+Lars Jakobson;1959;SWE;SWE;Lars_Jakobson
+Laura Anne Gilman;1967;USA;USA;Laura_Anne_Gilman
+Laura Bynum;1968;USA;USA;Laura_Bynum
+Laura Frankos;1960;USA;USA;Laura_Frankos
+Laura J. Mixon;1957;USA;USA;Laura_J._Mixon
+Laura Resnick;1962;USA;USA;Laura_Resnick
+Laurel Winter;1959;USA;USA;Laurel_Winter
+Lauren Barnholdt;1983;USA;USA;Lauren_Barnholdt
+Lauren Beukes;1976;ZAF;ZAF;Lauren_Beukes
+Lauren Oliver;1982;USA;USA;Lauren_Oliver
+Laurence Janifer;1933;USA;USA;Laurence_Janifer
+Laurence Manning;1899;CAN;USA;Laurence_Manning
+Laurence Suhner;1966;CHE;CHE;Laurence_Suhner
+Laurence Yep;1948;USA;USA;Laurence_Yep
+Laurent Genefort;1968;FRA;FRA;Laurent_Genefort
+Laurent Queyssi;1975;FRA;FRA;http://laurentqueyssi.fr/
+Laurie Penny;1986;GBR;GBR;Laurie_Penny
+Laurie R. King;1952;USA;USA;Laurie_R._King
+Lavie Tidhar;1976;ISR;ISR;Lavie_Tidhar
+Lawrence M. Schoen;1959;USA;USA;Lawrence_M._Schoen
+Lawrence Miles;1972;GBR;GBR;Lawrence_Miles
+Lawrence Schimel;1971;USA;USA;Lawrence_Schimel
+Lawrence Watt-Evans;1954;USA;USA;Lawrence_Watt-Evans
+Lazar Komarčić;1839;MNE;SRB;Lazar_Komar%C4%8Di%C4%87
+Lazar Lagin;1903;BLR;BLR;Lazar_Lagin
+Leah Bobet;1982;CAN;CAN;https://www.leahbobet.com/
+Leanne Frahm;1946;AUS;AUS;Leanne_Frahm
+Lee Battersby;1970;GBR;AUS;Lee_Battersby
+Lee Gold;1942;USA;USA;Lee_Gold
+Lee Harding;1937;AUS;AUS;Lee_Harding_(writer)
+Lee Hawkins Garby;1890;USA;USA;Lee_Hawkins_Garby
+Lee Hoffman;1932;USA;USA;Lee_Hoffman
+Lee Killough;1942;USA;USA;Lee_Killough
+Lee Yeongdo;1972;KOR;KOR;Lee_Young-do
+Leigh Brackett;1915;USA;USA;Leigh_Brackett
+Leigh Kennedy;1951;USA;USA;Leigh_Kennedy
+Leigh Richmond;1911;USA;USA;Leigh_Richmond
+Lela E. Buis;1901;USA;USA;Lela_E._Buis
+Len Deighton;1929;GBR;GBR;Len_Deighton
+Lena Falkenhagen;1973;DEU;DEU;https://www.falkenhagen.de/
+Leo Frankowski;1943;USA;USA;Leo_Frankowski
+Leo Kunnas;1967;EST;EST;Leo_Kunnas
+Leon Stover;1929;USA;USA;Leon_Stover
+Leonard Nimoy;1931;USA;USA;Leonard_Nimoy
+Leonard Wibberley;1915;IRL;IRL;Leonard_Wibberley
+Leonid Kaganov;1972;RUS;RUS;http://lleo.me
+Leslie Charteris;1907;SGP;USA;Leslie_Charteris
+Leslie F. Stone;1905;USA;USA;Leslie_F._Stone
+Leslie Perri;1920;USA;USA;Leslie_Perri
+Leslie Stevens;1924;USA;USA;Leslie_Stevens
+Leslie What;1955;USA;USA;Leslie_What
+Lester del Rey;1915;USA;USA;Lester_del_Rey
+Lester Dent;1904;USA;USA;Lester_Dent
+Lev Grossman;1969;USA;USA;Lev_Grossman
+Lewis Shiner;1950;USA;USA;Lewis_Shiner
+Leó Szilárd;1898;HUN;HUN;Leo_Szilard
+León Arsenal;1960;ESP;ESP;https://www.leonarsenal.com/
+Licia Troisi;1980;ITA;ITA;Licia_Troisi
+Lillian Stewart Carl;1949;USA;USA;Lillian_Stewart_Carl
+Lily Brooks-Dalton;1987;USA;USA;Lily_Brooks-Dalton
+Lin Carter;1930;USA;USA;Lin_Carter
+Lin Oliver;1947;USA;USA;Lin_Oliver
+Lincoln Child;1957;USA;USA;Lincoln_Child
+Linda Addison;1952;USA;USA;Linda_Addison_(poet)
+Linda Evans;1958;USA;USA;Linda_Evans_(author)
+Linda Joy Singleton;1957;USA;USA;Linda_Joy_Singleton
+Linda Nagata;1960;USA;USA;Linda_Nagata
+Linda Smith;1949;CAN;CAN;Linda_Smith_(novelist)
+Linnea Sinclair;1954;USA;USA;Linnea_Sinclair
+Lino Aldani;1926;ITA;ITA;Lino_Aldani
+Lionel Davoust;1978;FRA;FRA;https://lioneldavoust.com
+Lionel Fanthorpe;1935;GBR;GBR;Lionel_Fanthorpe
+Lisa A. Barnett;1958;USA;USA;Lisa_A._Barnett
+Lisa Goldstein;1953;USA;USA;Lisa_Goldstein
+Lisa Mason;1953;USA;USA;Lisa_Mason_(writer)
+Lisa Morpurgo;1923;ITA;ITA;Lisa_Morpurgo
+Lisa Smedman;1959;CAN;CAN;Lisa_Smedman
+Lisa Tuttle;1952;USA;GBR;Lisa_Tuttle
+Liu Cixin;1963;CHN;CHN;Liu_Cixin
+Liviu Radu;1948;ROU;ROU;Liviu_Radu
+Liz Holliday;1958;GBR;GBR;Liz_Holliday
+Liz Williams;1965;GBR;GBR;Liz_Williams
+Lloyd Arthur Eshbach;1910;USA;USA;Lloyd_Arthur_Eshbach
+Lloyd Biggle, Jr.;1923;USA;USA;Lloyd_Biggle_Jr.
+Lloyd Rose;1901;USA;USA;Lloyd_Rose
+Lois H. Gresh;1956;USA;USA;Lois_H._Gresh
+Lois McMaster Bujold;1949;USA;USA;Lois_McMaster_Bujold
+Lois Tilton;1946;USA;USA;Lois_Tilton
+Lola Robles;1963;ESP;ESP;Lola_Robles
+Loren Coleman;1947;USA;USA;Loren_Coleman
+Loren L. Coleman;1968;USA;USA;Loren_L._Coleman
+Loren Rhoads;1963;USA;USA;Loren_Rhoads
+Lorris Murail;1951;FRA;FRA;Lorris_Murail
+Lou Anders;1967;USA;USA;Lou_Anders
+Lou Antonelli;1957;USA;USA;Lou_Antonelli
+Louis de Wohl;1903;DEU;DEU;Louis_de_Wohl
+Louis Geoffroy;1803;FRA;FRA;Louis_Geoffroy
+Louis Gompertz;1886;GBR;GBR;Louis_Gompertz
+Louis Henri Boussenard;1847;FRA;FRA;Louis_Henri_Boussenard
+Louis L'Amour;1908;USA;USA;Louis_L%27Amour
+Louis Marks;1928;GBR;GBR;Louis_Marks
+Louis Trimble;1917;USA;USA;Louis_Trimble
+Louise Cooper;1952;GBR;GBR;Louise_Cooper_(fantasy_writer)
+Louise Hay;1926;USA;USA;Louise_Hay
+Louise Lawrence;1943;GBR;GBR;Louise_Lawrence_(author)
+Louise Marley;1952;USA;USA;Louise_Marley
+Lowell Cunningham;1959;USA;USA;Lowell_Cunningham
+Loïc Henry;1971;FRA;FRA;http://loichenry.wordpress.com
+Luce Basseterre;1957;FRA;FRA;https://www.lucebasseterre.fr/
+Luce d'Eramo;1925;FRA;ITA;Luce_d%27Eramo
+Lucie Chenu;1960;FRA;FRA;Lucie_Chenu
+Lucie Lukačovičová;1980;CZE;CZE;Lucie_Luka%C4%8Dovi%C4%8Dov%C3%A1
+Lucius Shepard;1943;USA;USA;Lucius_Shepard
+Lucy A. Snyder;1971;USA;USA;Lucy_A._Snyder
+Lucy Sussex;1957;NZL;NZL;Lucy_Sussex
+Ludmila Vaňková;1927;CZE;CZE;Ludmila_Va%C5%88kov%C3%A1
+Ludvík Aškenazy;1921;CZE;ITA;Ludv%C3%ADk_A%C5%A1kenazy
+Ludvík Souček;1926;CZE;CZE;Ludv%C3%ADk_Sou%C4%8Dek
+Ludwig Turek;1898;DEU;DEU;Ludwig_Turek
+Luděk Pešek;1919;CZE;CHE;Lud%C4%9Bk_Pe%C5%A1ek
+Luigi Capuana;1839;ITA;ITA;Luigi_Capuana
+Luigi Cozzi;1947;ITA;ITA;Luigi_Cozzi
+Luis Carlos Barragán;1988;COL;COL;Luis_Carlos_Barrag%C3%A1n
+Luis G. Abbadie;1968;MEX;MEX;Luis_G._Abbadie
+Luis J. Pérez;1978;ESP;ESP;http://www.escienciaficcion.com
+Luis Senarens;1863;USA;USA;Luis_Senarens
+luvan;1975;FRA;FRA;https://www.luvan.org
+Luís Filipe Silva;1969;PRT;PRT;Lu%C3%ADs_Filipe_Silva
+Lyda Morehouse;1967;USA;USA;Lyda_Morehouse
+Lyn McConchie;1946;NZL;NZL;Lyn_McConchie
+Lyn Venable;1927;USA;USA;Lynn_Venable_(writer)
+Lynda Williams;1958;CAN;CAN;Lynda_Williams
+Lyndon Hardy;1941;USA;USA;Lyndon_Hardy
+Lynn Abbey;1948;USA;USA;Lynn_Abbey
+Lynn Flewelling;1958;USA;USA;Lynn_Flewelling
+Lyuben Dilov;1927;BGR;BGR;Lyuben_Dilov
+László L. Lőrincz;1939;HUN;HUN;L%C3%A1szl%C3%B3_L._L%C5%91rincz
+Léa Silhol;1967;MAR;FRA;http://www.unseelie-court.net
+M. A. Foster;1939;USA;USA;M._A._Foster
+M. A. R. Barker;1929;USA;USA;M._A._R._Barker
+M. Christian;1960;USA;USA;M._Christian
+M. F. Korn;1958;USA;USA;M._F._Korn
+M. J. Engh;1933;USA;USA;M._J._Engh
+M. John Harrison;1945;GBR;GBR;M._John_Harrison
+M. K. Hobson;1969;USA;USA;M._K._Hobson
+M. K. Wren;1938;USA;USA;M._K._Wren
+M. L. Buchman;1958;USA;USA;M._L._Buchman
+M. P. Shiel;1865;MSR;GBR;M._P._Shiel
+M. Rickert;1959;USA;USA;M._Rickert
+M. Shayne Bell;1957;USA;USA;M._Shayne_Bell
+Mac Tonnies;1975;USA;USA;Mac_Tonnies
+Machado de Assis;1839;BRA;BRA;Machado_de_Assis
+Maciej Parowski;1946;POL;POL;Maciej_Parowski
+Mack Reynolds;1917;USA;USA;Mack_Reynolds
+Madeleine L'Engle;1918;USA;USA;Madeleine_L%27Engle
+Madeleine Puljic;1986;AUT;AUT;http://www.madeleinepuljic.at/index.php/autorin/biografie
+Madeline Ashby;1983;USA;CAN;Madeline_Ashby
+Mado Martinez;1979;ESP;ESP;http://www.madomartinez.com
+Magdalena Hai;1978;FIN;FIN;https://magdalenahai.com/
+Magdalena Mouján;1926;ARG;ARG;Magdalena_Mouj%C3%A1n
+Maggie MacDonald;1978;CAN;CAN;Maggie_MacDonald
+Maggie Shayne;1965;USA;USA;Maggie_Shayne
+Maico Morellini;1977;ITA;ITA;http://www.maicomorellini.it/
+Makoto Shiina;1944;JPN;JPN;https://www.shiina-tabi-bungakukan.com/
+Malcolm Azania;1969;CAN;CAN;Minister_Faust
+Malcolm Jameson;1891;USA;USA;Malcolm_Jameson
+Malinda Lo;1974;CHN;USA;Malinda_Lo
+Malka Older;1977;USA;USA;Malka_Older
+Malorie Blackman;1962;GBR;GBR;Malorie_Blackman
+Manly Wade Wellman;1903;USA;USA;Manly_Wade_Wellman
+Mann Rubin;1927;USA;USA;Mann_Rubin
+Manning Lee Stokes;1911;USA;USA;Manning_Lee_Stokes
+Manuel de Pedrolo i Molina;1918;ESP;ESP;Manuel_de_Pedrolo
+Mao Ni;1977;CHN;CHN;Mao_Ni
+Marc Laidlaw;1960;USA;USA;Marc_Laidlaw
+Marc Platt;1953;GBR;GBR;Marc_Platt_(writer)
+Marc Scott Zicree;1955;USA;USA;Marc_Scott_Zicree
+Marc Stiegler;1954;USA;USA;Marc_Stiegler
+Marcel Aymé;1902;FRA;FRA;Marcel_Aym%C3%A9
+Marcel Theroux;1968;UGA;GBR;Marcel_Theroux
+Marcelo Cassaro;1970;BRA;BRA;Marcelo_Cassaro
+Marcia Joanne Bennett;1945;USA;USA;Marcia_J._Bennett
+Marcial Souto;1947;ESP;ESP;Marcial_Souto
+Marcin Przybyłek;1968;POL;POL;Marcin_Przyby%C5%82ek
+Marcin Wolski;1947;POL;POL;Marcin_Wolski
+Marcus Hammerschmitt;1967;DEU;DEU;https://marcus-hammerschmitt.de/
+Marcus Rowland;1953;GBR;GBR;Marcus_L._Rowland
+Marcus Sakey;1974;USA;USA;Marcus_Sakey
+Marcus Stokes;1901;USA;USA;Marcus_Stokes
+Marek Baraniecki;1954;POL;POL;Marek_Baraniecki
+Marek Oramus;1952;POL;POL;Marek_Oramus
+Marek S. Huberath;1954;POL;POL;Marek_Huberath
+Margaret Atwood;1939;CAN;CAN;Margaret_Atwood
+Margaret Ball;1947;USA;USA;Margaret_Ball_(writer)
+Margaret Peterson Haddix;1964;USA;USA;Margaret_Peterson_Haddix
+Margaret St. Clair;1911;USA;USA;Margaret_St._Clair
+Margaret Wander Bonanno;1950;USA;USA;Margaret_Wander_Bonanno
+Margaret Weis;1948;USA;USA;Margaret_Weis
+Marge Piercy;1936;USA;USA;Marge_Piercy
+Marge Simon;1942;USA;USA;Marge_Simon
+Margot Bennett;1912;GBR;GBR;Margot_Bennett_(writer)
+Margret Helgadottir;1971;ETH;NOR;Margr%C3%A9t_Helgad%C3%B3ttir
+Mari Wolf;1926;USA;USA;Mari_Wolf
+Maria Antònia Oliver Cabrer;1946;ESP;ESP;Maria_Ant%C3%B2nia_Oliver_Cabrer
+Maria J. Pfannholz;1955;DEU;DEU;Maria_J._Pfannholz
+Maria Julia Zaleska;1831;UKR;UKR;Maria_Julia_Zaleska
+Maria Semyonova;1958;RUS;RUS;Maria_Semyonova
+Mariangela Cerrino;1948;ITA;ITA;http://www.mariangelacerrino.it
+Marianne de Pierres;1961;AUS;AUS;Marianne_de_Pierres
+Marianne Gruber;1944;AUT;AUT;http://www.mariannegruber.com/
+Marianne Leconte;1944;FRA;FRA;Marianne_Leconte
+Marie Jakober;1941;CAN;CAN;Marie_Jakober
+Marie Lu;1984;CHN;USA;Marie_Lu
+Marie Majerová;1882;CZE;CZE;Marie_Majerov%C3%A1
+Marietta Shaginyan;1888;RUS;RUS;Marietta_Shaginyan
+Mariko Ōhara;1959;JPN;JPN;Mariko_%C5%8Chara
+Marilyn Kaye;1949;USA;USA;Marilyn_Kaye
+Marilynne Robinson;1943;USA;USA;Marilynne_Robinson
+Mario Bellatin;1960;MEX;MEX;Mario_Bellatin
+Mario Farneti;1950;ITA;ITA;http://www.farneti.it/
+Mario Giguère;1957;CAN;CAN;http://www.clubdesmonstres.com/blanc/
+Mario Puzo;1920;USA;USA;Mario_Puzo
+Marion Zimmer Bradley;1930;USA;USA;Marion_Zimmer_Bradley
+Marissa Meyer;1984;USA;USA;Marissa_Meyer
+Marjorie Barnard;1897;AUS;AUS;Marjorie_Barnard
+Mark A. Rayner;1966;CAN;CAN;Mark_A._Rayner
+Mark Adlard;1932;GBR;GBR;Mark_Adlard
+Mark Budz;1960;USA;USA;Mark_Budz
+Mark Clifton;1906;USA;USA;Mark_Clifton
+Mark Ellis;1953;USA;USA;Mark_Ellis_(American_author)
+Mark Finn;1969;USA;USA;Mark_Finn
+Mark Frost;1953;USA;USA;Mark_Frost
+Mark Gatiss;1966;GBR;GBR;Mark_Gatiss
+Mark Hodder;1962;GBR;GBR;Mark_Hodder
+Mark L. Van Name;1955;USA;USA;Mark_L._Van_Name
+Mark London Williams;1959;USA;USA;Mark_London_Williams
+Mark Morris;1963;GBR;GBR;Mark_Morris_(author)
+Mark S. Geston;1946;USA;USA;Mark_S._Geston
+Mark Shainblum;1963;CAN;CAN;Mark_Shainblum
+Mark Teppo;1968;USA;USA;Mark_Teppo
+Mark Timlin;1944;GBR;GBR;Mark_Timlin
+Mark Twain;1835;USA;USA;Mark_Twain
+Mark von Schlegell;1967;USA;USA;Mark_von_Schlegell
+Mark W. Tiedemann;1954;USA;USA;Mark_W._Tiedemann
+Marko Kloos;1971;DEU;DEU;Marko_Kloos
+Markus Heitz;1971;DEU;DEU;Markus_Heitz
+Marleen S. Barr;1953;USA;USA;Marleen_S._Barr
+Marlen Haushofer;1920;AUT;AUT;Marlen_Haushofer
+Marlene Streeruwitz;1950;AUT;AUT;Marlene_Streeruwitz
+Marta Randall;1948;MEX;USA;Marta_Randall
+Marta Schumann;1919;NOR;NOR;Marta_Schumann
+Martha Soukup;1959;USA;USA;Martha_Soukup
+Martha Wells;1964;USA;USA;Martha_Wells
+Martin Amis;1949;GBR;GBR;Martin_Amis
+Martin Caidin;1927;USA;USA;Martin_Caidin
+Martin Gardner;1914;USA;USA;Martin_Gardner
+Martin H. Greenberg;1941;USA;USA;Martin_H._Greenberg
+Martin Livings;1970;AUS;AUS;Martin_Livings
+Martin Petiška;1951;CZE;CZE;Martin_Peti%C5%A1ka
+Martin Schemm;1964;DEU;DEU;https://www.martinschemm.de/
+Martti Löfberg;1907;FIN;FIN;Martti_L%C3%B6fberg
+Martyn Skinner;1906;GBR;GBR;Martyn_Skinner
+Marvin Kaye;1938;USA;USA;Marvin_Kaye
+Mary Anne Mohanraj;1971;LKA;USA;Mary_Anne_Mohanraj
+Mary Brown;1929;GBR;GBR;Mary_Brown_(author)
+Mary Doria Russell;1950;USA;USA;Mary_Doria_Russell
+Mary E. Bradley Lane;1844;USA;USA;Mary_E._Bradley_Lane
+Mary Elwyn Patchett;1897;AUS;AUS;Mary_Elwyn_Patchett
+Mary Gentle;1956;GBR;GBR;Mary_Gentle
+Mary Robinette Kowal;1969;USA;USA;Mary_Robinette_Kowal
+Mary Rosenblum;1952;USA;USA;Mary_Rosenblum
+Mary Soon Lee;1965;GBR;GBR;Mary_Soon_Lee
+Mary Turzillo;1940;USA;USA;Mary_Turzillo
+Masaki Yamada;1950;JPN;JPN;Masaki_Yamada_(writer)
+Masami Fukushima;1929;JPN;JPN;Masami_Fukushima
+Massimo Bontempelli;1878;ITA;ITA;Massimo_Bontempelli
+Massimo Citi;1955;ITA;ITA;Massimo_Citi
+Massimo Mongai;1950;ITA;ITA;Massimo_Mongai
+Mathieu Gaborit;1972;FRA;FRA;http://www.souffre-jour.com/index.php?option=com_content&task=view&id=82&Itemid=117
+Matt Haig;1975;GBR;GBR;Matt_Haig
+Matt Hughes;1949;GBR;GBR;Matt_Hughes_(writer)
+Matt Jones;1968;GBR;GBR;Matt_Jones_(writer)
+Matt Ruff;1965;USA;USA;Matt_Ruff
+Matthew J. Costello;1948;USA;USA;Matthew_Costello
+Matthew Kressel;2000;USA;USA;Matthew_Kressel
+Matthew Mather;1969;GBR;CAN;Matthew_Mather
+Matthew Stover;1962;USA;USA;Matthew_Stover
+Matthias Matting;1966;DEU;DEU;Brandon_Q._Morris
+Maureen F. McHugh;1959;USA;USA;Maureen_F._McHugh
+Maurice Broaddus;1975;GBR;USA;Maurice_Broaddus
+Maurice G. Dantec;1959;FRA;CAN;Maurice_G._Dantec
+Maurice Leblanc;1864;FRA;FRA;Maurice_Leblanc
+Maurice Limat;1914;FRA;FRA;Maurice_Limat
+Maurice Nicoll;1884;GBR;GBR;Maurice_Nicoll
+Maurice Renard;1875;FRA;FRA;Maurice_Renard
+Max Barry;1973;AUS;AUS;Max_Barry
+Max Ehrlich;1909;USA;USA;Max_Ehrlich_(writer)
+Max Kidruk;1984;UKR;UKR;Max_Kidruk
+Max Valier;1895;ITA;AUT;Max_Valier
+Maxim Jakubowski;1944;GBR;GBR;Maxim_Jakubowski
+Maxine McArthur;1962;AUS;AUS;Maxine_McArthur
+Maya Kaathryn Bohnhoff;1954;USA;USA;Maya_Kaathryn_Bohnhoff
+Mea Allan;1909;GBR;GBR;Mea_Allan
+Meelis Friedenthal;1973;EST;EST;Meelis_Friedenthal
+Mehdi Bouhalassa;1973;CAN;CAN;http://www.mehdi.ca
+Melanie Rawn;1954;USA;USA;Melanie_Rawn
+Melanie Vogltanz;1992;AUT;AUT;https://lektoratvogltanz.wordpress.com/
+Melinda M. Snodgrass;1951;USA;USA;Melinda_M._Snodgrass
+Melinda Metz;1962;USA;USA;Melinda_Metz
+Melisa Michaels;1946;USA;USA;Melisa_Michaels
+Melissa Landers;1973;USA;USA;Melissa_Landers
+Melissa Scott;1960;USA;USA;Melissa_Scott
+Menotti Del Picchia;1892;BRA;BRA;Menotti_Del_Picchia
+Mercedes Lackey;1950;USA;USA;Mercedes_Lackey
+Meredith L. Patterson;1977;USA;BEL;Meredith_L._Patterson
+Mervyn Haisman;1928;GBR;GBR;Mervyn_Haisman
+Mhavel N;1988;USA;USA;http://www.mhavelnaveda.com/
+Michael A. Banks;1951;USA;USA;Michael_A._Banks
+Michael A. Burstein;1970;USA;USA;Michael_A._Burstein
+Michael A. Stackpole;1957;USA;USA;Michael_A._Stackpole
+Michael Bishop;1945;USA;USA;Michael_Bishop_(author)
+Michael Blumlein;1948;USA;USA;Michael_Blumlein
+Michael Butterworth;1947;GBR;GBR;Michael_Butterworth_(author)
+Michael Capobianco;1950;USA;USA;Michael_Capobianco
+Michael Carroll;1966;IRL;IRL;Michael_Carroll_(Irish_writer)
+Michael Cassutt;1954;USA;USA;Michael_Cassutt
+Michael Chabon;1963;USA;USA;Michael_Chabon
+Michael Cobley;1959;GBR;GBR;Michael_Cobley
+Michael Collins;1924;USA;USA;Michael_Collins_(American_author)
+Michael Conner;1951;USA;USA;Michael_Conner
+Michael Crichton;1942;USA;USA;Michael_Crichton
+Michael D. C. Drout;1968;USA;USA;Michael_D._C._Drout
+Michael Ende;1932;DEU;DEU;Michael_Ende
+Michael F. Flynn;1947;USA;USA;Michael_Flynn_(writer)
+Michael Frayn;1933;GBR;GBR;Michael_Frayn
+Michael G. Coney;1932;GBR;GBR;Michael_G._Coney
+Michael Grant;1954;USA;USA;Michael_Grant_(author,_born_1954)
+Michael H. Payne;1965;USA;USA;Michael_H._Payne
+Michael Harrison;1907;GBR;GBR;Michael_Harrison_(writer)
+Michael J. Sullivan;1961;USA;USA;Michael_J._Sullivan_(author)
+Michael Jan Friedman;1955;USA;USA;Michael_Jan_Friedman
+Michael Kandel;1941;USA;USA;Michael_Kandel
+Michael Kennedy Joseph;1914;GBR;NZL;M._K._Joseph
+Michael Kurland;1938;USA;USA;Michael_Kurland
+Michael Marrak;1965;DEU;DEU;Michael_Marrak
+Michael Marshall Smith;1965;GBR;GBR;Michael_Marshall_Smith
+Michael McCollum;1946;USA;USA;Michael_McCollum
+Michael Moorcock;1939;GBR;GBR;Michael_Moorcock
+Michael P. Kube-McDowell;1954;USA;USA;Michael_P._Kube-McDowell
+Michael Pryor;1957;AUS;AUS;Michael_Pryor
+Michael R. Johnston;2000;USA;USA;https://mjohnstonbooks.com/
+Michael Reaves;1950;USA;USA;Michael_Reaves
+Michael Scott;1959;IRL;IRL;Michael_Scott_(Irish_author)
+Michael Scott Rohan;1951;GBR;GBR;Michael_Scott_Rohan
+Michael Shaara;1928;USA;USA;Michael_Shaara
+Michael Shea;1938;GBR;GBR;Michael_Shea_(diplomat)
+Michael Shea;1946;USA;USA;Michael_Shea_(American_author)
+Michael Swanwick;1950;USA;USA;Michael_Swanwick
+Michael Szameit;1950;DEU;DEU;Michael_Szameit
+Michael Talbot;1953;USA;USA;Michael_Talbot_(author)
+Michael Z. Williamson;1967;GBR;GBR;Michael_Z._Williamson
+Michaela Roessner;1950;USA;USA;Michaela_Roessner
+Michał Cholewa;1980;POL;POL;Micha%C5%82_Cholewa_(writer)
+Michel Calonne;1927;FRA;FRA;Michel_Calonne
+Michel Demuth;1939;FRA;FRA;Michel_Demuth
+Michel Faber;1960;AUS;AUS;Michel_Faber
+Michel Jeury;1934;FRA;FRA;Michel_Jeury
+Michel Pagel;1961;FRA;FRA;Michel_Pagel
+Michel Verne;1861;FRA;FRA;Michel_Verne
+Michèle Gavazzi;1973;URY;CAN;Mich%C3%A8le_Gavazzi
+Michèle Laframboise;1960;GBR;CAN;Mich%C3%A8le_Laframboise
+Mieczysław Smolarski;1888;POL;POL;Mieczys%C5%82aw_Smolarski
+Miguel Mendonca;1973;ZWE;ZWE;Miguel_Mendon%C3%A7a
+Miha Remec;1928;SVN;SVN;Miha_Remec
+Mihu Dragomir;1919;ROU;ROU;Mihu_Dragomir
+Mika Hämäläinen;1991;FIN;FIN;https://mikakalevi.com/
+Mikael Niemi;1959;SWE;SWE;Mikael_Niemi
+Mike Allen;1969;USA;USA;Mike_Allen_(poet)
+Mike Ashley;1948;GBR;GBR;Mike_Ashley_(writer)
+Mike Brotherton;1968;USA;USA;Mike_Brotherton
+Mike Carey;1959;GBR;GBR;Mike_Carey_(writer)
+Mike Jansen;1969;NLD;NLD;http://www.meznir.info
+Mike McQuay;1949;USA;USA;Mike_McQuay
+Mike Resnick;1942;USA;USA;Mike_Resnick
+Mike Shepherd;1947;USA;USA;Mike_Shepherd_(author)
+Mike Wilson;1974;USA;USA;Mike_Wilson_(writer,_born_1974)
+Mikhail Bulgakov;1891;UKR;UKR;Mikhail_Bulgakov
+Mikhail Tyrin;1970;RUS;RUS;Mikhail_Tyrin
+Mikhail Veller;1948;UKR;EST;Mikhail_Veller
+Mikhail Yemtsev;1930;UKR;RUS;Mikhail_Yemtsev
+Milan Šufflay;1879;HRV;HRV;Milan_%C5%A0ufflay
+Mildred Ames;1919;USA;USA;Mildred_Ames
+Mildred Clingerman;1918;USA;USA;Mildred_Clingerman
+Mildred Downey Broxon;1944;USA;USA;Mildred_Downey_Broxon
+Miles J. Breuer;1889;USA;USA;Miles_Breuer
+Milorad Pavić;1929;SRB;SRB;Milorad_Pavi%C4%87
+Miloslav Švandrlík;1932;CZE;CZE;Miloslav_%C5%A0vandrl%C3%ADk
+Milovan Glišić;1847;SRB;SRB;Milovan_Gli%C5%A1i%C4%87
+Milton A. Rothman;1919;USA;USA;Milton_A._Rothman
+Milutin Milanković;1879;HRV;HRV;Milutin_Milankovi%C4%87
+Mimi Mondal;2000;IND;IND;Mimi_Mondal
+Miquel Barceló;1948;ESP;ESP;Miquel_Barcel%C3%B3_(writer)
+Mircea Cărtărescu;1956;ROU;ROU;Mircea_C%C4%83rt%C4%83rescu
+Mircea Nedelciu;1950;ROU;ROU;Mircea_Nedelciu
+Mircea Opriță;1943;ROU;ROU;Mircea_Opri%C8%9B%C4%83
+Miriam Allen deFord;1888;USA;USA;Miriam_Allen_deFord
+Miroljub Todorović;1940;MKD;SRB;Miroljub_Todorovi%C4%87
+Miroslav Žamboch;1972;CZE;CZE;Miroslav_%C5%BDamboch
+Mirosław Jabłoński;1955;POL;POL;http://jablonski.ceti.pl/
+Mitch Berman;1956;USA;USA;Mitch_Berman
+Mitchel Scanlon;1950;GBR;GBR;Mitchel_Scanlon
+Mitchell Smith;1935;USA;USA;Mitchell_Smith_(author)
+Mizuhito Akiyama;1971;JPN;JPN;Mizuhito_Akiyama
+Modesto Brocos Gómez;1852;ESP;ESP;Modesto_Brocos
+Moira Young;1959;CAN;CAN;Moira_Young
+Molly Gloss;1944;USA;USA;Molly_Gloss
+Monica Byrne;1981;USA;USA;Monica_Byrne
+Monica Hughes;1925;GBR;CAN;Monica_Hughes
+Monika Maron;1941;DEU;DEU;Monika_Maron
+Monteiro Lobato;1882;BRA;BRA;Monteiro_Lobato
+Montse Watkins;1955;ESP;ESP;Montse_Watkins
+Mordecai Roshwald;1921;UKR;USA;Mordecai_Roshwald
+Morgan Llywelyn;1937;USA;IRL;Morgan_Llywelyn
+Morgan Robertson;1861;USA;USA;Morgan_Robertson
+Morgane Stankiewiez;1986;FRA;FRA;https://mort-gane.fr/
+Morley Roberts;1857;GBR;GBR;Morley_Roberts
+Morris Scott Dollens;1920;USA;USA;Morris_Scott_Dollens
+Mort Weisinger;1915;USA;USA;Mort_Weisinger
+Motoko Arai;1960;JPN;JPN;Motoko_Arai
+Mu Ming;1988;CHN;CHN;https://metamin.me/
+Muhammed Zafar Iqbal;1952;BGD;PAK;Muhammed_Zafar_Iqbal
+Mur Lafferty;1973;USA;USA;Mur_Lafferty
+Murray Leinster;1896;USA;USA;Murray_Leinster
+Musashi Kanbe;1948;JPN;JPN;Musashi_Kanbe
+Mustafá Ali Kanso;1960;BRA;BRA;http://www.mustafa.com.br
+Mykola Rudenko;1920;UKR;UKR;Mykola_Rudenko
+Mynampati Bhaskar;1945;IND;IND;Mynampati_Bhaskar
+Márcio Souza;1946;BRA;BRA;M%C3%A1rcio_Souza_(writer)
+Mária Szepes;1908;HUN;HUN;M%C3%A1ria_Szepes
+N. K. Jemisin;1972;USA;USA;N._K._Jemisin
+N. Lee Wood;1955;USA;USA;N._Lee_Wood
+Nabil Farouk;1956;EGY;EGY;Nabil_Farouk
+Nagaru Tanigawa;1970;JPN;JPN;Nagaru_Tanigawa
+Nalo Hopkinson;1960;JAM;CAN;Nalo_Hopkinson
+Nancy Asire;1945;USA;USA;Nancy_Asire
+Nancy Etchemendy;1952;USA;USA;Nancy_Etchemendy
+Nancy Farmer;1941;USA;USA;Nancy_Farmer
+Nancy Holder;1953;USA;USA;Nancy_Holder
+Nancy Kress;1948;USA;USA;Nancy_Kress
+Nancy Springer;1948;USA;USA;Nancy_Springer
+Nancy Werlin;1961;USA;USA;Nancy_Werlin
+Naomi Alderman;1974;GBR;GBR;Naomi_Alderman
+Naomi Kritzer;1973;USA;USA;Naomi_Kritzer
+Naomi Mitchison;1897;GBR;GBR;Naomi_Mitchison
+Naomi Novik;1973;USA;USA;Naomi_Novik
+Nat Schachner;1895;USA;USA;Nat_Schachner
+Natalia Zabila;1903;RUS;RUS;Natalia_Zabila
+Nate Kenyon;1971;USA;USA;Nate_Kenyon
+Nathalie Henneberg;1910;GEO;FRA;Nathalie_Henneberg
+Nathalie Le Gendre;1970;FRA;FRA;https://nathalie-le-gendre.com
+Nathan Larson;1970;USA;USA;Nathan_Larson_(musician)
+Nathan Lowell;1952;USA;USA;Nathan_Lowell
+Nathaniel Hawthorne;1804;USA;USA;Nathaniel_Hawthorne
+Neal Asher;1961;GBR;GBR;Neal_Asher
+Neal Shusterman;1962;USA;USA;Neal_Shusterman
+Neal Stephenson;1959;USA;USA;Neal_Stephenson
+Neil Barron;1934;USA;USA;Neil_Barron
+Neil Gaiman;1960;GBR;USA;Neil_Gaiman
+Neil R. Jones;1909;USA;USA;Neil_R._Jones
+Neil Thomas;1975;FRA;FRA;https://neilthomas.fr
+Neil Wynn Williams;1864;GBR;GBR;Neil_Wynn_Williams
+Nelisa Mchunu;1992;ZAF;ZAF;Nelisa_Mchunu
+Nelson S. Bond;1908;USA;USA;Nelson_S._Bond
+Nevil Shute;1899;GBR;GBR;Nevil_Shute
+Ney Yépez Cortés;1968;ECU;ECU;Ney_Y%C3%A9pez_Cort%C3%A9s
+Ni Kuang;1935;USA;USA;Ni_Kuang
+Niall Harrison;1980;GBR;GBR;Niall_Harrison
+Nicholas Fisk;1923;GBR;GBR;Nicholas_Fisk_(author)
+Nick Boddie Williams;1906;USA;USA;Nick_Boddie_Williams
+Nick Harkaway;1972;GBR;GBR;Nick_Harkaway
+Nick Lowe;1956;GBR;GBR;Nick_Lowe_(classicist)
+Nick Mamatas;1972;USA;USA;Nick_Mamatas
+Nick Perumov;1963;RUS;USA;Nick_Perumov
+Nick Pollotta;1954;USA;USA;Nick_Pollotta
+Nick Pope;1965;GBR;GBR;Nick_Pope_(journalist)
+Nick Sagan;1970;USA;USA;Nick_Sagan
+Nicky Drayden;1950;USA;USA;https://www.nickydrayden.com
+Nicola Griffith;1960;GBR;USA;Nicola_Griffith
+Nicole Luiken;1971;CAN;CAN;Nicole_Luiken
+Nicoletta Vallorani;1959;ITA;ITA;Nicoletta_Vallorani
+Nictzin Dyalhis;1873;USA;USA;Nictzin_Dyalhis
+Niel Bushnell;1970;GBR;GBR;Niel_Bushnell
+Niels Christian Brøgger;1914;NOR;NOR;Niels_Christian_Br%C3%B8gger
+Nieves Delgado;1968;ESP;ESP;Nieves_Delgado
+Nigel Findley;1959;USA;USA;Nigel_Findley
+Nigel Kneale;1922;GBR;GBR;Nigel_Kneale
+Nikhil Mohan Pattnaik;1949;IND;IND;Nikhil_Mohan_Pattnaik
+Nikolai Aseev;1889;RUS;RUS;Nikolai_Aseyev
+Nikolai von Michalewsky;1931;DEU;DEU;Mark_Brandis
+Nikolay Nosov;1908;UKR;UKR;Nikolay_Nosov
+Nina Allan;1966;GBR;GBR;Nina_Allan
+Nina Dulleck;1975;DEU;DEU;http://www.ninadulleck.de/
+Nina Kiriki Hoffman;1955;USA;USA;Nina_Kiriki_Hoffman
+Nino Cipri;1985;USA;USA;Nino_Cipri
+Nir Yaniv;1972;ISR;ISR;Nir_Yaniv
+Nisi Shawl;1955;USA;USA;Nisi_Shawl
+Nnedi Okorafor;1974;USA;USA;Nnedi_Okorafor
+Noel Loomis;1905;USA;USA;Noel_Loomis
+Nora Roberts;1950;USA;USA;Nora_Roberts
+Norio Nakai;1952;JPN;JPN;Norio_Nakai
+Norma K. Hemming;1928;GBR;GBR;Norma_K._Hemming
+Norman L. Knight;1895;USA;USA;Norman_L._Knight
+Norman Spinrad;1940;USA;USA;Norman_Spinrad
+Noëlle Roger;1874;CHE;CHE;No%C3%ABlle_Roger
+Nuria C. Botey;1977;ESP;ESP;Nuria_C._Botey
+Octavia E. Butler;1947;USA;USA;Octavia_E._Butler
+Octavio Aragão;1964;BRA;BRA;https://www.octavioaragao.com.br/
+Oksana;1982;FRA;FRA;https://www.oksana.fr
+Olaf Stapledon;1886;GBR;GBR;Olaf_Stapledon
+Oleh Avramenko;1967;UKR;UKR;http://avalon.gondor.ru/
+Oles Berdnyk;1926;UKR;UKR;Oles_Berdnyk
+Olga Gromyko;1978;UKR;BLR;http://volha.ru
+Olga Larionova;1935;RUS;RUS;Olga_Larionova
+Oliver Onions;1873;GBR;GBR;Oliver_Onions
+Olivier Gechter;1972;FRA;FRA;http://gechter.org/blog
+Olivier Paquet;1973;FRA;FRA;Olivier_Paquet
+Olivier Sillig;1951;CHE;CHE;https://www.oliviersillig.ch/
+Olivier Zarrouati;1958;FRA;FRA;Olivier_Zarrouati
+Olof Möller;1923;LVA;SWE;Olof_M%C3%B6ller
+Ondřej Neff;1945;CZE;CZE;Ond%C5%99ej_Neff
+Orson Scott Card;1951;USA;USA;Orson_Scott_Card
+Oscar Hurtado;1919;CUB;CUB;Oscar_Hurtado
+Oscar J. Friend;1897;USA;USA;Oscar_J._Friend
+Oskar Hoffmann;1866;DEU;DEU;Oskar_Hoffmann_(author)
+Ota Hofman;1928;CZE;CZE;Ota_Hofman
+Otakar Batlička;1895;CZE;CZE;Otakar_Batli%C4%8Dka
+Otfrid von Hanstein;1869;DEU;DEU;Otfrid_von_Hanstein
+Otis Adelbert Kline;1891;USA;USA;Otis_Adelbert_Kline
+Otto Basil;1901;AUT;AUT;Otto_Basil
+Otto Binder;1911;USA;USA;Otto_Binder
+Otto Willi Gail;1896;DEU;DEU;Otto_Willi_Gail
+Otto Witt;1875;SWE;NOR;Otto_Witt
+Ovid S. Crohmălniceanu;1921;ROU;ROU;Ovid_S._Crohm%C4%83lniceanu
+Ovidiu Pecican;1959;ROU;ROU;Ovidiu_Pecican
+Owain Owain;1929;GBR;GBR;Owain_Owain
+P. C. Hodgell;1951;USA;USA;P._C._Hodgell
+P. C. Jersild;1935;SWE;SWE;P._C._Jersild
+P. D. Cacek;1951;USA;USA;P._D._Cacek
+P. D. James;1920;GBR;GBR;P._D._James
+P. J. Plauger;1944;USA;USA;P._J._Plauger
+P. Schuyler Miller;1912;USA;USA;P._Schuyler_Miller
+Pablo Hidalgo;1974;CHL;CAN;Pablo_Hidalgo
+Pablo Tusset;1965;ESP;ESP;Pablo_Tusset
+Paddy Chayefsky;1923;USA;USA;Paddy_Chayefsky
+Pamela Dean;1953;USA;USA;Pamela_Dean
+Pamela Sargent;1948;USA;USA;Pamela_Sargent
+Pamela Zoline;1941;USA;USA;Pamela_Zoline
+Pan Jiazheng;1927;CHN;CHN;Pan_Jiazheng
+Paolo Bacigalupi;1972;USA;USA;Paolo_Bacigalupi
+Paolo Brera;1949;ITA;ITA;Paolo_Brera
+Paolo Volponi;1924;ITA;ITA;Paolo_Volponi
+Parke Godwin;1929;USA;USA;Parke_Godwin
+Paschal Grousset;1844;FRA;FRA;Paschal_Grousset
+Pascual Enguídanos;1923;ESP;ESP;Pascual_Engu%C3%ADdanos
+Pasi Ilmari Jääskeläinen;1966;FIN;FIN;http://pasiilmarijaaskelainen.wordpress.com/
+Pat Cadigan;1953;USA;USA;Pat_Cadigan
+Pat Frank;1907;USA;USA;Pat_Frank
+Pat Murphy;1955;USA;USA;Pat_Murphy_(writer)
+Patrice Lajoye;1974;FRA;FRA;Patrice_Lajoye
+Patricia Anthony;1947;USA;USA;Patricia_Anthony
+Patricia Bernard;1942;AUS;AUS;Patricia_Bernard
+Patricia Wrede;1953;USA;USA;Patricia_Wrede
+Patrick Carman;1966;USA;USA;Patrick_Carman
+Patrick Jennings;1962;USA;USA;Patrick_Jennings_(writer)
+Patrick Meadows;1934;USA;ESP;https://www.patrick-meadows.com/
+Patrick Moore;1923;GBR;GBR;Patrick_Moore
+Patrick Ness;1971;USA;USA;Patrick_Ness
+Patrick O'Leary;1952;USA;USA;Patrick_O%27Leary_(writer)
+Patrick Samphire;1971;GBR;GBR;https://patricksamphire.com/
+Patrick Tilley;1928;GBR;GBR;Patrick_Tilley
+Paul Adam;1862;FRA;FRA;Paul_Adam_(French_novelist)
+Paul Beorn;1977;FRA;FRA;https://paulbeorn.fr
+Paul Berna;1908;FRA;FRA;Paul_Berna
+Paul Black;1957;USA;USA;Paul_Black_(author)
+Paul Capon;1911;GBR;GBR;Paul_Capon
+Paul Chadwick;1902;USA;USA;Paul_Chadwick_(author)
+Paul Chafe;1965;CAN;CAN;Paul_Chafe
+Paul Cook;1950;USA;USA;Paul_Cook_(author)
+Paul Cornell;1967;GBR;GBR;Paul_Cornell
+Paul Davids;1947;USA;USA;Paul_Davids
+Paul Di Filippo;1954;USA;USA;Paul_Di_Filippo
+Paul E Cooley;1970;USA;USA;https://shadowpublications.com/
+Paul Edwin Zimmer;1943;USA;USA;Paul_Edwin_Zimmer
+Paul Erickson;1920;GBR;GBR;Paul_Erickson_(screenwriter)
+Paul Ernst;1899;USA;USA;Paul_Ernst_(American_writer)
+Paul Eugen Sieg;1899;DEU;DEU;Paul_Eugen_Sieg
+Paul Féval;1860;FRA;FRA;Paul_F%C3%A9val,_fils
+Paul Harland;1960;NLD;NLD;Paul_Harland
+Paul J. McAuley;1955;GBR;GBR;Paul_J._McAuley
+Paul Kupperberg;1955;USA;USA;Paul_Kupperberg
+Paul Levinson;1947;USA;USA;Paul_Levinson
+Paul Magrs;1968;GBR;GBR;Paul_Magrs
+Paul Marlowe;1969;CAN;CAN;Paul_Marlowe
+Paul Melko;1968;USA;USA;Paul_Melko
+Paul Ohl;1940;FRA;CAN;http://www.paul-ohl.com/
+Paul Osborne Williams;1935;USA;USA;Paul_O._Williams
+Paul Park;1954;USA;USA;Paul_Park
+Paul Preuss;1942;USA;USA;Paul_Preuss_(author)
+Paul S. Kemp;1969;USA;USA;Paul_S._Kemp
+Paul Scheerbart;1863;POL;POL;Paul_Scheerbart
+Paul Schneider;1923;USA;USA;Paul_Schneider_(screenwriter)
+Paul van Herck;1938;BEL;BEL;Paul_van_Herck
+Paul W. Fairman;1916;USA;USA;Paul_W._Fairman
+Paula E. Downing;1951;USA;USA;Paula_E._Downing
+Pauline Ashwell;1928;GBR;GBR;Pauline_Ashwell
+Pauline Gedge;1945;NZL;CAN;Pauline_Gedge
+Paulo Coelho;1947;BRA;BRA;Paulo_Coelho
+Pavel Klushantsev;1910;RUS;RUS;Pavel_Klushantsev
+Pavel Kornev;1978;RUS;RUS;http://pavel-kornev.ru/
+Pavel Kosatík;1962;CZE;CZE;http://kosatik.eu/
+Pavel Shumil;1957;RUS;RUS;Pavel_Shumil
+Pavel Vezhinov;1914;BGR;BGR;Pavel_Vezhinov
+Pedro Sienna;1893;CHL;CHL;Pedro_Sienna
+Per Wahlöö;1926;SWE;SWE;Per_Wahl%C3%B6%C3%B6
+Percy Greg;1836;GBR;GBR;Percy_Greg
+Pesakh Rafaelovich Amnuél;1944;AZE;RUS;Paul_Amnu%C3%A9l
+Pete McTighe;1972;GBR;GBR;Pete_McTighe
+Peter Clines;1969;USA;USA;Peter_Clines
+Peter Crowther;1949;GBR;GBR;Peter_Crowther
+Peter Darvill-Evans;1954;GBR;GBR;Peter_Darvill-Evans
+Peter David;1956;USA;USA;Peter_David
+Peter Dickinson;1927;ZMB;ZMB;Peter_Dickinson
+Peter Emshwiller;1959;USA;USA;Peter_Emshwiller
+Peter F. Hamilton;1960;GBR;GBR;Peter_F._Hamilton
+Peter Fisher;1944;USA;USA;Peter_Fisher_(activist)
+Peter George;1924;GBR;GBR;Peter_George_(author)
+Peter Harness;1976;GBR;GBR;Peter_Harness
+Peter Heck;1941;USA;USA;Peter_Heck
+Peter Hohmann;1978;DEU;DEU;https://peterhohmann.net/
+Peter Hyams;1943;USA;USA;Peter_Hyams
+Peter Kolosimo;1922;ITA;ITA;Peter_Kolosimo
+Peter Marginter;1934;AUT;AUT;Peter_Marginter
+Peter Morwood;1956;GBR;GBR;Peter_Morwood
+Peter Nilson;1937;SWE;SWE;Peter_Nilson
+Peter Phillips;1920;GBR;GBR;Peter_Phillips_(author)
+Peter R. Newman;1926;GBR;GBR;Peter_R._Newman
+Peter Schaap;1946;NLD;NLD;Peter_Schaap
+Peter Schattschneider;1950;AUT;AUT;Peter_Schattschneider
+Peter Schmidt;1944;DEU;DEU;http://peter-schmidt.kulturserver-nrw.de/
+Peter Straub;1943;USA;USA;Peter_Straub
+Peter Telep;1965;USA;USA;Peter_Telep
+Peter Tennant;2000;USA;USA;Peter_Tennant
+Peter Tieryas;1979;KOR;USA;Peter_Tieryas
+Peter Watts;1958;CAN;CAN;Peter_Watts_(author)
+Phil Ford;1950;GBR;GBR;Phil_Ford_(writer)
+Philip E. High;1914;GBR;GBR;Philip_E._High
+Philip Francis Nowlan;1888;USA;USA;Philip_Francis_Nowlan
+Philip José Farmer;1918;USA;USA;Philip_Jos%C3%A9_Farmer
+Philip K. Dick;1928;USA;USA;Philip_K._Dick
+Philip Kerr;1956;GBR;GBR;Philip_Kerr
+Philip Palmer;1960;GBR;GBR;Philip_Palmer
+Philip Reeve;1966;GBR;GBR;Philip_Reeve
+Philip Roth;1933;USA;USA;Philip_Roth
+Philip Verrill Mighels;1869;USA;USA;Philip_Verrill_Mighels
+Philip Wylie;1902;USA;USA;Philip_Wylie
+Philippa Ballantine;1971;NZL;NZL;Philippa_Ballantine
+Philippe Curval;1929;FRA;FRA;Philippe_Curval
+Philippe Ebly;1920;FRA;BEL;Philippe_Ebly
+Philippe Goy;1941;FRA;FRA;Philippe_Goy
+Philippe Ward;1958;FRA;FRA;Philippe_Ward
+Philippe-Aubert Côté;1981;CAN;CAN;https://philippeaubertcote.com/
+Phillip Mann;1942;GBR;GBR;Phillip_Mann
+Phillip P. Peterson;1977;DEU;DEU;Phillip_P._Peterson
+Phyllis Eisenstein;1946;USA;USA;Phyllis_Eisenstein
+Phyllis Gotlieb;1926;CAN;CAN;Phyllis_Gotlieb
+Pierce Brown;1988;USA;USA;Pierce_Brown
+Pierre Barbet;1925;FRA;FRA;Pierre_Barbet_(writer)
+Pierre Billon;1937;CHE;CAN;Pierre_Billon_(writer)
+Pierre Bordage;1955;FRA;FRA;Pierre_Bordage
+Pierre Boulle;1912;FRA;FRA;Pierre_Boulle
+Pierre Ouellette;1945;USA;USA;Pierre_Ouellette
+Pierre Pelot;1945;FRA;FRA;Pierre_Pelot
+Pierre Pevel;1968;FRA;FRA;Pierre_Pevel
+Pierre Stolze;1952;FRA;FRA;Pierre_Stolze
+Pierre Versins;1923;FRA;FRA;Pierre_Versins
+Piers Anthony;1934;GBR;USA;Piers_Anthony
+Piper J. Drake;1976;USA;USA;Piper_J._Drake
+PJ Haarsma;1964;CAN;USA;PJ_Haarsma
+Platon Obukhov;1968;RUS;RUS;Platon_Obukhov
+Poul Anderson;1926;USA;USA;Poul_Anderson
+Price Day;1907;USA;USA;Price_Day
+Primo Levi;1919;ITA;ITA;Primo_Levi
+Péter Hédervári;1931;HUN;HUN;P%C3%A9ter_H%C3%A9derv%C3%A1ri
+Péter Kuczka;1923;HUN;HUN;P%C3%A9ter_Kuczka
+Péter Zsoldos;1930;HUN;HUN;P%C3%A9ter_Zsoldos
+qntm;1983;GBR;GBR;Qntm
+R. A. Lafferty;1914;USA;USA;R._A._Lafferty
+R. A. MacAvoy;1949;USA;USA;R._A._MacAvoy
+R. A. Salvatore;1959;USA;USA;R._A._Salvatore
+R. B. Lemberg;1976;UKR;USA;R._B._Lemberg
+R. C. Sherriff;1896;GBR;GBR;R._C._Sherriff
+R. DeWitt Miller;1910;USA;USA;R._DeWitt_Miller
+R. F. Lucchetti;1930;BRA;BRA;R._F._Lucchetti
+R. Garcia y Robertson;1949;USA;USA;R._Garcia_y_Robertson
+R. J. Anderson;1970;UGA;CAN;R._J._Anderson
+R. L. Stine;1943;USA;USA;R._L._Stine
+R. M. Lamming;1949;GBR;GBR;R._M._Lamming
+R. W. Mackelworth;1930;GBR;GBR;R._W._Mackelworth
+Rachel Aaron;1982;USA;USA;Rachel_Aaron
+Rachel Caine;1962;USA;USA;Rachel_Caine
+Rachel Cohn;1968;USA;USA;Rachel_Cohn
+Rachel Cosgrove Payes;1922;USA;USA;Rachel_Cosgrove_Payes
+Rachel Pollack;1945;USA;USA;Rachel_Pollack
+Rachel Swirsky;1982;USA;USA;Rachel_Swirsky
+Radoje Domanović;1873;SRB;SRB;Radoje_Domanovi%C4%87
+Rae Carson;1973;USA;USA;Rae_Carson
+Rafael Bernal;1915;MEX;MEX;Rafael_Bernal
+Rafael Marín;1959;ESP;ESP;Rafael_Mar%C3%ADn
+Rafael Sabatini;1875;ITA;ITA;Rafael_Sabatini
+Rafał A. Ziemkiewicz;1964;POL;POL;Rafa%C5%82_Ziemkiewicz
+Rafał Dębski;1969;POL;POL;Rafa%C5%82_D%C4%99bski
+Rainer Erler;1933;DEU;DEU;Rainer_Erler
+Ralf Parland;1914;RUS;FIN;Ralf_Parland
+Ralph McInerny;1929;USA;USA;Ralph_McInerny
+Ralph Williams;1914;USA;USA;Ralph_Williams_(author)
+Ramez Naam;2000;EGY;USA;Ramez_Naam
+Ramsey Campbell;1946;GBR;GBR;Ramsey_Campbell
+Randall Garrett;1927;USA;USA;Randall_Garrett
+Raphael Draccon;1981;BRA;BRA;Raphael_Draccon
+Raphaël Granier de Cassagnac;1973;FRA;FRA;Rapha%C3%ABl_Granier_de_Cassagnac
+Raven Oak;1977;USA;USA;Raven_Oak
+Ray Aldridge;1948;USA;USA;Ray_Aldridge
+Ray Bradbury;1920;USA;USA;Ray_Bradbury
+Ray Cummings;1887;USA;USA;Ray_Cummings
+Ray Loriga;1967;ESP;ESP;Ray_Loriga
+Ray Nelson;1931;USA;USA;Ray_Nelson_(author)
+Ray Russell;1924;USA;GBR;Ray_Russell_(writer)
+Raymond Abrashkin;1911;USA;USA;Raymond_Abrashkin
+Raymond Arthur Palmer;1910;USA;USA;Raymond_A._Palmer
+Raymond E. Banks;1918;USA;USA;Raymond_E._Banks
+Raymond F. Jones;1915;USA;USA;Raymond_F._Jones
+Raymond Harold Sawkins;1923;GBR;GBR;Raymond_Harold_Sawkins
+Raymond Kurzweil;1948;USA;USA;Ray_Kurzweil
+Raymond Z. Gallun;1911;USA;USA;Raymond_Z._Gallun
+Rebecca Kim Wells;2000;USA;USA;https://rebeccawellswrites.com/
+Rebecca Levene;2000;GBR;GBR;Rebecca_Levene
+Rebecca M. Meluch;1956;USA;USA;Rebecca_M._Meluch
+Rebecca Moesta;1956;DEU;USA;Rebecca_Moesta
+Rebecca Ore;1948;USA;USA;Rebecca_Ore
+Rebecca Roanhorse;1971;USA;USA;Rebecca_Roanhorse
+Rebecca Stead;1968;USA;USA;Rebecca_Stead
+Redd Boggs;1921;USA;USA;Redd_Boggs
+Reginald Alec Martin;1908;GBR;GBR;Reginald_Alec_Martin
+Reginald Bretnor;1911;RUS;USA;Reginald_Bretnor
+Reki Kawahara;1974;JPN;JPN;Reki_Kawahara
+René Barjavel;1911;FRA;FRA;Ren%C3%A9_Barjavel
+René Echevarria;1950;USA;USA;Ren%C3%A9_Echevarria
+Rex Stout;1886;USA;USA;Rex_Stout
+Rex Warner;1905;GBR;GBR;Rex_Warner
+Rhoda Broughton;1840;GBR;GBR;Rhoda_Broughton
+Rhondi A. Vilott Salsitz;1949;USA;CAN;Rhondi_A._Vilott_Salsitz
+Rhys Hughes;1966;GBR;GBR;Rhys_Hughes
+Ricardo Montserrat;1954;FRA;FRA;Ricardo_Montserrat
+Richard A. Lovett;1953;USA;USA;Richard_A._Lovett
+Richard A. Lupoff;1935;USA;USA;Richard_A._Lupoff
+Richard Adams;1920;GBR;GBR;Richard_Adams
+Richard Bowes;1944;USA;USA;Richard_Bowes
+Richard Bowker;1950;USA;USA;Richard_Bowker_(writer)
+Richard C. Meredith;1937;USA;USA;Richard_C._Meredith
+Richard Calder;1956;GBR;GBR;Richard_Calder_(writer)
+Richard Canal;1953;FRA;FRA;Richard_Canal
+Richard Christian Matheson;1953;USA;USA;Richard_Christian_Matheson
+Richard Chwedyk;1955;USA;USA;Richard_Chwedyk
+Richard D. Nolane;1955;FRA;FRA;http://www.richardnolane.com
+Richard Dean Starr;1968;USA;USA;Richard_Dean_Starr
+Richard Delap;1942;USA;USA;Richard_Delap
+Richard E. Geis;1927;USA;USA;Richard_E._Geis
+Richard Foss;1956;USA;USA;Richard_Foss
+Richard Garfinkle;1961;USA;USA;Richard_Garfinkle
+Richard Gordon;1947;GBR;GBR;Richard_Gordon_(Scottish_author)
+Richard Grant;1952;USA;USA;Richard_Grant_(author)
+Richard Harland;1947;GBR;GBR;Richard_Harland
+Richard Jefferies;1848;GBR;GBR;Richard_Jefferies
+Richard Jobson;1960;GBR;GBR;Richard_Jobson_(television_presenter)
+Richard K. Morgan;1965;GBR;GBR;Richard_K._Morgan
+Richard Kadrey;1957;USA;USA;Richard_Kadrey
+Richard Laymon;1947;USA;USA;Richard_Laymon
+Richard Martin Stern;1915;USA;USA;Richard_Martin_Stern
+Richard Matheson;1926;USA;USA;Richard_Matheson
+Richard McKenna;1913;USA;USA;Richard_McKenna
+Richard Parks;1955;USA;USA;Richard_Parks_(author)
+Richard Paul Russo;1954;USA;USA;Richard_Paul_Russo
+Richard Powers;1957;USA;USA;Richard_Powers
+Richard Preston;1954;USA;USA;Richard_Preston
+Richard Purtill;1931;USA;USA;Richard_Purtill
+Richard Sharpe Shaver;1907;USA;USA;Richard_Sharpe_Shaver
+Richard Wilson;1920;USA;USA;Richard_Wilson_(author)
+Rick Kennett;1956;AUS;AUS;Rick_Kennett
+Rick Moody;1961;USA;USA;Rick_Moody
+Rick Raphael;1919;USA;USA;Rick_Raphael
+Rick Shelley;1947;USA;USA;Rick_Shelley
+Rick Yancey;1962;USA;USA;Rick_Yancey
+Rimi Barnali Chatterjee;1969;GBR;GBR;Rimi_B._Chatterjee
+Risto Isomäki;1961;FIN;FIN;Risto_Isom%C3%A4ki
+Rita Carla Francesca Monticelli;1974;ITA;ITA;Rita_Carla_Francesca_Monticelli
+Rivers Solomon;1989;USA;USA;Rivers_Solomon
+Rob Chilson;1945;USA;USA;Rob_Chilson
+Rob Payne;1973;CAN;CAN;Rob_Payne
+Rob Swigart;1941;USA;USA;Rob_Swigart
+Robert "Bob" Martin;1948;USA;USA;Robert_Martin_(editor)
+Robert A. Heinlein;1907;USA;USA;Robert_A._Heinlein
+Robert A. Metzger;1956;USA;USA;Robert_A._Metzger
+Robert Abernathy;1924;USA;USA;Robert_Abernathy
+Robert Adams;1933;USA;USA;Robert_Adams_(science_fiction_writer)
+Robert Ames Bennet;1870;USA;USA;Robert_Ames_Bennet
+Robert Anton Wilson;1932;USA;USA;Robert_Anton_Wilson
+Robert Asprin;1946;USA;USA;Robert_Asprin
+Robert Augustine Ward Lowndes;1916;USA;USA;Robert_A._W._Lowndes
+Robert Banks Stewart;1931;GBR;GBR;Robert_Banks_Stewart
+Robert Barbour Johnson;1907;USA;USA;Robert_Barbour_Johnson
+Robert Barr;1849;GBR;GBR;Robert_Barr_(writer,_born_1849)
+Robert Bloch;1917;USA;USA;Robert_Bloch
+Robert Buettner;1947;USA;USA;Robert_Buettner
+Robert C. O'Brien;1918;USA;USA;Robert_C._O%27Brien_(author)
+Robert Charles Wilson;1953;USA;CAN;Robert_Charles_Wilson
+Robert Charroux;1909;FRA;FRA;Robert_Charroux
+Robert Clouse;1928;USA;USA;Robert_Clouse
+Robert Conquest;1917;GBR;USA;Robert_Conquest
+Robert Conroy;1938;USA;USA;Robert_Conroy
+Robert Coulson;1928;USA;USA;Robert_Coulson
+Robert Don Hughes;1949;USA;USA;Robert_Don_Hughes
+Robert Duncan Milne;1844;GBR;USA;Robert_Duncan_Milne
+Robert E. Howard;1906;USA;USA;Robert_E._Howard
+Robert E. Vardeman;1947;USA;USA;Robert_E._Vardeman
+Robert F. Young;1915;USA;USA;Robert_F._Young
+Robert Frazier;1951;USA;USA;Robert_Frazier_(writer)
+Robert Graves;1895;GBR;GBR;Robert_Graves
+Robert H. Reid;1965;USA;USA;Robert_Reid_(author)
+Robert Harris;1957;GBR;GBR;Robert_Harris_(novelist)
+Robert Holdstock;1948;GBR;GBR;Robert_Holdstock
+Robert Holmes;1926;GBR;GBR;Robert_Holmes_(scriptwriter)
+Robert Hugh Benson;1871;GBR;GBR;Robert_Hugh_Benson
+Robert J. Sawyer;1960;CAN;CAN;Robert_J._Sawyer
+Robert J. Szmidt;1962;POL;POL;Robert_J._Szmidt
+Robert Jackson Bennett;1984;USA;USA;Robert_Jackson_Bennett
+Robert Jordan;1948;USA;USA;Robert_Jordan
+Robert Kirkman;1978;USA;USA;Robert_Kirkman
+Robert Kraft;1869;DEU;DEU;Robert_Kraft_(writer)
+Robert L. Forward;1932;USA;USA;Robert_L._Forward
+Robert Leeson;1928;GBR;GBR;Robert_Leeson
+Robert Levy;1974;USA;USA;Robert_Levy_(author)
+Robert Lory;1936;USA;USA;Robert_Lory
+Robert Ludlum;1927;USA;USA;Robert_Ludlum
+Robert Merle;1908;DZA;FRA;Robert_Merle
+Robert Moore Williams;1907;USA;USA;Robert_Moore_Williams
+Robert N. Charrette;1953;USA;USA;Robert_N._Charrette
+Robert P. Mills;1920;USA;USA;Robert_P._Mills
+Robert Peary;1856;USA;USA;Robert_Peary
+Robert Perry;2000;GBR;GBR;Robert_Perry_(writer)
+Robert Potter;1831;IRL;AUS;Robert_Potter_(author)
+Robert Presslie;1920;GBR;GBR;Robert_Presslie
+Robert R. McCammon;1952;USA;USA;Robert_R._McCammon
+Robert Rankin;1949;GBR;GBR;Robert_Rankin
+Robert Reed;1956;USA;USA;Robert_Reed_(author)
+Robert S. Richardson;1902;USA;USA;Robert_S._Richardson
+Robert Shea;1933;USA;USA;Robert_Shea
+Robert Shearman;1970;GBR;GBR;Robert_Shearman
+Robert Sheckley;1928;USA;USA;Robert_Sheckley
+Robert Silverberg;1935;USA;USA;Robert_Silverberg
+Robert Sloman;1926;GBR;GBR;Robert_Sloman
+Robert Smythe Hichens;1864;GBR;GBR;Robert_Hichens_(writer)
+Robert Spencer Carr;1909;USA;USA;Robert_Spencer_Carr
+Robert T. Jeschonek;1965;USA;USA;Robert_T._Jeschonek
+Robert Thurston;1936;USA;USA;Robert_Thurston_(novelist)
+Robert Tine;1954;USA;USA;Robert_Tine
+Robert W. Chambers;1865;USA;USA;Robert_W._Chambers
+Robert W. Wood;1868;USA;USA;Robert_W._Wood
+Robert Weinberg;1946;USA;USA;Robert_Weinberg_(author)
+Robert Westall;1929;GBR;GBR;Robert_Westall
+Robert Zemeckis;1952;USA;USA;Robert_Zemeckis
+Robert Zubrin;1952;USA;USA;Robert_Zubrin
+Roberta Leigh;1926;GBR;GBR;Roberta_Leigh
+Roberta Rogow;1942;USA;USA;Roberta_Rogow
+Roberto de Sousa Causo;1965;BRA;BRA;http://rscauso.tripod.com/
+Roberto Quaglia;1962;ITA;ITA;Roberto_Quaglia
+Robin Cook;1940;USA;USA;Robin_Cook_(American_novelist)
+Robin Hardy;1952;CAN;CAN;Robin_Hardy_(Canadian_writer)
+Robin Hobb;1952;USA;USA;Robin_Hobb
+Robin Murphy;1957;USA;USA;Robin_Murphy
+Robin Wayne Bailey;1952;USA;USA;Robin_Wayne_Bailey
+Robin Wilson;1928;USA;USA;Robin_Wilson_(author)
+Rod Serling;1924;USA;USA;Rod_Serling
+Rog Phillips;1909;USA;USA;Rog_Phillips
+Roger Dee;1914;USA;USA;Roger_Dee
+Roger Elwood;1943;USA;USA;Roger_Elwood
+Roger Lee Vernon;1924;USA;USA;Roger_Lee_Vernon
+Roger MacBride Allen;1957;USA;USA;Roger_MacBride_Allen
+Roger Sherman Hoar;1887;USA;USA;Roger_Sherman_Hoar
+Roger Stern;1950;USA;USA;Roger_Stern
+Roger Zelazny;1937;USA;USA;Roger_Zelazny
+Rokeya Sakhawat Hossain;1880;BGD;BGD;Begum_Rokeya
+Roland C. Wagner;1960;DZA;FRA;Roland_Charles_Wagner
+Roland J. Green;1944;USA;USA;Roland_J._Green
+Roland Michel Tremblay;1972;CAN;CAN;Roland_Michel_Tremblay
+Roland Smith;1951;USA;USA;Roland_Smith
+Romain Lucazeau;1981;FRA;FRA;http://www.romainlucazeau.com
+Roman Frederick Starzl;1899;USA;USA;Roman_Frederick_Starzl
+Roman Umiastowski;1893;POL;POL;Roman_Umiastowski
+Romulus Bărbulescu;1925;ROU;ROU;Romulus_B%C4%83rbulescu
+Ron Butlin;1949;GBR;GBR;Ron_Butlin
+Ron Drummond;1959;USA;USA;Ron_Drummond
+Ron Goulart;1933;USA;USA;Ron_Goulart
+Ron Miller;1947;USA;USA;Ron_Miller_(artist_and_author)
+Ronald Anthony Cross;1937;USA;USA;Ronald_Anthony_Cross
+Ronald Chetwynd-Hayes;1919;GBR;GBR;Ronald_Chetwynd-Hayes
+Ronald Knox;1888;GBR;GBR;Ronald_Knox
+Ronald M. Hahn;1948;DEU;DEU;Ronald_M._Hahn
+Ronald Shusett;1935;USA;USA;Ronald_Shusett
+Ronald Wright;1948;GBR;CAN;Ronald_Wright
+Rory Barnes;1946;GBR;AUS;Rory_Barnes
+Rosa Rosà;1884;AUT;ITA;Rosa_Ros%C3%A0
+Rose Estes;1940;USA;USA;Rose_Estes
+Rosel George Brown;1926;USA;USA;Rosel_George_Brown
+Rosemary Edghill;1956;USA;USA;Rosemary_Edghill
+Rosemary Kirstein;1953;USA;USA;Rosemary_Kirstein
+Ross Rocklynne;1913;USA;USA;Ross_Rocklynne
+Roy C. Booth;1965;USA;USA;Roy_C._Booth
+Roy Kettle;1949;GBR;GBR;Roy_Kettle
+Roy Tackett;1925;USA;USA;Roy_Tackett
+Roz Kaveney;1949;GBR;GBR;Roz_Kaveney
+Rozenn Illiano;1985;FRA;FRA;https://www.onirography.com/
+Rubens Teixeira Scavone;1925;BRA;BRA;Rubens_Teixeira_Scavone
+Rudolf Heinrich Daumann;1896;POL;DEU;Rudolf_Heinrich_Daumann
+Rudolf Těsnohlídek;1882;CZE;CZE;Rudolf_T%C4%9Bsnohl%C3%ADdek
+Rudy Rucker;1946;USA;USA;Rudy_Rucker
+Rupert Matthews;1961;GBR;GBR;Rupert_Matthews
+Russell Blackford;1954;AUS;AUS;Russell_Blackford
+Russell Braddon;1921;AUS;AUS;Russell_Braddon
+Russell Hoban;1925;USA;GBR;Russell_Hoban
+Russell Kirk;1918;USA;USA;Russell_Kirk
+Russell Lutz;1968;USA;USA;Russell_Lutz
+Russell Payne;1971;GBR;GBR;Russell_Payne_(author)
+Russell R. Winterbotham;1904;USA;USA;Russell_R._Winterbotham
+Russell T Davies;1963;GBR;GBR;Russell_T_Davies
+Ruth Berman;1942;USA;USA;Ruth_Berman
+Ruth Nestvold;1958;USA;USA;Ruth_Nestvold
+Ruthven Todd;1914;GBR;GBR;Ruthven_Todd
+Ryk E. Spoor;1962;USA;USA;Ryk_E._Spoor
+Ryoki Inoue;1946;BRA;BRA;Ryoki_Inoue
+Rysa Walker;1961;USA;USA;Rysa_Walker
+Ryszard Głowacki;1937;POL;POL;Ryszard_G%C5%82owacki
+Ryu Mitsuse;1928;JPN;JPN;Ryu_Mitsuse
+Ryō Hanmura;1933;JPN;JPN;Ry%C5%8D_Hanmura
+Ryū Murakami;1952;JPN;JPN;Ry%C5%AB_Murakami
+Régis Messac;1893;FRA;FRA;R%C3%A9gis_Messac
+S. Andrew Swann;1966;USA;USA;S._Andrew_Swann
+S. D. Perry;1970;USA;USA;S._D._Perry
+S. F. Said;1967;LBN;GBR;S._F._Said
+S. Fowler Wright;1874;GBR;GBR;S._Fowler_Wright
+S. G. Browne;1965;USA;USA;S._G._Browne
+S. L. Viehl;1961;USA;USA;S._L._Viehl
+S. M. Stirling;1953;FRA;USA;S._M._Stirling
+S. P. Meek;1894;USA;USA;S._P._Meek
+S. P. Somtow;1952;THA;USA;S._P._Somtow
+S. S. Held;1892;UKR;FRA;Serge-Simon_Held
+Sabrina Calvo;1974;FRA;FRA;Sabrina_Calvo
+Sabrina Železný;1986;DEU;DEU;https://www.sabrina-zelezny.de/
+Saci Lloyd;1967;GBR;GBR;Saci_Lloyd
+Safia Ketou;1944;DZA;FRA;Safia_Ketou
+Sakyo Komatsu;1931;JPN;JPN;Sakyo_Komatsu
+Saladin Ahmed;1975;USA;USA;Saladin_Ahmed
+Sally Altschuler;1953;DNK;DNK;https://www.altschuler.dk/
+Sally Malcolm;2000;GBR;GBR;Sally_Malcolm
+Sally Miller Gearhart;1931;USA;USA;Sally_Miller_Gearhart
+Sam J. Lundwall;1941;SWE;SWE;Sam_J._Lundwall
+Sam J. Miller;1979;USA;USA;Sam_J._Miller
+Sam Maggs;1988;CAN;CAN;Sam_Maggs
+Sam Merwin, Jr.;1910;USA;USA;Sam_Merwin_Jr.
+Sam Moskowitz;1920;USA;USA;Sam_Moskowitz
+Samo Kuščer;1952;SVN;SVN;Samo_Ku%C5%A1%C4%8Der
+Samuel Butler;1835;GBR;GBR;Samuel_Butler_(novelist)
+Samuel R. Delany;1942;USA;USA;Samuel_R._Delany
+Samuel W. Taylor;1907;USA;USA;Samuel_W._Taylor
+Samuel Youd;1922;GBR;GBR;John_Christopher
+Sandra McDonald;1966;USA;USA;Sandra_McDonald
+Sandra Miesel;1941;USA;USA;Sandra_Miesel
+Sandrone Dazieri;1964;ITA;ITA;Sandrone_Dazieri
+Sandu Florea;1946;ROU;ROU;Sandu_Florea
+Sangu Mandanna;1980;IND;GBR;Sangu_Mandanna
+Santi Paladino;1902;ITA;ITA;Santi_Paladino
+Sara Creasy;1968;GBR;GBR;Sara_Creasy
+Sara Doke;1968;FRA;FRA;Sara_Doke
+Sara King;1982;USA;USA;Sara_King
+Sarah A. Hoyt;1962;PRT;USA;Sarah_A._Hoyt
+Sarah Dollard;1980;AUS;AUS;Sarah_Dollard
+Sarah Gailey;1990;USA;USA;Sarah_Gailey
+Sarah Hall;1974;GBR;GBR;Sarah_Hall_(writer)
+Sarah Monette;1974;USA;USA;Sarah_Monette
+Sarah Smith;1947;USA;USA;Sarah_Smith_(writer)
+Sarah Zettel;1966;USA;USA;Sarah_Zettel
+Satoshi Itō;1974;JPN;JPN;Project_Itoh
+Sayuri Ueda;1964;JPN;JPN;Sayuri_Ueda
+Scott Baker;1947;USA;USA;Scott_Baker_(writer)
+Scott Ciencin;1962;USA;USA;Scott_Ciencin
+Scott E. Green;1951;USA;USA;Scott_E._Green
+Scott Edelman;1955;USA;USA;Scott_Edelman
+Scott G. Gier;1948;USA;USA;Scott_G._Gier
+Scott Mackay;1957;CAN;CAN;Scott_Mackay
+Scott Sigler;1969;USA;USA;Scott_Sigler
+Scott Westerfeld;1963;USA;USA;Scott_Westerfeld
+Seabury Quinn;1889;USA;USA;Seabury_Quinn
+Seamark;1894;GBR;GBR;Austin_J._Small
+Sean A. Moore;1964;USA;USA;Sean_A._Moore
+Sean Barrett;1959;USA;USA;Sean_Barrett_(writer)
+Sean McMullen;1948;AUS;AUS;Sean_McMullen
+Sean Qitsualik-Tinsley;1969;CAN;CAN;Sean_Qitsualik-Tinsley
+Sean Stewart;1965;USA;USA;Sean_Stewart
+Sean Williams;1967;AUS;AUS;Sean_Williams_(author)
+Seanan McGuire;1978;USA;USA;Seanan_McGuire
+Sebastiano Vassalli;1941;ITA;ITA;Sebastiano_Vassalli
+Segismundo Bermejo;1833;ESP;ESP;Segismundo_Bermejo_y_Merelo
+Selina Rosen;1960;USA;USA;Selina_Rosen
+Serge Brussolo;1951;FRA;FRA;Serge_Brussolo
+Serge Lamothe;1963;CAN;FRA;Serge_Lamothe
+Serge Lehman;1964;FRA;FRA;Serge_Lehman
+Sergey Lukyanenko;1968;KAZ;RUS;Sergei_Lukyanenko
+Sergey Mikhalkov;1913;RUS;RUS;Sergey_Mikhalkov
+Sergey Pereslegin;1960;RUS;RUS;https://sociosoft.ru
+Sergey Snegov;1910;UKR;RUS;Sergey_Snegov
+Serhiy Zhadan;1974;UKR;UKR;Serhiy_Zhadan
+Setsuko Shinoda;1955;JPN;JPN;Setsuko_Shinoda
+Sever Gansovsky;1918;POL;POL;Sever_Gansovsky
+Severna Park;1958;USA;USA;Severna_Park_(writer)
+Shane Dix;1960;GBR;AUS;Shane_Dix
+Shane Johnson;1959;USA;USA;Lora_Johnson
+Shannon Hale;1974;USA;USA;Shannon_Hale
+Shariann Lewitt;1954;USA;USA;Shariann_Lewitt
+Sharon Baker;1938;USA;USA;Sharon_Baker
+Sharon Green;1942;USA;USA;Sharon_Green
+Sharon Lee;1952;USA;USA;Sharon_Lee_(writer)
+Sharon Shinn;1957;USA;USA;Sharon_Shinn
+Sharon Webb;1936;USA;USA;Sharon_Webb
+Sharyn McCrumb;1948;USA;USA;Sharyn_McCrumb
+Shauna S. Roberts;1956;USA;USA;Shauna_S._Roberts
+Sheila Finch;1935;GBR;USA;Sheila_Finch
+Sheree Thomas;1972;USA;USA;Sheree_Thomas
+Sheri S. Tepper;1929;USA;USA;Sheri_S._Tepper
+Sherwood Smith;1951;USA;USA;Sherwood_Smith
+Shi-Kuo Chang;1944;CHN;TWN;Shi-Kuo_Chang
+Shimun Vrochek;1976;RUS;RUS;Shimun_Vrochek
+Shinichi Hoshi;1926;JPN;JPN;Shinichi_Hoshi
+Shinji Kajio;1947;JPN;JPN;Shinji_Kajio
+Shirley Meier;1960;CAN;CAN;Shirley_Meier
+Shunrō Oshikawa;1876;JPN;JPN;Shunr%C5%8D_Oshikawa
+Sid Fleischman;1920;USA;USA;Sid_Fleischman
+Sigmund Brouwer;1959;CAN;USA;Sigmund_Brouwer
+Silvia Moreno-Garcia;1981;MEX;CAN;Silvia_Moreno-Garcia
+Simon Brown;1956;AUS;AUS;Simon_Brown_(author)
+Simon Clark;1958;GBR;GBR;Simon_Clark_(novelist)
+Simon Drake;1975;AUS;AUS;Simon_Drake_(writer)
+Simon Guerrier;1976;GBR;GBR;Simon_Guerrier
+Simon Hawke;1951;USA;USA;Simon_Hawke
+Simon Ings;1965;GBR;GBR;Simon_Ings
+Simon Jowett;2000;GBR;GBR;Simon_Jowett
+Simon Newcomb;1835;CAN;CAN;Simon_Newcomb
+Simon Nye;1958;GBR;GBR;Simon_Nye
+Simon Petrie;2000;NZL;NZL;Simon_Petrie
+Simon R. Green;1955;GBR;GBR;Simon_R._Green
+Simon Winstone;1901;GBR;GBR;Simon_Winstone
+Skyler White;1967;USA;USA;Skyler_White_(writer)
+Slimane-Baptiste Berhoun;1985;FRA;FRA;http://www.frenchnerd.com
+Slobodan Škerović;1954;SRB;SRB;Slobodan_%C5%A0kerovi%C4%87
+Sofia Samatar;1971;USA;USA;Sofia_Samatar
+Sondra Marshak;1942;USA;USA;Sondra_Marshak
+Sonya Dorman;1924;USA;USA;Sonya_Dorman
+Sophie Behr;1935;DEU;DEU;Sophie_Behr
+Sophie Wenzel Ellis;1893;USA;USA;Sophie_Wenzel_Ellis
+Sophus Michaëlis;1865;DNK;DNK;Sophus_Micha%C3%ABlis
+Soyeon Jeong;1983;KOR;KOR;Soyeon_Jeong
+Spider Robinson;1948;USA;CAN;Spider_Robinson
+Stan Lee;1922;USA;USA;Stan_Lee
+Stanisław Lem;1921;UKR;POL;Stanis%C5%82aw_Lem
+Stanley Bennett Hough;1917;GBR;GBR;Stanley_Bennett_Hough
+Stanley G. Weinbaum;1902;USA;USA;Stanley_G._Weinbaum
+Stanley Mullen;1911;USA;USA;Stanley_Mullen
+Stanley Schmidt;1944;USA;USA;Stanley_Schmidt
+Stanton Arthur Coblentz;1896;USA;USA;Stanton_A._Coblentz
+Stefan Grabiński;1887;UKR;UKR;Stefan_Grabi%C5%84ski
+Stefan Wul;1922;FRA;FRA;Stefan_Wul
+Stefan Żeromski;1864;POL;POL;Stefan_%C5%BBeromski
+Stefanie Mühlsteph;1987;DEU;DEU;https://stefaniemuehlsteph.jimdo.com
+Stefano Benni;1947;ITA;ITA;Stefano_Benni
+Stefano Di Marino;1961;ITA;ITA;Stefano_Di_Marino
+Stel Pavlou;1970;GBR;GBR;Stel_Pavlou
+Stella Gibbons;1902;GBR;GBR;Stella_Gibbons
+Stepan Chapman;1951;USA;USA;Stepan_Chapman
+Steph Swainston;1974;GBR;GBR;Steph_Swainston
+Stephanie Zvan;2000;USA;USA;Stephanie_Zvan
+Stephen Baxter;1957;GBR;GBR;Stephen_Baxter_(author)
+Stephen Cole;1971;GBR;GBR;Stephen_Cole_(writer)
+Stephen Deas;1968;GBR;GBR;Stephen_Deas
+Stephen Dedman;1959;AUS;AUS;Stephen_Dedman
+Stephen Fry;1957;GBR;GBR;Stephen_Fry
+Stephen Gallagher;1954;GBR;GBR;Stephen_Gallagher
+Stephen Gilbert;1912;GBR;IRL;Stephen_Gilbert_(novelist)
+Stephen Goldin;1947;USA;USA;Stephen_Goldin
+Stephen Graham Jones;1972;USA;USA;Stephen_Graham_Jones
+Stephen Greenhorn;1964;GBR;GBR;Stephen_Greenhorn
+Stephen Jones;1953;GBR;GBR;Stephen_Jones_(author)
+Stephen King;1947;USA;USA;Stephen_King
+Stephen L. Burns;1953;USA;USA;Stephen_L._Burns
+Stephen Leigh;1951;USA;USA;Stephen_Leigh
+Stephen Marley;1946;GBR;GBR;Stephen_Marley_(writer)
+Stephen Marlowe;1928;USA;USA;Stephen_Marlowe
+Stephen R. Donaldson;1947;USA;USA;Stephen_R._Donaldson
+Stephen R. Lawhead;1950;USA;USA;Stephen_R._Lawhead
+Stephen Robinett;1941;USA;USA;Stephen_Robinett
+Stephen Southwold;1887;GBR;GBR;Stephen_Southwold
+Stephen Tall;1908;USA;USA;Stephen_Tall_(writer)
+Stephen Woodworth;1967;USA;USA;Stephen_Woodworth_(author)
+Stephen Wyatt;1948;GBR;GBR;Stephen_Wyatt
+Sterling E. Lanier;1927;USA;USA;Sterling_E._Lanier
+Sterling Noel;1903;USA;USA;Sterling_Noel
+Steve Alten;1959;USA;USA;Steve_Alten
+Steve Aylett;1967;GBR;GBR;Steve_Aylett
+Steve Berry;1955;USA;USA;Steve_Berry_(novelist)
+Steve Miller;1950;USA;USA;Steve_Miller_(science_fiction_writer)
+Steve Orlando;1985;USA;USA;Steve_Orlando
+Steve Perry;1947;USA;USA;Steve_Perry_(author)
+Steve Pieczenik;1943;CUB;USA;Steve_Pieczenik
+Steve Sem-Sandberg;1958;NOR;SWE;Steve_Sem-Sandberg
+Steve Stanton;1956;CAN;CAN;Steve_Stanton
+Steve White;1946;USA;USA;Steve_White_(author)
+Steve Wiest;1957;USA;USA;Steve_Wiest
+Steven Barnes;1952;USA;USA;Steven_Barnes
+Steven Brust;1955;HUN;USA;Steven_Brust
+Steven Craig Zahler;1973;USA;USA;S._Craig_Zahler
+Steven Edward McDonald;1956;GBR;USA;Steven_Edward_McDonald
+Steven Gould;1955;USA;USA;Steven_Gould
+Steven Hall;1975;GBR;GBR;Steven_Hall_(author)
+Steven L. Kent;1960;USA;USA;Steven_L._Kent
+Steven L. Peck;1957;USA;USA;Steven_L._Peck
+Steven Moffat;1961;GBR;GBR;Steven_Moffat
+Steven Paulsen;1955;AUS;AUS;Steven_Paulsen
+Steven Piziks;1967;USA;USA;Steven_Piziks
+Steven Popkes;1952;USA;USA;Steven_Popkes
+Steven Savile;1969;GBR;SWE;Steven_Savile
+Steven Spielberg;1946;USA;USA;Steven_Spielberg
+Steven Spruill;1946;USA;USA;Steven_Spruill
+Steven Utley;1948;USA;USA;Steven_Utley
+Steven W. Carabatsos;1938;USA;USA;Steven_W._Carabatsos
+Steven-Elliot Altman;1976;USA;USA;Steven-Elliot_Altman
+Stewart Cowley;1947;GBR;GBR;Stewart_Cowley
+Stina Leicht;1962;USA;USA;Stina_Leicht
+Storm Constantine;1956;GBR;GBR;Storm_Constantine
+Storm Jameson;1891;GBR;GBR;Storm_Jameson
+Stuart Douglas;1969;GBR;GBR;Stuart_Douglas_(writer)
+Stuart J. Byrne;1913;USA;USA;Stuart_J._Byrne
+Stuart MacBride;1969;GBR;GBR;Stuart_MacBride
+Subrat Sahoo;1968;IND;IND;Subrat_Sahoo
+Sudha Murthy;1950;IND;IND;Sudha_Murty
+Sue Isle;1963;AUS;AUS;Alex_Isle
+Sue Thomas;1951;GBR;GBR;Sue_Thomas_(author)
+Sunao Yoshida;1969;JPN;JPN;Sunao_Yoshida
+Susan Beth Pfeffer;1948;USA;USA;Susan_Beth_Pfeffer
+Susan C. Petrey;1945;USA;USA;Susan_C._Petrey
+Susan Cooper;1935;GBR;GBR;Susan_Cooper
+Susan Fry;1901;USA;USA;Susan_Fry
+Susan Price;1955;GBR;GBR;Susan_Price
+Susan R. Matthews;1952;USA;USA;Susan_R._Matthews
+Susan Shwartz;1949;USA;USA;Susan_Shwartz
+Susan Sizemore;1951;USA;USA;Susan_Sizemore
+Susana Vallejo;1968;ESP;ESP;http://susanavallejo.com/
+Susanna Clarke;1959;GBR;GBR;Susanna_Clarke
+Suzanne Collins;1962;USA;USA;Suzanne_Collins
+Suzanne Francis;1959;GBR;GBR;Suzanne_Francis
+Suzanne Martel;1924;CAN;CAN;Suzanne_Martel
+Suzanne Weyn;1955;USA;USA;Suzanne_Weyn
+Suzette Haden Elgin;1936;USA;USA;Suzette_Haden_Elgin
+Suzy McKee Charnas;1939;USA;USA;Suzy_McKee_Charnas
+Svatopluk Čech;1846;CZE;CZE;Svatopluk_%C4%8Cech
+Svend Åge Madsen;1939;DNK;DNK;Svend_%C3%85ge_Madsen
+Svetolik Ranković;1863;SRB;SRB;Svetolik_Rankovi%C4%87
+Svetoslav Minkov;1902;BGR;BGR;Svetoslav_Minkov
+Svetoslav Slavchev;1926;BGR;BGR;Svetoslav_Slavchev
+Svyatoslav Loginov;1951;RUS;RUS;Svyatoslav_Loginov
+Sybil Claiborne;1923;GBR;USA;Sybil_Claiborne
+Sydney J. Van Scyoc;1939;USA;USA;Sydney_J._Van_Scyoc
+Sydney James Bounds;1920;GBR;GBR;Sydney_James_Bounds
+Sylvain Neuvel;1973;CAN;CAN;Sylvain_Neuvel
+Sylvia Engdahl;1933;USA;USA;Sylvia_Engdahl
+Sylvia Kelso;1946;AUS;AUS;Sylvia_Kelso
+Sylvia Spruck Wrigley;1968;DEU;USA;Sylvia_Spruck_Wrigley
+Sylvia Waugh;1935;GBR;GBR;Sylvia_Waugh
+Sylvie Bérard;1965;CAN;CAN;Sylvie_B%C3%A9rard
+Sylvie Denis;1963;FRA;FRA;Sylvie_Denis
+Sylvie Lainé;1957;FRA;FRA;Sylvie_Lain%C3%A9
+Syne Mitchell;1970;USA;USA;Syne_Mitchell
+Sándor Szathmári;1897;HUN;HUN;S%C3%A1ndor_Szathm%C3%A1ri
+Sándor Szélesi;1969;HUN;HUN;https://szelesisandor.hu/
+Sławomir Mrożek;1930;POL;POL;S%C5%82awomir_Mro%C5%BCek
+T. A. Waters;1938;USA;USA;T._A._Waters
+T. C. McCarthy;2000;USA;USA;T._C._McCarthy
+T. E. Dikty;1920;USA;USA;T._E._Dikty
+T. H. White;1906;IND;GBR;T._H._White
+T. J. Bass;1932;USA;USA;T._J._Bass_(author)
+T. L. Sherred;1915;USA;USA;T._L._Sherred
+T. O'Conor Sloane;1851;USA;USA;T._O%27Conor_Sloane
+T. Winter-Damon;1949;USA;USA;T._Winter-Damon
+Tabitha King;1949;USA;USA;Tabitha_King
+Tad Williams;1957;USA;USA;Tad_Williams
+Tade Thompson;1950;GBR;GBR;Tade_Thompson
+Tadeusz Konwicki;1926;POL;POL;Tadeusz_Konwicki
+Tahereh Mafi;1988;USA;USA;Tahereh_Mafi
+Taibah Al-Ibrahim;1945;KWT;KWT;Taibah_Al-Ibrahim
+Tais Teng;1952;NLD;NLD;Tais_Teng
+Taiyō Fujii;1971;JPN;JPN;Taiyo_Fujii
+Takahiro Anno;1990;JPN;JPN;Takahiro_Anno
+Taku Mayumura;1934;JPN;JPN;Taku_Mayumura
+Takumi Nakazawa;1976;JPN;JPN;Takumi_Nakazawa
+Takumi Shibano;1926;JPN;JPN;Takumi_Shibano
+Tamara Lujak;1976;SRB;SRB;Tamara_Lujak
+Tananarive Due;1966;USA;USA;Tananarive_Due
+Tancrède Vallerey;1892;FRA;FRA;Tancr%C3%A8de_Vallerey
+Tang Fei;1983;CHN;CHN;Tang_Fei_(writer)
+Tanith Lee;1947;GBR;GBR;Tanith_Lee
+Tanja Kinkel;1969;DEU;DEU;Tanja_Kinkel
+Tanya Huff;1957;CAN;CAN;Tanya_Huff
+Tappan Wright King;1950;USA;USA;Tappan_Wright_King
+Taylor Caldwell;1900;GBR;GBR;Taylor_Caldwell
+Ted Chiang;1967;USA;USA;Ted_Chiang
+Ted Hughes;1930;GBR;GBR;Ted_Hughes
+Ted Kosmatka;1973;USA;USA;Ted_Kosmatka
+Ted Reynolds;1938;USA;USA;Ted_Reynolds_(writer)
+Ted White;1938;USA;USA;Ted_White_(author)
+Teet Kallas;1943;EST;EST;Teet_Kallas
+Temi Oh;1993;GBR;GBR;Temi_Oh
+Tensei Kono;1935;JPN;JPN;Tensei_Kono
+Teo Bukovski;1973;BGR;BGR;http://ivanovi208.wixsite.com/-4d-
+Terence M. Green;1947;CAN;CAN;Terence_M._Green
+Terrance Dicks;1935;GBR;GBR;Terrance_Dicks
+Terrence Holt;1952;USA;USA;Terrence_Holt_(writer)
+Terry Bisson;1942;USA;USA;Terry_Bisson
+Terry Brooks;1944;USA;USA;Terry_Brooks
+Terry Carr;1937;USA;USA;Terry_Carr
+Terry Dowling;1947;AUS;AUS;Terry_Dowling
+Terry Nation;1930;GBR;GBR;Terry_Nation
+Terry Pratchett;1948;GBR;GBR;Terry_Pratchett
+Tetsu Yano;1923;JPN;JPN;Tetsu_Yano
+Thea von Harbou;1888;DEU;DEU;Thea_von_Harbou
+Theodor Hertzka;1845;HUN;HUN;Theodor_Hertzka
+Theodore Judson;1951;USA;USA;Theodore_Judson
+Theodore L. Thomas;1920;USA;USA;Theodore_L._Thomas
+Theodore R. Cogswell;1918;USA;USA;Theodore_Cogswell
+Theodore Roszak;1933;USA;USA;Theodore_Roszak_(scholar)
+Theodore Solomon Drachman;1904;USA;USA;Theodore_S._Drachman
+Theodore Sturgeon;1918;USA;USA;Theodore_Sturgeon
+Theresa Breslin;1947;GBR;GBR;Theresa_Breslin
+Theresa Hannig;1984;DEU;DEU;Theresa_Hannig
+Thierry Breton;1955;FRA;FRA;Thierry_Breton
+Thierry Di Rollo;1959;FRA;FRA;http://mondesnoirs.blogspot.fr/
+Thierry Martens;1942;BEL;BEL;Thierry_Martens
+Thom Keyes;1949;GBR;GBR;Thom_Keyes
+Thomas Anstey Guthrie;1856;GBR;GBR;Thomas_Anstey_Guthrie
+Thomas Calvert McClary;1909;USA;USA;Thomas_Calvert_McClary
+Thomas Day;1971;FRA;FRA;https://thomasday.eu
+Thomas Easton;1944;USA;USA;Thomas_A._Easton
+Thomas F. Monteleone;1946;USA;USA;Thomas_F._Monteleone
+Thomas Frederic Tweed;1890;GBR;GBR;Thomas_F._Tweed
+Thomas Geha;1976;FRA;FRA;http://thomasgeha.wifeo.com
+Thomas Louis Berger;1924;USA;USA;Thomas_Berger
+Thomas M. Disch;1940;USA;USA;Thomas_M._Disch
+Thomas N. Scortia;1926;USA;USA;Thomas_N._Scortia
+Thomas Pynchon;1937;USA;USA;Thomas_Pynchon
+Thomas Sigismund Stribling;1881;USA;USA;T._S._Stribling
+Thomas Sullivan;1940;USA;USA;Thomas_Sullivan_(author)
+Thomas Tessier;1947;USA;USA;Thomas_Tessier
+Thomas Thiemeyer;1963;DEU;DEU;Thomas_Thiemeyer
+Thomas Thurston Thomas;1948;USA;USA;Thomas_Thurston_Thomas
+Thorarinn Gunnarsson;1957;USA;USA;Thorarinn_Gunnarsson
+Tianxia Bachang;1977;CHN;CHN;Tianxia_Bachang
+Tiffany Thayer;1902;USA;USA;Tiffany_Thayer
+Tiina Raevaara;1979;FIN;FIN;Tiina_Raevaara
+Tiko Campbell;1947;USA;USA;Tiko_Campbell
+Tim Akers;1972;USA;USA;Tim_Akers
+Tim Jones;1959;GBR;NZL;Tim_Jones_(writer)
+Tim LaHaye;1926;USA;USA;Tim_LaHaye
+Tim Lebbon;1969;GBR;GBR;Tim_Lebbon
+Tim Powers;1952;USA;USA;Tim_Powers
+Tim Pratt;1976;USA;USA;Tim_Pratt
+Tim Price;1980;GBR;GBR;Tim_Price_(writer)
+Tim Sullivan;1948;USA;USA;Tim_Sullivan_(writer)
+Timothy J. Anderson;1958;CAN;CAN;Timothy_J._Anderson
+Timur Aliev;1973;RUS;RUS;Timur_Aliev
+Tina Connolly;1950;USA;USA;Tina_Connolly
+Tina Hunter;1985;CAN;CAN;Tina_Hunter
+Tobias S. Buckell;1979;GRD;GRD;Tobias_Buckell
+Todd McCaffrey;1956;USA;USA;Todd_McCaffrey
+Todd Strasser;1950;USA;USA;Todd_Strasser
+Toh Enjoe;1972;JPN;JPN;Toh_EnJoe
+Tom Arden;1961;AUS;AUS;Tom_Arden
+Tom Deitz;1952;USA;USA;Tom_Deitz
+Tom Flynn;1955;USA;USA;Tom_Flynn_(author)
+Tom Godwin;1915;USA;USA;Tom_Godwin
+Tom Kratman;1956;USA;USA;Tom_Kratman
+Tom MacRae;1980;GBR;GBR;Tom_MacRae
+Tom Maddox;1945;USA;USA;Tom_Maddox
+Tom Purdom;1936;USA;USA;Tom_Purdom
+Tom Reamy;1935;USA;USA;Tom_Reamy
+Tom Shippey;1943;IND;GBR;Tom_Shippey
+Tom Tryon;1926;USA;USA;Tom_Tryon
+Tomasz Kołodziejczak;1967;POL;POL;Tomasz_Ko%C5%82odziejczak
+Tomasz Pacyński;1958;POL;POL;Tomasz_Pacy%C5%84ski
+Tommaso Landolfi;1908;ITA;ITA;Tommaso_Landolfi
+Tong Enzheng;1935;CHN;CHN;Tong_Enzheng
+Toni Weisskopf;1965;USA;USA;Toni_Weisskopf
+Tony Barwick;1934;GBR;GBR;Tony_Barwick
+Tony Bradman;1954;GBR;GBR;Tony_Bradman
+Tony Daniel;1963;USA;USA;Tony_Daniel_(science_fiction_writer)
+Tony DiTerlizzi;1969;USA;USA;Tony_DiTerlizzi
+Tony Rothman;1953;USA;USA;Tony_Rothman
+Tor Åge Bringsværd;1939;NOR;NOR;Tor_%C3%85ge_Bringsv%C3%A6rd
+Tow Ubukata;1977;JPN;JPN;Tow_Ubukata
+Tracey West;1965;USA;USA;Tracey_West
+Tracy Hickman;1955;USA;USA;Tracy_Hickman
+Trevor Hoyle;1940;GBR;GBR;Trevor_Hoyle
+Trevor Miller;1965;GBR;USA;Trevor_Miller
+Tricia Sullivan;1968;USA;USA;Tricia_Sullivan
+Tron Øgrim;1947;NOR;NOR;Tron_%C3%98grim
+Troy Denning;1958;USA;USA;Troy_Denning
+Trudi Canavan;1969;AUS;AUS;Trudi_Canavan
+Truman Bethurum;1898;USA;USA;Truman_Bethurum
+Tullio Avoledo;1957;ITA;ITA;Tullio_Avoledo
+Ty Franck;1969;USA;USA;Ty_Franck
+Tyler Hayes;2000;USA;USA;https://tyler-hayes.com/
+Ugo Bellagamba;1972;FRA;FRA;Ugo_Bellagamba
+Ulrike Nolte;1973;DEU;DEU;Ulrike_Nolte
+Una McCormack;1972;GBR;GBR;Una_McCormack
+Unno Juza;1897;JPN;JPN;Unno_J%C5%ABza
+Uroš Petrović;1967;SRB;SRB;Uro%C5%A1_Petrovi%C4%87
+Ursula Poznanski;1968;AUT;AUT;Ursula_Poznanski
+Uschi Zietsch;1961;DEU;DEU;http://www.uschizietsch.de/
+Vadim Okhotnikov;1905;RUS;RUS;Vadim_Okhotnikov
+Vadim Panov;1972;RUS;RUS;Vadim_Panov
+Vadim Shefner;1915;RUS;RUS;Vadim_Shefner
+Valentin Ivanov;1967;BGR;BGR;Valentin_Ivanov_(astronomer)
+Valentin Kataev;1897;UKR;UKR;Valentin_Kataev
+Valentina Zhuravleva;1933;AZE;RUS;Valentina_Zhuravlyova
+Valentyn Avramenko;1973;UKR;UKR;http://avalon.gondor.ru/books_ua.php
+Valerio Evangelisti;1952;ITA;ITA;Valerio_Evangelisti
+Valeriu Pantazi;1940;ROU;ROU;Valeriu_Pantazi
+Valery Bryusov;1873;RUS;RUS;Valery_Bryusov
+Valérie Simon;1963;FRA;FRA;https://valeriesimon.fr
+Van Allen Plexico;1968;USA;USA;Van_Allen_Plexico
+Van Ikin;1951;AUS;AUS;Van_Ikin
+Van Tassel Sutphen;1861;USA;USA;Van_Tassel_Sutphen
+Vandana Singh;1950;IND;IND;Vandana_Singh
+Vanna Bonta;1958;ITA;USA;Vanna_Bonta
+Vasili Golovachov;1948;RUS;RUS;Vasili_Golovachyov
+Vasily Zvyagintsev;1944;RUS;RUS;Vasily_Zvyagintsev
+Vasyl Berezhnyi;1918;UKR;UKR;Vasyl_Berezhnyi
+Veiko Belials;1966;EST;EST;Veiko_Belials
+Vera Nazarian;1966;RUS;USA;Vera_Nazarian
+Vered Tochterman;1970;ARG;ISR;Vered_Tochterman
+Vernor Vinge;1944;USA;USA;Vernor_Vinge
+Veronica Rossi;1973;BRA;USA;Veronica_Rossi
+Veronica Roth;1988;USA;USA;Veronica_Roth
+Victor Adamson;1890;NZL;USA;Victor_Adamson
+Victor Anestin;1875;ROU;ROU;Victor_Anestin
+Victor Dixen;1979;FRA;FRA;http://victordixen.com
+Victor Koman;1954;USA;USA;Victor_Koman
+Victor LaValle;1972;USA;USA;Victor_LaValle
+Victor Milán;1954;USA;USA;Victor_Mil%C3%A1n
+Victor Pelevin;1962;RUS;RUS;Victor_Pelevin
+Victor Pemberton;1931;GBR;GBR;Victor_Pemberton
+Victoria Strauss;1955;GBR;USA;Victoria_Strauss
+Vid Pečjak;1929;SVN;SVN;Vid_Pe%C4%8Djak
+Viktor Kolupaev;1936;RUS;RUS;Viktor_Kolupaev
+Viktor Shklovsky;1893;RUS;RUS;Viktor_Shklovsky
+Vilma Kadlečková;1971;CZE;CZE;Vilma_Kadle%C4%8Dkov%C3%A1
+Vincent Gessler;1976;CHE;CHE;Vincent_Gessler
+Vincent King;1935;GBR;GBR;Vincent_King
+Virginia Bergin;1966;GBR;GBR;Virginia_Bergin
+Virginia DeMarce;1940;USA;USA;Virginia_DeMarce
+Virginia Kidd;1921;USA;USA;Virginia_Kidd
+Vitaly Bugrov;1938;RUS;RUS;Vitaly_Bugrov
+Vittorio Catani;1940;ITA;ITA;Vittorio_Catani
+Vittorio Curtoni;1949;ITA;ITA;Vittorio_Curtoni
+Vladan Desnica;1905;HRV;HRV;Vladan_Desnica
+Vladimir A. Obruchev;1863;RUS;RUS;Vladimir_Obruchev
+Vladimir Beekman;1929;EST;EST;Vladimir_Beekman
+Vladimir Colin;1921;ROU;ROU;Vladimir_Colin
+Vladimir Dudintsev;1918;UKR;RUS;Vladimir_Dudintsev
+Vladimir Gubarev;1938;BLR;RUS;Vladimir_Gubarev
+Vladimir Lazović;1954;SRB;SRB;Vladimir_Lazovi%C4%87
+Vladimir M. Lipunov;1952;RUS;RUS;Vladimir_Lipunov
+Vladimir Nabokov;1899;RUS;USA;Vladimir_Nabokov
+Vladimir Odoevsky;1803;RUS;RUS;Vladimir_Odoyevsky
+Vladimir Sorokin;1955;RUS;RUS;Vladimir_Sorokin
+Vladimir Vasilyev;1967;UKR;RUS;Vladimir_Vasilyev_(writer)
+Vladimir Velmar-Janković;1895;HRV;SRB;Vladimir_Velmar-Jankovi%C4%87
+Vladimir Voinovich;1932;TJK;RUS;Vladimir_Voinovich
+Vladimir Volkoff;1932;FRA;FRA;Vladimir_Volkoff
+Vladimír Neff;1909;CZE;CZE;Vladim%C3%ADr_Neff
+Vladimír Páral;1932;CZE;CZE;Vladim%C3%ADr_P%C3%A1ral
+Vladimír Šlechta;1960;CZE;CZE;Vladim%C3%ADr_%C5%A0lechta
+Vladislav Adolfovich Rusanov;1966;UKR;RUS;Vladislav_Rusanov_(writer)
+Vladislav Krapivin;1938;RUS;RUS;Vladislav_Krapivin
+Volney Mathison;1897;USA;USA;Volney_Mathison
+Volodymyr Savchenko;1933;UKR;UKR;Volodymyr_Savchenko_(writer)
+Volodymyr Vladko;1900;RUS;RUS;Volodymyr_Vladko
+Volodymyr Vynnychenko;1880;UKR;UKR;Volodymyr_Vynnychenko
+Vonda N. McIntyre;1948;USA;USA;Vonda_N._McIntyre
+Vox Day;1968;USA;USA;Vox_Day
+Vsevolod Nestaiko;1930;UKR;UKR;Vsevolod_Nestayko
+Vyacheslav Rybakov;1954;RUS;RUS;Vyacheslav_Rybakov
+Vyacheslav Shalygin;1968;RUS;RUS;Vyacheslav_Shalygin
+Vylar Kaftan;1976;USA;USA;Vylar_Kaftan
+Václav Čtvrtek;1911;CZE;CZE;V%C3%A1clav_%C4%8Ctvrtek
+Václav Šorel;1937;CZE;CZE;https://vaclavsorel.cz/
+W. A. Harbinson;1941;GBR;GBR;W._A._Harbinson
+W. E. Johns;1893;GBR;GBR;W._E._Johns
+W. Gregory Stewart;1950;CAN;CAN;W._Gregory_Stewart
+W. S. Lach-Szyrma;1841;GBR;GBR;W._S._Lach-Szyrma
+Wallace West;1900;USA;USA;Wallace_West
+Walter Ernsting;1920;DEU;DEU;Walter_Ernsting
+Walter H. Hunt;1959;USA;USA;Walter_H._Hunt
+Walter Jon Williams;1953;USA;USA;Walter_Jon_Williams
+Walter Kubilius;1918;USA;USA;Walter_Kubilius
+Walter M. Miller;1923;USA;USA;Walter_M._Miller_Jr.
+Walter Mosley;1952;USA;USA;Walter_Mosley
+Walter S. Masterman;1876;GBR;GBR;Walter_S._Masterman
+Walter Tevis;1928;USA;USA;Walter_Tevis
+Walther Rathenau;1867;DEU;DEU;Walther_Rathenau
+Wang Jinkang;1948;CHN;CHN;Wang_Jinkang
+Ward Moore;1903;USA;USA;Ward_Moore
+Warren Ellis;1968;GBR;GBR;Warren_Ellis
+Warren Murphy;1933;USA;USA;Warren_Murphy
+Warren Norwood;1945;USA;USA;Warren_Norwood
+Wawrzyniec Podrzucki;1962;POL;POL;http://www.podrzucki.eu
+Wayland Drew;1932;CAN;CAN;Wayland_Drew
+Wayne Barlowe;1958;USA;USA;Wayne_Barlowe
+Wen Spencer;1963;USA;USA;Wen_Spencer
+Wentworth M. Johnson;1939;GBR;GBR;Wentworth_M._Johnson
+Werner Giesa;1954;DEU;DEU;Werner_Giesa
+Werner Zillig;1949;DEU;DEU;Werner_Zillig
+Wesley Chu;1976;TWN;TWN;Wesley_Chu
+Whitley Strieber;1945;USA;USA;Whitley_Strieber
+Wiktor Żwikiewicz;1950;POL;POL;Wiktor_%C5%BBwikiewicz
+Wil McCarthy;1966;USA;USA;Wil_McCarthy
+Wildy Petoud;1957;CHE;CHE;Wildy_Petoud
+Wilfred Greatorex;1921;GBR;GBR;Wilfred_Greatorex
+Will McIntosh;1962;USA;USA;Will_McIntosh
+Will Self;1961;GBR;GBR;Will_Self
+William Archer;1856;AUS;AUS;William_Archer_(critic)
+William Auld;1924;GBR;GBR;William_Auld
+William B. Ellern;1933;USA;USA;William_B._Ellern
+William Barclay Meikle;1958;GBR;CAN;https://www.williammeikle.com/
+William Barnwell;1943;USA;USA;William_Barnwell
+William Barton;1950;USA;USA;William_Barton_(writer)
+William Browning Spencer;1946;USA;USA;William_Browning_Spencer
+William Broyles, Jr.;1944;USA;USA;William_Broyles_Jr.
+William C. Dietz;1945;USA;USA;William_C._Dietz
+William C. Heine;1919;CAN;CAN;William_C._Heine
+William Charles Anderson;1920;USA;USA;William_Charles_Anderson
+William Dean Howells;1837;USA;USA;William_Dean_Howells
+William Delisle Hay;1853;GBR;GBR;William_Delisle_Hay
+William Edmund Barrett;1900;USA;USA;William_Edmund_Barrett
+William Emms;1930;AUS;GBR;William_Emms
+William F. Nolan;1928;USA;USA;William_F._Nolan
+William F. Temple;1914;GBR;GBR;William_F._Temple
+William F. Wu;1951;USA;USA;William_F._Wu
+William Gibson;1948;USA;CAN;William_Gibson
+William Golding;1911;GBR;GBR;William_Golding
+William Gordon Stables;1840;GBR;GBR;William_Gordon_Stables
+William H. Keith, Jr.;1950;USA;USA;William_H._Keith_Jr.
+William Harrison;1933;USA;USA;William_Harrison_(author)
+William Hertling;1970;USA;USA;William_Hertling
+William Hjortsberg;1941;USA;USA;William_Hjortsberg
+William Hope Hodgson;1877;GBR;GBR;William_Hope_Hodgson
+William James Roe;1843;USA;USA;William_James_Roe
+William John Watkins;1942;USA;USA;William_John_Watkins
+William K. Hartmann;1939;USA;USA;William_Kenneth_Hartmann
+William King;1959;GBR;GBR;William_King_(author)
+William Kotzwinkle;1938;USA;USA;William_Kotzwinkle
+William L. Crawford;1911;USA;USA;William_L._Crawford
+William Le Queux;1864;GBR;GBR;William_Le_Queux
+William Ledbetter;1961;USA;USA;William_Ledbetter
+William Lederer;1912;USA;USA;William_Lederer
+William Milligan Sloane III;1906;USA;USA;William_Sloane_(writer)
+William Morris;1834;GBR;GBR;William_Morris
+William Pène du Bois;1916;USA;USA;William_P%C3%A8ne_du_Bois
+William R. Bradshaw;1851;IRL;USA;William_R._Bradshaw
+William Rotsler;1926;USA;USA;William_Rotsler
+William S. Burroughs;1914;USA;USA;William_S._Burroughs
+William Sanders;1942;USA;USA;William_Sanders_(writer)
+William Schoell;1958;USA;USA;William_Schoell
+William Shunn;1967;USA;USA;William_Shunn
+William Sleator;1945;USA;USA;William_Sleator
+William Smethurst;1945;GBR;GBR;William_Smethurst
+William Tenn;1920;GBR;USA;William_Tenn
+William Thomas Quick;1946;USA;USA;William_Thomas_Quick
+William Tuning;1935;USA;USA;William_Tuning
+William W. Johnstone;1938;USA;USA;William_W._Johnstone
+Willis E. McNelly;1920;USA;USA;Willis_E._McNelly
+Willy Ley;1906;DEU;USA;Willy_Ley
+Wilmar H. Shiras;1908;USA;USA;Wilmar_H._Shiras
+Wilson Tucker;1914;USA;USA;Wilson_Tucker_(writer)
+Wim Gijsen;1933;NLD;NLD;Wim_Gijsen
+Winsor McCay;1869;USA;USA;Winsor_McCay
+Wojciech Orliński;1969;POL;POL;Wojciech_Orli%C5%84ski
+Wojciech Świdziniewski;1975;POL;POL;Wojciech_%C5%9Awidziniewski
+Wole Talabi;1986;NGA;NGA;Wole_Talabi
+Wolfgang Hohlbein;1953;DEU;DEU;Wolfgang_Hohlbein
+Wolfgang Jeschke;1936;CZE;DEU;Wolfgang_Jeschke
+Wyman Guin;1915;USA;USA;Wyman_Guin
+Władysław Pasikowski;1959;POL;POL;W%C5%82adys%C5%82aw_Pasikowski
+Xavier Mauméjean;1963;FRA;FRA;Xavier_Maum%C3%A9jean
+Xia Jia;1984;CHN;CHN;Xia_Jia
+Yael Furman;1973;ISR;ISR;http://www.yaelfurman.co.il
+Yambo;1874;ITA;ITA;Yambo_(writer)
+Yana Botsman;1973;UKR;UKR;http://www.zorich.ru/
+Yana Zavatskaya;1970;RUS;RUS;Yana_Zavatskaya
+Yaroslav Golovanov;1932;RUS;RUS;Yaroslav_Golovanov
+Yasumi Kobayashi;1962;JPN;JPN;Yasumi_Kobayashi
+Yasutaka Tsutsui;1934;JPN;JPN;Yasutaka_Tsutsui
+Ye Yonglie;1940;CHN;CHN;Ye_Yonglie
+Yeh Lee-hwa;1962;TWN;TWN;http://yehleehwa.net/
+Yeremey Parnov;1935;UKR;RUS;Yeremey_Parnov
+Yevgeny Lukin;1950;RUS;RUS;Evgeny_Lukin
+Yevgeny Veltistov;1934;RUS;RUS;Yevgeny_Veltistov
+Yevgeny Zamyatin;1884;RUS;RUS;Yevgeny_Zamyatin
+Yoji Kondo;1933;JPN;JPN;Yoji_Kondo
+Yoon Ha Lee;1979;USA;USA;Yoon_Ha_Lee
+Yoshiki Tanaka;1952;JPN;JPN;Yoshiki_Tanaka
+Yoshinori Shimizu;1947;JPN;JPN;Yoshinori_Shimizu
+Yoshio Aramaki;1933;JPN;JPN;Yoshio_Aramaki
+Yudhanjaya Wijeratne;1992;LKA;LKA;Yudhanjaya_Wijeratne
+Yuli Burkin;1960;RUS;RUS;Yuli_Burkin
+Yuli Daniel;1925;RUS;RUS;Yuli_Daniel
+Yulia Latynina;1966;RUS;RUS;Yulia_Latynina
+Yulii Garbuzov;1941;UKR;UKR;Yulii_Garbuzov
+Yuri Nagibin;1920;RUS;RUS;Yuri_Nagibin
+Yuri Nikitin;1939;UKR;RUS;Yuri_Nikitin_(author)
+Yuri Petukhov;1951;RUS;RUS;Yuri_Petukhov_(writer)
+Yurii Smolych;1900;UKR;UKR;Yuriy_Smolych
+Yuriy Shcherbak;1934;UKR;UKR;Yuriy_Shcherbak
+Yuriy Vynnychuk;1952;UKR;UKR;Yuriy_Vynnychuk
+Yury Glazkov;1939;RUS;RUS;Yuri_Glazkov
+Yusuke Kishi;1959;JPN;JPN;Yusuke_Kishi
+Yves Fremion;1947;FRA;FRA;Yves_Fr%C3%A9mion
+Yves Grevet;1961;FRA;FRA;http://yvesgrevet.com/
+Yves Meynard;1964;CAN;CAN;Yves_Meynard
+Yves-Daniel Crouzet;1963;FRA;FRA;https://sites.google.com/site/yvesdanielcrouzet/
+Yūichi Sasamoto;1963;JPN;JPN;Y%C5%ABichi_Sasamoto
+Zach Hughes;1928;USA;USA;Hugh_Zachary
+Zambayonny;1973;ARG;ARG;http://zambayonny.com.ar
+Zecharia Sitchin;1920;AZE;USA;Zecharia_Sitchin
+Zen Cho;1986;MYS;MYS;Zen_Cho
+Zenna Henderson;1917;USA;USA;Zenna_Henderson
+Zhao Haihong;1977;CHN;CHN;Zhao_Haihong
+Zhao Ruirui;1981;CHN;CHN;Zhao_Ruirui
+Zheng Wenguang;1929;VNM;CHN;Zheng_Wenguang
+Zlotnikov Roman Valeryevich;1963;RUS;RUS;http://romanzlotnikov.ru/
+Zoran Krušvar;1977;HRV;HRV;Zoran_Kru%C5%A1var
+Zoran Stefanović;1969;SRB;SRB;Zoran_Stefanovi%C4%87
+Zoran Živković;1948;SRB;SRB;Zoran_%C5%BDivkovi%C4%87_(writer)
+Zoë Beck;1975;DEU;DEU;Zo%C3%AB_Beck
+Ángel Arango;1926;CUB;CUB;%C3%81ngel_Arango
+Ángel Faretta;1953;ARG;ARG;%C3%81ngel_Faretta
+Åsmund Forfang;1952;NOR;NOR;%C3%85smund_Forfang
+Élisabeth Gille;1937;FRA;FRA;%C3%89lisabeth_Gille
+Élisabeth Vonarburg;1947;FRA;CAN;%C3%89lisabeth_Vonarburg
+Émile Souvestre;1806;FRA;FRA;%C3%89mile_Souvestre
+Émilie Querbalec;1971;JPN;FRA;https://emiliequerbalec.com
+Éric Gauthier;1975;CAN;CAN;%C3%89ric_Gauthier_(writer)
+Étienne Barillier;1970;FRA;FRA;http://www.tiennouetnous.fr
+Ïan Larue;1958;FRA;FRA;%C3%8Fan_Larue
+Ørjan Nordhus Karlsson;1970;NOR;NOR;http://www.orjankarlsson.no/
+Øyvind Myhre;1945;NOR;NOR;%C3%98yvind_Myhre
+Čestmír Vejdělek;1925;CZE;CZE;%C4%8Cestm%C3%ADr_Vejd%C4%9Blek
+Łukasz Orbitowski;1977;POL;POL;%C5%81ukasz_Orbitowski
+Štěpán Kopřiva;1971;CZE;CZE;%C5%A0t%C4%9Bp%C3%A1n_Kop%C5%99iva`;
+const NAMES = {"ARG": "Argentina", "AUS": "Australia", "AUT": "Austria", "AZE": "Azerbaijan", "BEL": "Belgium", "BGD": "Bangladesh", "BGR": "Bulgaria", "BIH": "Bosnia and Herzegovina", "BLR": "Belarus", "BRA": "Brazil", "CAN": "Canada", "CHE": "Switzerland", "CHL": "Chile", "CHN": "China", "COL": "Colombia", "CRI": "Costa Rica", "CUB": "Cuba", "CYP": "Cyprus", "CZE": "Czechia", "DEU": "Germany", "DMA": "Dominica", "DNK": "Denmark", "DOM": "Dominican Republic", "DZA": "Algeria", "ECU": "Ecuador", "EGY": "Egypt", "ESP": "Spain", "EST": "Estonia", "ETH": "Ethiopia", "FIN": "Finland", "FRA": "France", "GBR": "United Kingdom", "GEO": "Georgia", "GRC": "Greece", "GRD": "Grenada", "HRV": "Croatia", "HUN": "Hungary", "IND": "India", "IRL": "Ireland", "IRN": "Iran", "ISR": "Israel", "ITA": "Italy", "JAM": "Jamaica", "JPN": "Japan", "KAZ": "Kazakhstan", "KGZ": "Kyrgyzstan", "KOR": "South Korea", "KWT": "Kuwait", "LBN": "Lebanon", "LKA": "Sri Lanka", "LUX": "Luxembourg", "LVA": "Latvia", "MAR": "Morocco", "MDA": "Moldova", "MEX": "Mexico", "MKD": "North Macedonia", "MLT": "Malta", "MNE": "Montenegro", "MSR": "Montserrat", "MYS": "Malaysia", "NGA": "Nigeria", "NLD": "Netherlands", "NOR": "Norway", "NZL": "New Zealand", "PAK": "Pakistan", "PHL": "Philippines", "POL": "Poland", "PRT": "Portugal", "ROU": "Romania", "RUS": "Russia", "SGP": "Singapore", "SRB": "Serbia", "SVK": "Slovakia", "SVN": "Slovenia", "SWE": "Sweden", "TGO": "Togo", "THA": "Thailand", "TJK": "Tajikistan", "TTO": "Trinidad and Tobago", "TWN": "Taiwan", "UGA": "Uganda", "UKR": "Ukraine", "URY": "Uruguay", "USA": "United States", "UZB": "Uzbekistan", "VNM": "Vietnam", "ZAF": "South Africa", "ZMB": "Zambia", "ZWE": "Zimbabwe"};
+const A = RAW.trim().split('\n').map(l => { const [name,y,born,lived,link] = l.split(';'); return {name, y:+y, born, lived, link: link ? (link.startsWith('http') ? link : WP + link) : ''}; });
+
+const BINS = [[1,1,'1'],[2,4,'2–4'],[5,9,'5–9'],[10,24,'10–24'],[25,49,'25–49'],[50,99,'50–99'],[100,249,'100–249'],[250,1e9,'250+']];
+const RAMP_LIGHT = ['#d9e9fc','#b4d3f8','#8dbbf2','#62a0ea','#3987e5','#1c5cab','#12408a','#0a2653'];
+const RAMP_DARK  = ['#0f2f5c','#144a90','#1c5cab','#2a78d6','#4b92e3','#7bb0ee','#aacbf5','#dbe9fc'];
+const dark = () => matchMedia('(prefers-color-scheme: dark)').matches;
+const ramp = () => dark() ? RAMP_DARK : RAMP_LIGHT;
+const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const binOf = n => BINS.findIndex(b => n >= b[0] && n <= b[1]);
+
+const LIMIT = 150;
+const state = { mode:'born', era:'all', sel:'USA', showAll:false };
+
+function inEra(a){
+  if (state.era === 'all') return true;
+  const s = +state.era;
+  return s === 1950 ? a.y >= 1950 : (a.y >= s && a.y < s + 50);
+}
+function tally(){
+  const born = {}, lived = {};
+  for (const a of A) if (inEra(a)) { born[a.born] = (born[a.born]||0)+1; lived[a.lived] = (lived[a.lived]||0)+1; }
+  return {born, lived};
+}
+const nm = c => NAMES[c] || c;
+
+function drawMap(t){
+  if (!window.Plotly) return mapFailed();
+  const counts = t[state.mode];
+  const codes = Object.keys(counts);
+  const r = ramp();
+  const cs = [];
+  r.forEach((c,i) => { cs.push([i/BINS.length, c]); cs.push([(i+1)/BINS.length, c]); });
+  const trace = {
+    type:'choropleth', locationmode:'ISO-3', locations:codes,
+    z: codes.map(c => binOf(counts[c]) + 0.5), zmin:0, zmax:BINS.length, colorscale:cs, showscale:false,
+    customdata: codes.map(c => [nm(c), t.born[c]||0, t.lived[c]||0]),
+    hovertemplate:'<b>%{customdata[0]}</b><br>Born there: %{customdata[1]}<br>Lived there: %{customdata[2]}<extra></extra>',
+    marker:{line:{color:css('--surface'), width:0.6}}
+  };
+  const layout = {
+    margin:{l:0,r:0,t:0,b:0}, paper_bgcolor:'rgba(0,0,0,0)', dragmode:'pan',
+    hoverlabel:{bgcolor:css('--surface'), bordercolor:css('--line'), font:{color:css('--ink'), size:13}},
+    geo:{projection:{type:'natural earth'}, resolution:110, bgcolor:'rgba(0,0,0,0)',
+      showframe:false, showcoastlines:false, showland:true, landcolor:css('--land'),
+      showcountries:true, countrycolor:css('--surface'), countrywidth:0.6,
+      showocean:false, showlakes:false, lataxis:{range:[-58,84]}}
+  };
+  const el = document.getElementById('map');
+  Plotly.react(el, [trace], layout, {displayModeBar:false, responsive:true, scrollZoom:false})
+    .then(() => {
+      if (!el._bound) { el._bound = true;
+        el.on('plotly_click', ev => { const p = ev.points && ev.points[0]; if (p) { state.sel = p.location; state.showAll = false; render(false); } });
+      }
+    }).catch(mapFailed);
+}
+let failTimer = null;
+function mapFailed(){
+  document.getElementById('map').style.display = 'none';
+  document.getElementById('mapmsg').style.display = 'block';
+}
+function watchMap(){
+  clearTimeout(failTimer);
+  failTimer = setTimeout(() => {
+    if (!document.querySelector('#map .choroplethlayer path, #map .geo path')) mapFailed();
+  }, 6000);
+}
+
+function drawLegend(){
+  const r = ramp();
+  document.getElementById('legend').innerHTML =
+    '<span>Authors per country:</span>' +
+    BINS.map((b,i) => `<span><i style="background:${r[i]}"></i>${b[2]}</span>`).join('') +
+    `<span><i style="background:${css('--land')}"></i>none in this set</span>`;
+}
+function drawRank(t){
+  const counts = t[state.mode];
+  const rows = Object.entries(counts).sort((a,b) => b[1]-a[1] || nm(a[0]).localeCompare(nm(b[0])));
+  const max = rows.length ? rows[0][1] : 1;
+  document.getElementById('rankTitle').textContent =
+    (state.mode === 'born' ? 'Countries by authors born there' : 'Countries by authors who lived there') + ` (${rows.length})`;
+  const box = document.getElementById('rank');
+  box.innerHTML = '';
+  for (const [c,n] of rows){
+    const b = document.createElement('button');
+    b.className = 'row'; b.setAttribute('aria-current', c === state.sel);
+    b.innerHTML = `<span class="nm"></span><span><span class="bar" style="display:block;width:${Math.max(1, n/max*100)}%"></span></span><span class="n">${n}</span>`;
+    b.querySelector('.nm').textContent = nm(c);
+    b.onclick = () => { state.sel = c; state.showAll = false; render(false); };
+    box.appendChild(b);
+  }
+}
+function drawDetail(t){
+  const c = state.sel;
+  document.getElementById('detTitle').textContent = nm(c);
+  document.getElementById('sBorn').textContent = t.born[c] || 0;
+  document.getElementById('sLived').textContent = t.lived[c] || 0;
+  const list = A.filter(a => inEra(a) && (a.born === c || a.lived === c)).sort((a,b) => a.y - b.y);
+  const ul = document.getElementById('names'); ul.innerHTML = '';
+  if (!list.length) { ul.innerHTML = '<li><small>No authors in this period.</small></li>'; return; }
+  const shown = state.showAll ? list : list.slice(0, LIMIT);
+  for (const a of shown){
+    const li = document.createElement('li');
+    let tag = '';
+    if (a.born !== a.lived) tag = a.born === c ? ` → ${nm(a.lived)}` : ` ← ${nm(a.born)}`;
+    const link = document.createElement('a');
+    link.href = a.link || ('https://en.wikipedia.org/w/index.php?search=' + encodeURIComponent(a.name));
+    link.target = '_blank'; link.rel = 'noopener'; link.textContent = a.name;
+    li.appendChild(link); li.appendChild(document.createTextNode(' '));
+    const s = document.createElement('small'); s.textContent = `b. ${a.y}${tag}`; li.appendChild(s);
+    ul.appendChild(li);
+  }
+  if (list.length > shown.length) {
+    const li = document.createElement('li'); const b = document.createElement('button');
+    b.className = 'more'; b.textContent = `Show all ${list.length} authors`;
+    b.onclick = () => { state.showAll = true; render(false); };
+    li.appendChild(b); ul.appendChild(li);
+  }
+}
+function render(redrawMap = true){
+  const t = tally();
+  const n = A.filter(inEra).length;
+  document.getElementById('total').textContent = n.toLocaleString('en') + (state.era === 'all' ? '' : ' of ' + A.length);
+  if (redrawMap) { try { drawMap(t); } catch(e) { mapFailed(); } }
+  drawLegend(); drawRank(t); drawDetail(t);
+}
+function bindSeg(id, key, attr){
+  document.getElementById(id).addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return;
+    state[key] = b.dataset[attr]; state.showAll = false;
+    for (const x of b.parentNode.children) x.setAttribute('aria-pressed', x === b);
+    render();
+  });
+}
+bindSeg('modeSeg','mode','mode'); bindSeg('eraSeg','era','era');
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => render());
+render(); watchMap();
+</script>
+</body>
+</html>

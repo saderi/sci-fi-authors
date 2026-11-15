@@ -1,0 +1,15 @@
+# All science fiction writers born 1800 or later, one row per author/country combination.
+# Run at https://query.wikidata.org/ (or GET https://query.wikidata.org/sparql?format=json&query=...)
+# Send a descriptive User-Agent header when calling the endpoint from code.
+SELECT ?author ?authorLabel ?birth ?bornIso ?livedIso ?citizenIso ?wikipedia ?website WHERE {
+  ?author wdt:P31 wd:Q5 ;
+          wdt:P106 wd:Q18844224 ;        # occupation: science fiction writer
+          wdt:P569 ?birth .
+  FILTER(YEAR(?birth) >= 1800)
+  OPTIONAL { ?author wdt:P19/wdt:P17/wdt:P298 ?bornIso . }     # place of birth -> country -> ISO3
+  OPTIONAL { ?author wdt:P551/wdt:P17/wdt:P298 ?livedIso . }   # residence -> country -> ISO3
+  OPTIONAL { ?author wdt:P27/wdt:P298 ?citizenIso . }          # citizenship -> ISO3 (fallback for "lived")
+  OPTIONAL { ?wikipedia schema:about ?author ; schema:isPartOf <https://en.wikipedia.org/> . }
+  OPTIONAL { ?author wdt:P856 ?website . }                     # official website
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "en,mul" . }
+}

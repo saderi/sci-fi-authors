@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Science fiction authors: where they were born and where they lived</title>
+<style>
+:root{
+  --bg:#f6f5f1; --surface:#fcfcfb; --ink:#1d1d1b; --ink2:#55544f; --muted:#8a8982;
+  --line:#e2e0d9; --land:#e9e7e0; --accent:#256abf; --chip:#efeee9;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#121211; --surface:#1a1a19; --ink:#f1f0ec; --ink2:#b9b8b1; --muted:#85847d;
+    --line:#30302d; --land:#2a2a28; --accent:#6da7ec; --chip:#262624; }
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:1180px;margin:0 auto;padding:28px 20px 48px}
+h1{font-size:26px;line-height:1.2;margin:0 0 6px;letter-spacing:-.01em}
+.sub{color:var(--ink2);margin:0 0 18px;max-width:70ch}
+.controls{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;margin-bottom:12px}
+.seg{display:inline-flex;background:var(--chip);border-radius:9px;padding:3px}
+.seg button{border:0;background:transparent;color:var(--ink2);font:inherit;padding:6px 13px;border-radius:7px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 0 0 1px var(--line);font-weight:600}
+.seg button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.lbl{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-right:6px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px}
+#mapwrap{position:relative;padding:6px 6px 0}
+#map{width:100%;height:min(58vw,560px);min-height:300px}
+#mapmsg{display:none;padding:40px 24px;color:var(--ink2);text-align:center}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;padding:8px 16px 14px;font-size:13px;color:var(--ink2)}
+.legend i{display:inline-block;width:18px;height:12px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+@media (max-width:800px){.grid{grid-template-columns:1fr}}
+.card h2{font-size:15px;margin:0;padding:14px 16px 8px}
+.card .hint{color:var(--muted);font-size:13px;padding:0 16px 8px}
+#rank{max-height:420px;overflow:auto;padding:0 8px 10px}
+.row{display:grid;grid-template-columns:150px 1fr 38px;gap:10px;align-items:center;width:100%;border:0;background:transparent;color:inherit;font:inherit;text-align:left;padding:5px 8px;border-radius:7px;cursor:pointer}
+.row:hover,.row[aria-current="true"]{background:var(--chip)}
+.row:focus-visible{outline:2px solid var(--accent)}
+.row .nm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .bar{height:10px;border-radius:0 4px 4px 0;background:var(--accent);min-width:2px}
+.row .n{text-align:right;font-variant-numeric:tabular-nums;color:var(--ink2)}
+#detail{padding:0 16px 14px;max-height:420px;overflow:auto}
+.stats{display:flex;gap:22px;margin:2px 0 10px}
+.stats b{display:block;font-size:22px;font-variant-numeric:tabular-nums}
+.stats span{font-size:12px;color:var(--muted)}
+#names{columns:2;column-gap:20px;margin:0;padding:0;list-style:none;font-size:14px}
+#names li{break-inside:avoid;padding:2px 0}
+#names .more{font:inherit;padding:4px 10px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--ink);cursor:pointer}
+#names small{color:var(--muted)}
+#names a{color:var(--ink);text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:3px}
+#names a:hover{color:var(--accent);text-decoration-color:var(--accent)}
+.credit{color:var(--muted);font-size:12.5px;margin-top:14px;padding-top:12px;border-top:1px solid var(--line);max-width:85ch}
+.credit a{color:inherit}
+.note{color:var(--ink2);font-size:13px;margin-top:18px;max-width:85ch}
+</style>
+</head>
+<body>
+<main>
+  <h1>Science fiction authors: where they were born and where they lived</h1>
+  <p class="sub"><span id="total"></span> novelists and short-story writers born from 1800 onward, counted by country. Switch between birthplace and country of residence, or narrow by birth year.</p>
+
+  <div class="controls">
+    <div><span class="lbl">Show</span>
+      <span class="seg" id="modeSeg">
+        <button data-mode="born" aria-pressed="true">Born in</button>
+        <button data-mode="lived" aria-pressed="false">Lived in</button>
+      </span>
+    </div>
+    <div><span class="lbl">Born</span>
+      <span class="seg" id="eraSeg">
+        <button data-era="all" aria-pressed="true">All</button>
+        <button data-era="1800" aria-pressed="false">1800–1849</button>
+        <button data-era="1850" aria-pressed="false">1850–1899</button>
+        <button data-era="1900" aria-pressed="false">1900–1949</button>
+        <button data-era="1950" aria-pressed="false">1950 on</button>
+      </span>
+    </div>
+  </div>
+
+  <div class="card" id="mapwrap">
+    <div id="map" role="img" aria-label="World map shaded by number of science fiction authors per country"></div>
+    <div id="mapmsg">The map outline could not be loaded in this viewer. The ranking below shows the same counts for every country.</div>
+    <div class="legend" id="legend"></div>
+  </div>
+
+  <div class="grid">
+    <section class="card">
+      <h2 id="rankTitle">Countries</h2>
+      <div class="hint">Select a country to list its authors. Each name opens its Wikipedia entry.</div>
+      <div id="rank"></div>
+    </section>
+    <section class="card">
+      <h2 id="detTitle"></h2>
+      <div id="detail">
+        <div class="stats"><div><b id="sBorn"></b><span>born there</span></div><div><b id="sLived"></b><span>lived there</span></div></div>
+        <ul id="names"></ul>
+      </div>
+    </section>
+  </div>
+
+  <p class="note">About the data: authors come from Wikidata (people tagged as science fiction writers, or writers with the science fiction genre) who have an English Wikipedia article or an official website. This is not a complete census, so English-language writers are over-represented, and Wikidata tags can be missing or wrong. Birthplaces use the present-day country. "Lived in" uses the recorded country of residence, falling back to citizenship, and is a single country per author. Very small countries and territories may be too small to see on the map and appear only in the ranking.</p>
+  <footer class="credit">This page was built with AI (Claude, by Anthropic). Data from <a href="https://www.wikidata.org/" target="_blank" rel="noopener">Wikidata</a>; map by Plotly. AI-assisted work can contain errors, so check details against the linked sources.</footer>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/plotly.js@2.35.2/dist/plotly-geo-assets.js"></script>
+<script src="https://unpkg.com/plotly.js@2.35.2/dist/plotly-geo-assets.js"></script>
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+<script>
+const WP = 'https://en.wikipedia.org/wiki/';
+const RAW = `__DATA__`;
+const NAMES = __NAMES__;
+const A = RAW.trim().split('\n').map(l => { const [name,y,born,lived,link] = l.split(';'); return {name, y:+y, born, lived, link: link ? (link.startsWith('http') ? link : WP + link) : ''}; });
+
+const BINS = [[1,1,'1'],[2,4,'2–4'],[5,9,'5–9'],[10,24,'10–24'],[25,49,'25–49'],[50,99,'50–99'],[100,249,'100–249'],[250,1e9,'250+']];
+const RAMP_LIGHT = ['#d9e9fc','#b4d3f8','#8dbbf2','#62a0ea','#3987e5','#1c5cab','#12408a','#0a2653'];
+const RAMP_DARK  = ['#0f2f5c','#144a90','#1c5cab','#2a78d6','#4b92e3','#7bb0ee','#aacbf5','#dbe9fc'];
+const dark = () => matchMedia('(prefers-color-scheme: dark)').matches;
+const ramp = () => dark() ? RAMP_DARK : RAMP_LIGHT;
+const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const binOf = n => BINS.findIndex(b => n >= b[0] && n <= b[1]);
+
+const LIMIT = 150;
+const state = { mode:'born', era:'all', sel:'USA', showAll:false };
+
+function inEra(a){
+  if (state.era === 'all') return true;
+  const s = +state.era;
+  return s === 1950 ? a.y >= 1950 : (a.y >= s && a.y < s + 50);
+}
+function tally(){
+  const born = {}, lived = {};
+  for (const a of A) if (inEra(a)) { born[a.born] = (born[a.born]||0)+1; lived[a.lived] = (lived[a.lived]||0)+1; }
+  return {born, lived};
+}
+const nm = c => NAMES[c] || c;
+
+function drawMap(t){
+  if (!window.Plotly) return mapFailed();
+  const counts = t[state.mode];
+  const codes = Object.keys(counts);
+  const r = ramp();
+  const cs = [];
+  r.forEach((c,i) => { cs.push([i/BINS.length, c]); cs.push([(i+1)/BINS.length, c]); });
+  const trace = {
+    type:'choropleth', locationmode:'ISO-3', locations:codes,
+    z: codes.map(c => binOf(counts[c]) + 0.5), zmin:0, zmax:BINS.length, colorscale:cs, showscale:false,
+    customdata: codes.map(c => [nm(c), t.born[c]||0, t.lived[c]||0]),
+    hovertemplate:'<b>%{customdata[0]}</b><br>Born there: %{customdata[1]}<br>Lived there: %{customdata[2]}<extra></extra>',
+    marker:{line:{color:css('--surface'), width:0.6}}
+  };
+  const layout = {
+    margin:{l:0,r:0,t:0,b:0}, paper_bgcolor:'rgba(0,0,0,0)', dragmode:'pan',
+    hoverlabel:{bgcolor:css('--surface'), bordercolor:css('--line'), font:{color:css('--ink'), size:13}},
+    geo:{projection:{type:'natural earth'}, resolution:110, bgcolor:'rgba(0,0,0,0)',
+      showframe:false, showcoastlines:false, showland:true, landcolor:css('--land'),
+      showcountries:true, countrycolor:css('--surface'), countrywidth:0.6,
+      showocean:false, showlakes:false, lataxis:{range:[-58,84]}}
+  };
+  const el = document.getElementById('map');
+  Plotly.react(el, [trace], layout, {displayModeBar:false, responsive:true, scrollZoom:false})
+    .then(() => {
+      if (!el._bound) { el._bound = true;
+        el.on('plotly_click', ev => { const p = ev.points && ev.points[0]; if (p) { state.sel = p.location; state.showAll = false; render(false); } });
+      }
+    }).catch(mapFailed);
+}
+let failTimer = null;
+function mapFailed(){
+  document.getElementById('map').style.display = 'none';
+  document.getElementById('mapmsg').style.display = 'block';
+}
+function watchMap(){
+  clearTimeout(failTimer);
+  failTimer = setTimeout(() => {
+    if (!document.querySelector('#map .choroplethlayer path, #map .geo path')) mapFailed();
+  }, 6000);
+}
+
+function drawLegend(){
+  const r = ramp();
+  document.getElementById('legend').innerHTML =
+    '<span>Authors per country:</span>' +
+    BINS.map((b,i) => `<span><i style="background:${r[i]}"></i>${b[2]}</span>`).join('') +
+    `<span><i style="background:${css('--land')}"></i>none in this set</span>`;
+}
+function drawRank(t){
+  const counts = t[state.mode];
+  const rows = Object.entries(counts).sort((a,b) => b[1]-a[1] || nm(a[0]).localeCompare(nm(b[0])));
+  const max = rows.length ? rows[0][1] : 1;
+  document.getElementById('rankTitle').textContent =
+    (state.mode === 'born' ? 'Countries by authors born there' : 'Countries by authors who lived there') + ` (${rows.length})`;
+  const box = document.getElementById('rank');
+  box.innerHTML = '';
+  for (const [c,n] of rows){
+    const b = document.createElement('button');
+    b.className = 'row'; b.setAttribute('aria-current', c === state.sel);
+    b.innerHTML = `<span class="nm"></span><span><span class="bar" style="display:block;width:${Math.max(1, n/max*100)}%"></span></span><span class="n">${n}</span>`;
+    b.querySelector('.nm').textContent = nm(c);
+    b.onclick = () => { state.sel = c; state.showAll = false; render(false); };
+    box.appendChild(b);
+  }
+}
+function drawDetail(t){
+  const c = state.sel;
+  document.getElementById('detTitle').textContent = nm(c);
+  document.getElementById('sBorn').textContent = t.born[c] || 0;
+  document.getElementById('sLived').textContent = t.lived[c] || 0;
+  const list = A.filter(a => inEra(a) && (a.born === c || a.lived === c)).sort((a,b) => a.y - b.y);
+  const ul = document.getElementById('names'); ul.innerHTML = '';
+  if (!list.length) { ul.innerHTML = '<li><small>No authors in this period.</small></li>'; return; }
+  const shown = state.showAll ? list : list.slice(0, LIMIT);
+  for (const a of shown){
+    const li = document.createElement('li');
+    let tag = '';
+    if (a.born !== a.lived) tag = a.born === c ? ` → ${nm(a.lived)}` : ` ← ${nm(a.born)}`;
+    const link = document.createElement('a');
+    link.href = a.link || ('https://en.wikipedia.org/w/index.php?search=' + encodeURIComponent(a.name));
+    link.target = '_blank'; link.rel = 'noopener'; link.textContent = a.name;
+    li.appendChild(link); li.appendChild(document.createTextNode(' '));
+    const s = document.createElement('small'); s.textContent = `b. ${a.y}${tag}`; li.appendChild(s);
+    ul.appendChild(li);
+  }
+  if (list.length > shown.length) {
+    const li = document.createElement('li'); const b = document.createElement('button');
+    b.className = 'more'; b.textContent = `Show all ${list.length} authors`;
+    b.onclick = () => { state.showAll = true; render(false); };
+    li.appendChild(b); ul.appendChild(li);
+  }
+}
+function render(redrawMap = true){
+  const t = tally();
+  const n = A.filter(inEra).length;
+  document.getElementById('total').textContent = n.toLocaleString('en') + (state.era === 'all' ? '' : ' of ' + A.length);
+  if (redrawMap) { try { drawMap(t); } catch(e) { mapFailed(); } }
+  drawLegend(); drawRank(t); drawDetail(t);
+}
+function bindSeg(id, key, attr){
+  document.getElementById(id).addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return;
+    state[key] = b.dataset[attr]; state.showAll = false;
+    for (const x of b.parentNode.children) x.setAttribute('aria-pressed', x === b);
+    render();
+  });
+}
+bindSeg('modeSeg','mode','mode'); bindSeg('eraSeg','era','era');
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => render());
+render(); watchMap();
+</script>
+</body>
+</html>

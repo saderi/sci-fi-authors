@@ -1,0 +1,4 @@
+cache_*.json
+fetch.log
+.claude/
+__pycache__/

@@ -1,0 +1,5 @@
+# Authors per country of residence. Swap wdt:P551/wdt:P17 for wdt:P27 to count by citizenship instead.
+SELECT ?iso (COUNT(DISTINCT ?author) AS ?n) WHERE {
+  ?author wdt:P106 wd:Q18844224 ; wdt:P569 ?birth ; wdt:P551/wdt:P17/wdt:P298 ?iso .
+  FILTER(YEAR(?birth) >= 1800)
+} GROUP BY ?iso ORDER BY DESC(?n)
