@@ -40,6 +40,10 @@ python3 build.py            # writes index.html
 - Counts are binned (1, 2-4, 5-9, 10-24, 25-49, 50-99, 100-249, 250+) because the United States dwarfs every other country.
 - Known issues: two duplicate names (Jonathan Blum, Michael Shea); historical states without ISO codes fall back to citizenship.
 
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md). Most data fixes belong on Wikidata; code changes are welcome as pull requests.
+
 ## Licence
 
 MIT for the code. Data derived from Wikidata (CC0).
